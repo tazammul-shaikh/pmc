@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dashboard - Vendor Printmycopy</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="scss/styles.css">
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body class="grey lighten-4">
+    <div class="above-footer-ch">
+        <div class="overflow-part">
+            <header class="">
+                <nav class="tz-header box-shadow-none tz-fixed-header">
+                    <div class="nav-wrapper">
+                        <a href="#" class="brand-logo tz-brand-name">Vendor  Printmycopy</a>
+                        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                        <!-- <ul class="sidenav" id="mobile-demo">
+                            <li class="tz-active-sidenav"><a href="home.html">Dashboard</a></li>
+                            <li><a href="#">Shopkeeper</a></li>
+                            <li><a href="#">Copies History</a></li>
+                            <li><a href="payments.html">Payments</a></li>
+                            <li><a href="#">Complaint</a></li>
+                        </ul> -->
+                    </div>
+                </nav>
+                <ul class="sidenav tz-sidenav-padding" id="mobile-demo">
+                    <li class="tz-active-sidenav"><a href="home.html">Dashboard</a></li>
+                    <li><a href="#">Shopkeeper</a></li>
+                    <li><a href="#">Copies History</a></li>
+                    <li><a href="payments.html">Payments</a></li>
+                    <li><a href="#">Complaint</a></li>
+                </ul>
+            </header>
+            <aside id="aside">
+                <ul class="sidenav sidenav-fixed">
+                    <li class="tz-active-sidenav"><a href="home.html">Dashboard</a></li>
+                    <li><a href="#">Shopkeeper</a></li>
+                    <li><a href="#">Copies History</a></li>
+                    <li><a href="payments.html">Payments</a></li>
+                    <li><a href="#">Complaint</a></li>
+                </ul>
+            </aside>
+            <main class="tz-section">
+                <div class="tz-select-date input-field white">
+                    <select>
+                      <option value="1" selected>This Weak</option>
+                      <option value="2">This Month</option>
+                      <option value="3">Today</option>
+                    </select>
+                  </div>
+                <div class="card tz-main-card">
+                    <div class="bottom-grey-m">
+                        <div class="tz-hm-subheading">Printing overview</div>
+                    </div>
+                    <div class="bottom-grey-m tz-card-records">
+                        <div class="tz-card-records-item bg-primary" >
+                            <div>
+                                <div>Printed Pages</div>
+                                <div class="font-size-24">328</div>
+                            </div>
+                        </div>
+                        <div class="tz-card-records-item" >
+                            <div>
+                                <div>Amount Collected</div>
+                                <div class="font-size-24">161</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="dailyPrintChart"></div>
+                    <div class="pb-32">
+                        <div  class="tz-hm-subheading">Rates:</div>
+                        <div class="tz-hm-rate">Color - <span class="font-bold">0.90 Rs</span></div>
+                        <div class="tz-hm-rate">Black - <span class="font-bold">0.50 Rs</span></div>
+                    </div>
+                    
+                </div>
+            </main>
+        </div>
+    </div>
+    <footer class="page-footer" id="footer">
+        <div class="footer-copyright">
+          <div class="container">
+              © 2020 Printmycopy<a class="grey-text text-lighten-4 right" href="#!">www.printmycopy.com</a>
+          </div>
+        </div>
+    </footer>
+   <script type="text/javascript" src="js/main.js"></script>
+   <script>
+      google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+            // Create the data table.
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Date');
+            data.addColumn('number', 'Number of Print');
+            data.addColumn({type:'string', role:'style'});
+            data.addRows([
+                ['16 July', 46,'color: #961133'],
+                ['17 July', 18,'color: #961133'],
+                ['18 July', 21,'color: #961133'],
+                ['19 July', 42,'color: #961133'],
+                ['20 July', 12,'color: #961133'],
+                ['21 July', 26,'color: #961133'],
+                ['22 July', 34,'color: #961133']
+            ]);
+    
+            // Set chart options
+            var options = {'title':'Daily Print Records',
+                            //  'width':'100%',
+                            //  'height':500,
+                            legend: 'none',
+                            bar: {groupWidth: 20}
+                            };
+    
+            // Instantiate and draw our chart, passing in some options.
+            var chart = new google.visualization.ColumnChart(document.getElementById('dailyPrintChart'));
+            chart.draw(data, options);
+            }
+   </script>
+</body>
+</html>

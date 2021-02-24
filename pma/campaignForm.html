@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add Capaign</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Jquery Datepicker Css -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="css/mdb.min.css" rel="stylesheet">
+    <!-- Your custom styles (optional) -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="tz-main-body">
+        <div class="tz-overflowpart">
+            <div class = "tz-header">
+                <div class = "col-md-6">
+                    <h2 class = "text-center tz-header-tag">Print My Ad</h2>
+                </div>
+                <ul class="nav col-md-6 tz-ultab" role="tablist">
+                    <li class="nav-items">
+                        <a class = "nav-link text-white waves-light">Home</a>
+                    </li>
+                    <li class="nav-items">
+                        <a href="/dashboard.html" class = "nav-link text-white waves-light tz-ul-active">Campaign</a>
+                    </li>
+                    <li class="nav-items">
+                         <a href="/profile.html" class = "nav-link text-white waves-light">Profile</a>
+                     </li>
+                    <li class="nav-items">
+                        <a href="/login.html" class = "nav-link text-white waves-light">Logout</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="container">
+                <div class="tz-section">
+                    <form id="campaignForm" action="" method="post">
+                            <div id="campaignForm1">
+                                <div class="tz-campaignHeading">
+                                    <div class="tz-stepCircle">
+                                        <div class="tz-arc tz-arc1"></div>
+                                        <div>1 of 5</div>
+                                    </div>
+                                    <div class="tz-stepHeadingBlock" style="display: inline-block">
+                                        <div class="tz-stepHeading">Campaign Detail</div>
+                                        <div class="tz-stepNextHeading">Next: Footer Design</div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div> Name your Campaign<small class="float-right">(optional)</small></div>
+                                    <input type="text" name="campaignName" id="campaignName" class="form-control" placeholder="Enter Your Campaign Name">
+                                </div>
+                                <div class="form-group">
+                                    <div>Industry</div>
+                                    <select id="industry" name="industry" class="custom-select" onchange="industryChange(this)" required>
+                                    </select>
+                                    <div class="invalid-feedback"> Please provide a Industry.</div>
+                                </div>
+                                <div class="form-group">
+                                    <div>Sub Industry<small class="float-right">(optional)</small></div>
+                                    <select id="subIndustry" name="subIndustry" class="custom-select">
+                                        <option value="">Choose Industry First...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group tz-nextprevdiv" style="justify-content: space-around">
+                                    <button type="button" class="btn-primary form-control tz-nextbtn" onclick="goToStep2()">Next</button>
+                                </div>
+                            </div>
+                            <div id="campaignForm2" style="display: none">
+                                <div class="tz-campaignHeading">
+                                        <div class="tz-stepCircle">
+                                            <div class="tz-arc tz-arc1"></div>
+                                            <div class="tz-arc tz-arc2"></div>
+                                            <div>2 of 5</div>
+                                        </div>
+                                        <div class="tz-stepHeadingBlock" style="display: inline-block">
+                                            <div class="tz-stepHeading">Footer Design</div>
+                                            <div class="tz-stepNextHeading">Next: Quantity Selecion</div>
+                                        </div>
+                                    </div>
+                                <div class="form-group">
+                                    <div>Footer Size</div>
+                                    <select id="footerSize" name="footerSize" class="custom-select" onchange="footerSizeChange(this)" required>
+                                        <option value="">Choose Industry First...</option>
+                                    </select>
+                                    <div class="invalid-feedback"> Please provide a Size of Footer.</div>
+                                </div>
+                                <div id="footerPreviewDiv" class="form-group" style="display: none">
+                                    <div>Footer Preview</div>
+                                    <div id="footerFileContainer1" class="tz-footerContainer1" style="display:none">
+                                        <img src="" id="footerFile1" class="tz-itemCenter tz-footer-img">
+                                    </div>
+                                    <div id="footerFileContainer2" class="tz-footerContainer2" style="display:none">
+                                        <img src="" id="footerFile2" class="tz-itemCenter tz-footer-img">
+                                    </div>
+                                    <div id="footerFileContainer3" class="tz-footerContainer3" style="display:none">
+                                        <img src="" id="footerFile3" class="tz-itemCenter tz-footer-img">
+                                    </div>
+                                    <div id="footerFileContainer4" class="tz-footerContainer4"  style="display:none">
+                                        <img src="" id="footerFile4" class="tz-itemCenter tz-footer-img">
+                                    </div>
+                                    <div id="footerFileContainer5" class="tz-footerContainer5" style="display:none">
+                                        <img src="" id="footerFile5" class="tz-itemCenter tz-footer-img">
+                                    </div>
+                                    <div id="footerFileContainer6" class="tz-footerContainer6" style="display:none">
+                                        <img src="" id="footerFile6" class="tz-itemCenter tz-footer-img">
+                                    </div>
+                                    <div id="footerFileContainer7" class="tz-footerContainer7" style="display:none">
+                                        <img src="" id="footerFile7" class="tz-itemCenter tz-footer-img">
+                                    </div>
+                                    <div id="footerContainer1" class="tz-footerContainer1" style="display: none">
+                                        <img src="/Default Logo.png" id="fLogoImg1"class="tz-itemCenter tz-footer1-logo" >
+                                    </div>
+                                    <div id="footerContainer2" class="tz-footerContainer2" style="display: none">
+                                        <img src="/Default Logo.png" id="fLogoImg2"class="tz-itemCenter tz-footer2-logo" >
+                                        <div id="fBrandName2" class="tz-itemCenter tz-footer2-brandName tz-footer-fontSize-6">Brand Name</div>
+                                    </div>
+                                    <div id="footerContainer3" class="tz-footerContainer3"  style="display: none">
+                                        <img src="/Default Logo.png" id="fLogoImg3"class="tz-itemCenter tz-footer3-logo" >
+                                        <div id="fBrandName3" class="tz-itemCenter tz-footer3-brandName tz-footer-fontSize-6">Brand Name</div>
+                                        <div id="fInfo13" class="tz-itemCenter tz-footer3-info1 tz-footer-fontSize-2">Info 1</div>
+                                    </div>
+                                    <div id="footerContainer4" class="tz-footerContainer4" style="display: none">
+                                        <img src="/Default Logo.png" id="fLogoImg4"class="tz-itemCenter tz-footer4-logo" >
+                                        <div id="fBrandName4" class="tz-itemCenter tz-footer4-brandName tz-footer-fontSize-6">Brand Name</div>
+                                        <div id="fInfo14" class="tz-itemCenter tz-footer4-info1 tz-footer-fontSize-2">Info 1</div>
+                                        <div id="fInfo24" class="tz-itemCenter tz-footer4-info2 tz-footer-fontSize-2">Info 2</div>
+                                    </div>
+                                    <div id="footerContainer5" class="tz-footerContainer5" style="display: none">
+                                        <img src="/Default Logo.png" id="fLogoImg5"class="tz-itemCenter tz-footer5-logo" >
+                                        <div id="fBrandName5" class="tz-itemCenter tz-footer5-brandName tz-footer-fontSize-6">Brand Name</div>
+                                        <div id="fTagline5" class="tz-itemCenter tz-footer5-tagline tz-footer-fontSize-4">Your tagline will be</div>
+                                        <div id="fInfo15" class="tz-itemCenter tz-footer5-info1 tz-footer-fontSize-2">Info 1</div>
+                                        <div id="fInfo25" class="tz-itemCenter tz-footer5-info2 tz-footer-fontSize-2">Info 2</div>
+                                    </div>
+                                    <div id="footerContainer6" class="tz-footerContainer6" style="display: none">
+                                        <img src="/Default Logo.png" id="fLogoImg6"class="tz-itemCenter tz-footer6-logo">
+                                        <div id="fBrandName6" class="tz-itemCenter tz-footer6-brandName tz-footer-fontSize-6">Brand Name</div>
+                                        <div id="fTagline6" class="tz-itemCenter tz-footer6-tagline tz-footer-fontSize-4">Your tagline will be</div>
+                                        <div id="fInfo16" class="tz-itemCenter tz-footer6-info1 tz-footer-fontSize-2">Info 1</div>
+                                        <div id="fInfo26" class="tz-itemCenter tz-footer6-info2 tz-footer-fontSize-2">Info 2</div>
+                                        <img src="/noimages.png" id="fExtraImg6" class="tz-itemCenter tz-footer6-extraImage">
+                                    </div>
+                                    <div id="footerContainer7" class="tz-footerContainer7" style="display: none">
+                                        <img src="/Default Logo.png" id="fLogoImg7"class="tz-itemCenter tz-footer7-logo" >
+                                        <div id="fBrandName7" class="tz-itemCenter tz-footer7-brandName tz-footer-fontSize-6">Brand Name</div>
+                                        <div id="fTagline7" class="tz-itemCenter tz-footer7-tagline tz-footer-fontSize-4">Your tagline will be</div>
+                                        <div id="fInfo17" class="tz-itemCenter tz-footer7-info1 tz-footer-fontSize-2">Info 1</div>
+                                        <div id="fInfo27" class="tz-itemCenter tz-footer7-info2 tz-footer-fontSize-2">Info 2</div>
+                                        <img src="/noimages.png" id="fExtraImg7" class="tz-itemCenter tz-footer7-extraImage">
+                                    </div>
+                                    <!-- <div id="pfooterContainer7" class="tz-footerContainer7"  style="display: none">
+                                        <div class="tz-footer-fontSize-6" style="position: absolute;top: 0;left: 50%;transform: translate(-50%);">Size: 20.377cm x 1cm</div>
+                                    </div> -->
+                                </div>
+                                <div class="form-group">
+                                    <div>Your Footer</div>
+                                    <div id="footerType" class="form-control" style="height:auto;">
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            <input type="radio" id="footerType1" name="footerType" class="custom-control-input" value="UF" onchange="showFooterForm();" required>
+                                            <label class="custom-control-label" for="footerType1">Upload Footer</label>
+                                        </div>
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            <input type="radio" id="footerType2" name="footerType" class="custom-control-input" value="GF" onchange="showFooterForm();" required>
+                                            <label class="custom-control-label" for="footerType2">Generate Footer on Web</label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback"> Please Select the Type of Footer.</div>
+                                </div>
+                                <div class="form-group" id="footerTypeDiv1" style="display: none;">
+                                    <div>Upload Footer File</div>
+                                    <label id="lblFooterFile" class="form-control text-truncate" for="footerFile">
+                                        <span><i class="fa fa-paperclip" aria-hidden="true"></i></span>
+                                        <span id="footerFileSpan">Upload File</span>
+                                        <input type="file"  id="footerFile" name="footerFile" style="display: none;" onchange = "footerFileChange()" accept="image/x-png,image/jpeg">
+                                    </label>
+                                    <div class="invalid-feedback"> Please provide a Footer File.</div>
+                                </div>
+                                <div id="footerTypeDiv2" style="display: none;">
+                                    <div id="colorBlock" style="display: none">
+                                        <div id ="divColor" class="form-group">
+                                            <div id="mb16">
+                                                <div>Footer Color:</div>
+                                                <label id="lblFooterColor" for="footerColor">
+                                                        <input type="color"  id="footerColor" name="footerColor" value="#ffffff" style="display: none" onchange="colorChange(this,'lblFooterColor','BC')">
+                                                </label> 
+                                            </div>
+                                            <div>
+                                                <div>Font Color:</div>
+                                                <label id="lblFontColor" for="fontColor">
+                                                    <input type="color"  id="fontColor" name="footerColor" value="#000000" style="display: none" onchange="colorChange(this,'lblFontColor','FC')">
+                                                </label> 
+                                            </div>
+                                        </div>
+                                    </div> 
+                                    <div id = "divLogoFile" class="form-group">
+                                        <div>Logo</div>
+                                        <label id="lblLogoFile" class="form-control text-truncate" for="logoFile">
+                                            <span><i class="fa fa-paperclip" aria-hidden="true"></i></span>
+                                            <span id="logoFileSpan">Upload Logo</span>
+                                            <input type="file" style="display: none" id="logoFile" name="logoFile" onchange = "logoFileChange()" accept="image/x-png,image/jpeg">
+                                        </label>
+                                        <div class="invalid-feedback"> Please provide a Logo File.</div>
+                                    </div>
+                                    <div id = "divBrandName" class="form-group" style="display: none">
+                                        <div>Brand Name</div>
+                                        <input type="text" class="form-control" id="BrandName" name="brandName" placeholder="Enter Brand/Company Name" onkeyup="nameChange(this.id)">
+                                        <div class="invalid-feedback"> Please provide a Brand Name.</div>
+                                        <div class="form-group" style="margin: 16px 0px 0px 0px;">
+                                            <div>Font Size:</div>
+                                            <div style="display: flex">
+                                                <input type="radio" name="bFontSize" id="bf1" value="1" style="display: none" onclick="fontChange(this,'fBrandName')">
+                                                <label class="col tz-fontSize-Label" id="lbf1" for="bf1">1</label>
+                                                <input type="radio" name="bFontSize" id="bf2" value="2" style="display: none" onclick="fontChange(this,'fBrandName')">
+                                                <label class="col tz-fontSize-Label" id="lbf2" for="bf2">2</label>
+                                                <input type="radio" name="bFontSize" id="bf3" value="3" style="display: none" onclick="fontChange(this,'fBrandName')">
+                                                <label class="col tz-fontSize-Label" id="lbf3" for="bf3">3</label>
+                                                <input type="radio" name="bFontSize" id="bf4" value="4" style="display: none" onclick="fontChange(this,'fBrandName')">
+                                                <label class="col tz-fontSize-Label" id="lbf4" for="bf4">4</label>
+                                                <input type="radio" name="bFontSize" id="bf5" value="5" style="display: none" onclick="fontChange(this,'fBrandName')">
+                                                <label class="col tz-fontSize-Label" id="lbf5" for="bf5">5</label>
+                                                <input type="radio" name="bFontSize" id="bf6" value="6" style="display: none" onclick="fontChange(this,'fBrandName')" checked>
+                                                <label class="col tz-fontSize-Label  tz-fontSize-Label-active" id="lbf6" for="bf6">6</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id = "divTagline" class="form-group" style="display: none">
+                                        <div>Tagline</div>
+                                        <input type="text" class="form-control" id="Tagline" name="tagline" placeholder="Enter Tagline/Slogan" onkeyup="nameChange(this.id)">
+                                        <div class="invalid-feedback"> Please provide a Tagline.</div>
+                                        <div class="form-group" style="margin: 16px 0px 0px 0px;">
+                                                <div>Font Size:</div>
+                                                <div style="display: flex">
+                                                    <input type="radio" name="tFontSize" id="tf1" value="1" style="display: none" onclick="fontChange(this,'fTagline')">
+                                                    <label class="col tz-fontSize-Label" id="ltf1" for="tf1">1</label>
+                                                    <input type="radio" name="tFontSize" id="tf2" value="2" style="display: none" onclick="fontChange(this,'fTagline')">
+                                                    <label class="col tz-fontSize-Label" id="ltf2" for="tf2">2</label>
+                                                    <input type="radio" name="tFontSize" id="tf3" value="3" style="display: none" onclick="fontChange(this,'fTagline')">
+                                                    <label class="col tz-fontSize-Label" id="ltf3" for="tf3">3</label>
+                                                    <input type="radio" name="tFontSize" id="tf4" value="4" style="display: none" onclick="fontChange(this,'fTagline')"  checked>
+                                                    <label class="col tz-fontSize-Label tz-fontSize-Label-active" id="ltf4" for="tf4">4</label>
+                                                    <input type="radio" name="tFontSize" id="tf5" value="5" style="display: none" onclick="fontChange(this,'fTagline')">
+                                                    <label class="col tz-fontSize-Label" id="ltf5" for="tf5">5</label>
+                                                    <input type="radio" name="tFontSize" id="tf6" value="6" style="display: none" onclick="fontChange(this,'fTagline')">
+                                                    <label class="col tz-fontSize-Label" id="ltf6" for="tf6">6</label>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div id = "divInfo1" class="form-group" style="display: none">
+                                        <div>Info1</div>
+                                        <input type="text" class="form-control" id="Info1" name="info1" placeholder="Enter Information(1)" onkeyup="nameChange(this.id)">
+                                        <div class="invalid-feedback"> Please provide an Information1.</div>
+                                    </div>
+                                    <div id = "divInfo2" class="form-group" style="display: none">
+                                        <div>Info2</div>
+                                        <input type="text" class="form-control" id="Info2" name="info2" placeholder="Enter Inforamtion(2)" onkeyup="nameChange(this.id)">
+                                        <div class="invalid-feedback"> Please provide an Information2.</div>
+                                    </div>
+                                    <div id="divInfoFont" class="form-group" style="display: none">
+                                            <div>Font Size:</div>
+                                            <div style="display: flex">
+                                                <input type="radio" name="iFontSize" id="if1" value="1" style="display: none" onclick="infoFontChange(this)">
+                                                <label class="col tz-fontSize-Label" id="lif1" for="if1">1</label>
+                                                <input type="radio" name="iFontSize" id="if2" value="2" style="display: none" onclick="infoFontChange(this)"checked>
+                                                <label class="col tz-fontSize-Label tz-fontSize-Label-active" id="lif2" for="if2">2</label>
+                                                <input type="radio" name="iFontSize" id="if3" value="3" style="display: none" onclick="infoFontChange(this)">
+                                                <label class="col tz-fontSize-Label" id="lif3" for="if3">3</label>
+                                                <input type="radio" name="iFontSize" id="if4" value="4" style="display: none" onclick="infoFontChange(this)"  >
+                                                <label class="col tz-fontSize-Label" id="lif4" for="if4">4</label>
+                                                <input type="radio" name="iFontSize" id="if5" value="5" style="display: none" onclick="infoFontChange(this)">
+                                                <label class="col tz-fontSize-Label" id="lif5" for="if5">5</label>
+                                                <input type="radio" name="iFontSize" id="if6" value="6" style="display: none" onclick="infoFontChange(this)">
+                                                <label class="col tz-fontSize-Label" id="lif6" for="if6">6</label>
+                                            </div>
+                                        </div>
+                                    <div id = "divExtraImage" class="form-group" style="display: none">
+                                        <div>Extra Image</div>
+                                        <label id="lblExtraImage" class="form-control text-truncate" for="extraImage">
+                                            <span><i class="fa fa-paperclip" aria-hidden="true"></i></span>
+                                            <span id="extraImageSpan">Upload Image</span>
+                                            <input type="file" style="display: none" id="extraImage" name="extraImage" onchange = "extraImageChange()" accept="image/x-png,image/jpeg">
+                                        </label>
+                                        <div class="invalid-feedback"> Please provide an Extra Image.</div>
+                                    </div>
+                                    
+                                </div>
+                                <div class="form-group tz-nextprevdiv">
+                                    <button type="button" class="form-control tz-prevbtn" onclick="goToStep1()">Back</button>
+                                    <button type="button" class="btn-primary form-control tz-nextbtn" onclick="goToStep3()">Next</button>
+                                </div>
+                            </div>
+                            <div id="hiddenFooter" class="tz-hidden-footer-container">
+
+                            </div> 
+                            <div id="campaignForm3" style="display:none">
+                                <div class="tz-campaignHeading">
+                                        <div class="tz-stepCircle">
+                                            <div class="tz-arc tz-arc1"></div>
+                                            <div class="tz-arc tz-arc2"></div>
+                                            <div class="tz-arc tz-arc3"></div>
+                                            <div>3 of 5</div>
+                                        </div>
+                                        <div class="tz-stepHeadingBlock" style="display: inline-block">
+                                            <div class="tz-stepHeading">Quantity Selection</div>
+                                            <div class="tz-stepNextHeading">Next: Location</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div>Print Option</div>
+                                        <div id="printOption" class="form-control" style="height:auto;">
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="printColour" name="printOption" class="custom-control-input" value="CL" onchange="printOptionChange()" required>
+                                                <label class="custom-control-label" for="printColour">Colour Print</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="printBlackWhite" name="printOption" class="custom-control-input" value="BW" onchange="printOptionChange()" required>
+                                                <label class="custom-control-label" for="printBlackWhite">Black & White</label>
+                                            </div>
+                                        </div>
+                                        <div class="invalid-feedback"> Please Select the Print Option.</div>
+                                    </div>
+                                <div class="form-group">
+                                    <div>Quantity</div>
+                                    <select id="quantity" name="quantity" class="custom-select" onchange="quantityCalculate(this)" required>
+                                        <option value="">Choose Footer Size First...</option>
+                                    </select>
+                                    <div class="invalid-feedback"> Please provide a Quantity.</div>
+                                </div>
+                                <div class="form-group">
+                                    <div>Price</div>
+                                    <div id ="price" class="form-control">0</div>
+                                </div>
+                                <div class="form-group tz-nextprevdiv">
+                                    <button type="button" class="form-control tz-prevbtn" onclick="goToStep2()">Back</button>
+                                    <button type="button" class="btn-primary form-control tz-nextbtn" onclick="goToStep4()">Next</button>
+                                </div>
+                            </div>
+                            <div id="campaignForm4" style="display:none">
+                                <div class="tz-campaignHeading">
+                                    <div class="tz-stepCircle">
+                                        <div class="tz-arc tz-arc1"></div>
+                                        <div class="tz-arc tz-arc2"></div>
+                                        <div class="tz-arc tz-arc3"></div>
+                                        <div class="tz-arc tz-arc4"></div>
+                                        <div>4 of 5</div>
+                                    </div>
+                                    <div class="tz-stepHeadingBlock" style="display: inline-block">
+                                        <div class="tz-stepHeading">Location</div>
+                                        <div class="tz-stepNextHeading">Next: Preview</div>
+                                    </div>
+                                </div>
+                                <div class="form-group"> 
+                                    <div>City</div>
+                                    <select id="city" name="city" class="custom-select" onchange="addPincodes(this)" required>
+                                    </select>
+                                    <div class="invalid-feedback"> Please provide a City.</div>
+                                </div>
+                                <div class="form-group">
+                                    <div>
+                                        Pincode
+                                        <span class="float-right"><span class="font-size-14">Print Station:</span><span class="badge badge-primary ml-2" id="noPrintStation">0</span></span>
+                                    </div>
+                                    <input type="text" readonly id="pincodes" name="pincodes" class="form-control white" placeholder="Choose City First..." required>
+                                    <div id="pincodesList">
+                                    </div>
+                                    <div class="invalid-feedback"> Please provide a Pincodes.</div>
+                                </div>
+                                <div class="form-group">
+                                    <!-- Start Date -->
+                                    <div>Start Date</div>
+                                    <input type="text" name="startDate" id="startDate" class="form-control"  placeholder="Select Start Date...">
+                                    <div class="invalid-feedback"> Please provide a Start Date.</div>
+                                </div>
+                                <div class="form-group">
+                                    <!-- End Date -->
+                                    <div>End Date</div>
+                                    <input type="text" name="endDate" id="endDate" class="form-control" placeholder="Please select start date first...">
+                                </div>
+                                <div class="form-group tz-nextprevdiv">
+                                    <button type="button" class="form-control tz-prevbtn" onclick="goToStep3p()">Back</button>
+                                    <button type="button" class="btn-primary form-control tz-nextbtn" onclick="goToStep5()">Next</button>
+                                </div>
+                            </div>
+                            <div id="campaignForm5" style="display:none">
+                                <div class="tz-campaignHeading">
+                                    <div class="tz-stepCircle">
+                                        <div class="tz-arc tz-arc1"></div>
+                                        <div class="tz-arc tz-arc2"></div>
+                                        <div class="tz-arc tz-arc3"></div>
+                                        <div class="tz-arc tz-arc4"></div>
+                                        <div class="tz-arc tz-arc5"></div>
+                                        <div>5 of 5</div>
+                                    </div>
+                                    <div class="tz-stepHeadingBlock" style="display: inline-block">
+                                        <div class="tz-stepHeading">Preview</div>
+                                    </div>
+                                </div>
+                                <div class="form-group"  style="display: flex;justify-content:space-around;">
+                                    <div class="tz-fontsize14">Campaign Name: <span id="spanCampaignName" class="tz-font15nweight"></span></div>
+                                    
+                                </div>
+                                <div class="form-group"  style="display: flex;justify-content:space-around;">
+                                    <div class="tz-fontsize14">Industry: <span id="spanIndustry" class="tz-font15nweight"></span></div>
+                                    <div class="tz-fontsize14">Sub Industry: <span id="spanSubIndustry" class="tz-font15nweight"></span></div>
+                                </div>
+                                <div class="form-group"  style="display: flex;justify-content:space-around;">
+                                    <div class="tz-fontsize14">City: <span id="spanCity" class="tz-font15nweight"></span></div>
+                                    <div class="tz-fontsize14">Pincodes: <span id="spanPincodes" class="tz-font15nweight"></span></div>
+                                </div>
+                                <div class="form-group"  style="display: flex;justify-content:space-around;">
+                                    <div class="tz-fontsize14">Print Option: <span id="spanPrintOption" class="tz-font15nweight"></span></div>
+                                    <div class="tz-fontsize14">No. of Print Station: <span id="spanPrintStation" class="tz-font15nweight"></span></div>
+                                </div>
+                                <div class="form-group"  style="display: flex;justify-content:space-around;">
+                                    <div class="tz-fontsize14">Footer Size: <span id="spanFooterSize" class="tz-font15nweight"></span></div>
+                                    <div class="tz-fontsize14">Quantity: <span id="spanQuantity" class="tz-font15nweight"></span></div>
+                                </div>
+                                <div class="form-group"  style="display: flex;justify-content:space-around;">
+                                    <div class="tz-fontsize14">Start Date: <span id="spanStartDate" class="tz-font15nweight"></span></div>
+                                    <div class="tz-fontsize14">End Date: <span id="spanEndDate" class="tz-font15nweight"></span></div>
+                                </div>
+                                <div class="mb-8" id="footerPreview">
+                                    
+                                </div>
+                                <div class="ml-20"><span class="tz-download-link" onclick="downloadFooterExample()">Download link</span></div>
+                                <div class="form-group text-center"  style="display: flex;justify-content:space-around;">
+                                    <span>Price: <span id="spanPrice" class="font-weight-bold"></span></span>
+                                </div>
+                                <div class="form-group tz-nextprevdiv">
+                                    <button type="button" class="form-control tz-prevbtn" onclick="goToStep4()">Back</button>
+                                    <button type="submit" class="btn-primary form-control tz-nextbtn" onclick="submit();">Submit</button>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>               
+    <footer class="page-footer font-small tz-footer">
+        <div class="text-center py-3 tz-footerdiv">
+            © 2019 Copyright:
+            <a href="https://www.printmyad.com"> printmyad.com</a>
+        </div>
+    </footer>
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <!-- JQuery Datepicker JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="js/mdb.min.js"></script>
+     <!-- JSPDF JavaScript -->
+    <script type="text/javascript" src="js/jspdf.min.js"></script>
+     <!-- Html2Canvas JavaScript -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+   
+</body>
+</html>

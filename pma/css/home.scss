@@ -1,0 +1,164 @@
+//Variable
+$primaryColor: #2f55d4;
+$darkGrey: #d5ddf6;
+
+// All Scss mixins
+@mixin minQ($arg){
+    @media screen and (min-width:$arg){
+        @content;
+    }
+}
+@mixin maxQ($arg){
+    @media screen and (max-width:$arg){
+        @content;
+    }
+}
+
+// Landing Page 
+html{
+    scroll-behavior: smooth;
+}
+html, body, #home-section{
+    height: 100%;
+}
+// .height-180{
+//     height: 180px;
+// }
+.font-bold{
+    font-weight: 700;
+}
+// .font-size-18{
+//     font-size: 18px;
+// }
+.inline{
+    display: inline;
+}
+.text-center{
+    text-align: center;
+}
+// .tz-btn-background{
+//     background: #112f6b;;
+// }
+// .tz-heading{
+//     font-weight: 700;
+//     color: #112f6b;
+// }
+.text-content{
+    color: #555;
+    line-height: 1.7rem;
+}
+// .flexforl{
+//     @include minQ(992px){
+//         display: flex;
+//     }
+// }
+.m-0{
+    margin:0 !important;
+}
+// .mt-6{
+//     margin-top: 6px;
+// }
+// .mt-48{
+//     margin-top: 48px;
+// }
+// .mt-64{
+//     margin-top: 64px;
+// }
+// .mt-96{
+//     margin-top: 96px;
+// }
+// .mb-48{
+//     margin-bottom: 48px;
+// }
+// .mb-16{
+//     margin-bottom: 16px;
+// }
+// .mb-32{
+//     margin-bottom: 32px;
+// }
+// .mb-64{
+//     margin-bottom: 64px;
+// }
+// .ml-8{
+//     margin-left: 8px;
+// }
+// .pt-64{
+//     padding-top: 64px;
+// }.p-32{
+//     padding: 32px !important;
+// }
+// .p-24{
+//     padding: 24px !important;
+// }
+// .hr-color{
+//     border-color: #ee6e73;
+// }
+// .wrap-img{
+//     max-width: 100%;
+//     height: auto;
+// }
+
+.iot-l-container{
+    width:100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+    @include minQ(576px){
+        max-width: 540px;
+    }
+    @include minQ(768px){
+        max-width: 720px;
+    }
+    @include minQ(992px){
+        max-width: 960px;
+    }
+    @include minQ(1200px){
+        max-width: 1140px;
+    }
+}
+.iot-l-nav{
+    background-color: $primaryColor;
+    position: fixed;
+    z-index: 3;
+    overflow: hidden;
+    #nav-menu{
+        display: none;
+        @include minQ(992px){
+            display: block;
+        }
+        ul{
+            li{
+                font-size:16px;
+                .iot-l-nav-login-btn{
+                    background: #fff;
+                    color: $primaryColor;
+                    font-weight: 600;
+                    border-radius: 6px;
+                    &:hover {
+                        background: $darkGrey;
+                    }
+                }
+
+            }
+        }
+    }
+}
+.iot-l-sidenav-link{
+    transition: all 0.5s;
+    font-size: 15px !important;
+}
+.iot-l-sidenav-login-btn{
+    background: $primaryColor;
+    color: #fff !important;
+    display: inline-block !important;
+    margin-left: 32px;
+    margin-top: 16px;
+    transition: all 0.3s;
+    font-weight: 600 !important;
+    border-radius: 6px;
+    font-size: 15px !important;
+    &:hover, &:visited, &:active{
+        background: $primaryColor !important;
+    }
+}
