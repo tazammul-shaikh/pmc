@@ -1,0 +1,68 @@
+{% extends 'portal/base.html' %}
+{% block title %}Add Complaints{% endblock %}
+{% block content %}
+    <div class="tz-container">
+        <div class="tz-change-password-container">
+            <h5 class="font-bold color-secondary">
+                <span class="border-bottom-2 font-size-2rem">Add Complaint</span>
+            </h5>
+            <form action="{% url "complaints:add" %}" method="post" class="mt-32 mb-32 form-error" enctype="multipart/form-data"  errortext="{{ form.non_field_errors.0 }}">
+{#                <div class="red">#}
+{#                    {{ form.errors }}#}
+{#                </div>#}
+                {% csrf_token %}
+                <div class ="tz-form-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+                <div class="mb-16">
+                    <div class="mb-4">Complaint Category</div>
+                    <div class="tz-select">
+                        <select id="complain_category" name="category" required>
+                            <option value="" disabled selected>Choose your Category</option>
+                            {% for option in form.category.field.choices %}
+                                <option order="{{ option.order }}" value="{{ option.0 }}">{{ option.1 }}</option>
+                            {% endfor %}
+                          </select>
+                    </div>
+                </div>
+                <div class="mb-16">
+                    <div class="mb-4">Description</div>
+                    <div>
+                        <textarea required id="description" name="description" errortext="{{ form.description.errors.0 }}" class="browser-default tz-account-input" rows='10' style="height: auto;"></textarea>
+                    </div>
+                    <div class ="tz-input-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+                </div>
+                <div class="mb-16">
+{#                    <div class="mb-4">Description</div>#}
+{#                    <input type="file" name="sc"/>#}
+                    <div class="file-field input-field">
+                      <div class="btn" style="font-size: 14px;padding: 0 10px;text-transform: none;">
+                        <span>Attach</span>
+                        <input name="attachment" type="file" accept="image/png, image/jpg, image/jpeg, application/pdf">
+                      </div>
+                      <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text" placeholder="Allowed: png / jpg / pdf" style="text-overflow: ellipsis;" errortext="{{ form.attachment.errors.0 }}">
+                      </div>
+                        <div class ="tz-input-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+                    </div>
+                </div>
+                <div class="tz-account-btn-sec"><button class="btn waves-effect tz-account-btn">Add Complaint</button></div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block custom_script_below %}
+    <script>
+        let complaintCategories = {
+            'payments': 1,
+            'printing': 2,
+            'station-locations': 3,
+            'other': 4,
+        }
+        let url = new URL(window.location.href);
+        let subject = url.searchParams.get('subject');
+        if (subject){
+            $("#complain_category").val(complaintCategories[subject]);
+            $('#complain_category').formSelect();
+        }
+    </script>
+{% endblock %}

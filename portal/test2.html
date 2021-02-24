@@ -1,0 +1,784 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="theme-color" content="#0F4C81"/>
+    <meta name="apple-mobile-web-app-status-bar" content="#0F4C81">
+    <meta name="keywords" content="printmycopy, print, printout, print service, self service, xerox, photocopy, photocopy near me, online print, print station, print near me, print in kondhwa, high quality print, cheapest print, xerox near me,pune, kondhwa, katraj, hadapsar, fatima nagar, undri">
+    <meta name="description" content="Printmycopy.com is India's first online self service printing system which offers you secure and quality printouts. You can upload your document/photocopy or any other file on website and take printout from our widely located print-stations in the city without any help.">
+    <link rel="apple-touch-icon" href="{% static "images/pmc_icon.png" %}">
+    <link rel="icon" href="{% static "images/pmc_icon.png" %}">
+    <title>{% block full_title %}{% block title %}Upload{% endblock %} - Printmycopy{% endblock %}</title>
+    <link rel="manifest" href="/static/manifest.json">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-168672510-1"></script>
+    {% block custom_head_above %}
+    {% endblock %}
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700&display=swap" rel="stylesheet">
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-168672510-1');
+    </script>
+    <link href="{% static "scss/materialize.css" %}" rel="stylesheet">
+    <link href="{% static "css/all.css" %}" rel="stylesheet">
+    <link href="{% static "scss/style.css" %}" rel="stylesheet">
+    <style>
+        .tz-nav-item a{
+            color: #80bfff!important;
+            background: transparent;
+        }
+        .tz-nav-item a .badge{
+            color: #80bfff!important;
+            background: transparent;
+        }
+
+        .tz-nav-active-item a{
+            color: white!important;
+            background: transparent!important;
+        }
+        .tz-nav-active-item a .badge{
+            color: white!important;
+            background: transparent!important;
+        }
+        .tz-menu-badge{
+            border: none;
+        }
+        #printModal{
+            width: 100%;
+            max-width: 500px;
+            top: 0%!important;
+            min-height: 100%;
+        }
+        @media screen and (min-width: 500px) {
+            #printModal{
+                min-height: 640px;
+                top: 56px !important;
+            }
+        }
+        .tz-radio-locked{
+            position: relative;
+            cursor: not-allowed !important;
+            background: #eee;
+        }
+        .tz-radio-locked span{
+            cursor: not-allowed !important;
+        }
+        .tz-radio-locked .fa-lock{
+            display: inline-block !important;
+            position: absolute;
+            color: rgba(55,55,55,1);
+            font-size: 22px;
+        }
+        .tz-radio-locked .pl-24::before{
+            content:none;
+        }
+        .lock-message{
+            display: none;
+            color: #666;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+    </style>
+    {% block custom_head_below %}
+    <script>
+        let isAuthenticated = "{{ user.is_authenticated }}" == "True";
+        let limited_copies = 5;
+        let walletBalance, freeBalance;
+        if(isAuthenticated){
+            limited_copies = 30;
+            freeBalance = {{ user.customer.wallet.free_balance|default:0 }};
+            walletBalance = {{ user.customer.wallet.balance|default:0 }};
+        }
+    </script>
+
+    {% endblock %}
+
+</head>
+<body>
+    <div class="tz-loader tz-hidden">
+        <div class="tz-animation-loader"></div>
+        <div id="loadermessage"></div>
+    </div>
+    <div class="tz-main-body">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="base-alert tz-alert alert-{{ message.tags }}">
+                    <span class="message">{{ message }}</span>
+                    <button type="button" class="alert-close">
+                            <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% if user.is_authenticated %}
+            {% include "portal/header.html" %}
+        {% endif %}
+        <div class="tz-overflow">
+        {% block content %}
+        {% endblock %}
+        {% if user.is_authenticated %}
+            {% include "portal/print_popup.html" %}
+        {% endif %}
+        </div>
+        <br><br>
+        <!-- Push Notification popup-->
+{#        <a class="waves-effect waves-light btn modal-trigger" href="#pushNotificationPopup">Modal</a>#}
+        <div id="pushNotificationPopup" class="modal">
+            <div class="modal-content">
+                <h4 id="m-header"></h4>
+                <hr>
+                <p id="m-content"></p>
+{#                <span class="modal-close" >#}
+                    <i class="fas fa-times modal-close" style="position: absolute;top: 6px;right: 10px;font-size: 22px;"></i>
+{#                </span>#}
+            </div>
+            <div class="modal-footer">
+                <a id="m-link" href="#!" class="waves-effect waves-green btn-flat">View</a>
+            </div>
+        </div>
+    </div>
+    {% if user.is_authenticated %}
+        {% include "portal/footer.html" %}
+    {% endif %}
+
+    {% block custom_script_above %}
+    {% endblock %}
+    <script src="{% static "js/jquery-3.4.1.min.js" %}"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.2.2/pdf.min.js"></script>
+    <script src="{% static "js/materialize.min.js" %}"></script>
+    <script src="{% static "js/main.js" %}"></script>
+    <script>
+        if( !isAuthenticated ){
+        // Color Locked
+        document.querySelector('#printModal #color').disabled = true;
+        document.querySelector('#printModal #wallet').disabled = true;
+        $('.unlocked').addClass('tz-radio-locked');
+        $('.lock-message').show();
+        $('.hide-on-lock').hide();
+    }else{
+        $('.walletBalance').text(walletBalance);
+        $('.freeBalance').text(freeBalance);
+    }
+    </script>
+  <script>
+        let checkAccessEndpoint = "{% url "transactions:check_print_access" %}";
+        let errorAbbreviations = {
+            'UTP': 'Unable to process',
+            'WSCR': 'Wrong SCR-No',
+            'SNL': 'Station is temporarily inactive.',
+            'SNF': 'No Station found with this station code.',
+            'NAC': 'You don\'t have access to print this file',
+            'AP': 'File is already printed.',
+            'TNF': 'Invalid link or file has been expired/deleted!',
+            'SIP': 'A file is already being printed on station! Please wait to get it done.',
+            'DEF': 'Something went wrong! Please try again.'
+        };
+        // for hash change of print modal
+
+
+        function prepareForm(){
+            $("#print_now").reset();
+
+        }
+
+        $(function(){
+            let printModalFlag = 0;
+            $('#printModal').modal(
+                {
+                    onOpenEnd: function(e){
+                        window.location.hash = "printModal";
+                        printModalFlag = 1;
+                    },
+                    onCloseEnd:function(e){
+                        if(printModalFlag == 1){
+                            window.history.back();
+                            printModalFlag = 0;
+                        }
+                    }
+                }
+            );
+
+            $(window).on('hashchange', function(event) {
+                if (window.location.hash != "#printModal" && printModalFlag == 1) {
+                    printModalFlag = 0;
+                    $('#printModal').modal('close');
+                }
+            });
+
+        });
+        //change payment mode of print file
+        // Print Pop up
+        $(".print-now-trigger").on("click",function () {
+            let printCodes = $(this).data('print-codes');
+            printNow(printCodes);
+        });
+
+        function openPrintNowInstance(){
+            var instance = M.Modal.getInstance(document.querySelector('#printModal'));
+            instance.open();
+        }
+        let sh_pagesValue, sh_rateObject, sh_level;
+        let pc;
+        function printNow(printCodes){
+            $('input[name="station_code"]').val("");
+            $('input[name="scr_no"]').val("");
+            {#$('input[name="shared-payment-mode"]:checked').val('CO');#}
+            // $('#print_now #coin').click();
+            pc = printCodes;
+            checkAccess(printCodes);
+        }
+        function checkAccess(printCodes){
+            let formData = {
+                'print_codes': printCodes,
+            };
+            $.ajax({
+                url: checkAccessEndpoint,
+                type: 'post',
+                data: formData,
+                success: function(response) {
+                    response = JSON.parse(response);
+                    if(response.COMMAND_STATUS == 'SUCCESS'){
+                        // pagesValue = response.pages;
+                        // rateObject = response.rate_object;
+                        // file_url = response.file_url;
+                        // level = response.file_level;
+                        sh_pagesValue = 9;
+                        sh_rateObject = {
+                            'BW':{
+                                'EC':{
+                                    1:'1',
+                                    2:'2'
+                                },
+                                'SP':{
+                                    1:'2',
+                                    2:'3'
+                                }
+                            },
+                            'CL':{
+                                'EC':{
+                                    1:'2',
+                                    2:'3'
+                                },
+                                'SP':{
+                                    1:'3',
+                                    2:'4'
+                                }
+                            }
+                        };
+                        sh_level = 1;
+
+                        // walletBallance = response.INFO.BALANCE;
+                        // walletFreeBalance = response.INFO.FREE_BALANCE;
+                        // $("#walletBalance").text(walletBallance);
+                        // $("#freeBalance").text(walletFreeBalance);
+                        let amount = response.INFO.AMOUNT;
+                        $('#printModal #print-code-error').hide();
+                        // $("#sharable-print-code-inp").prop('disabled', true);
+                        // $('#next-form-btn').hide();
+                        // $('#print-amount-txt').text(amount);
+                        if(response.INFO.TO_BE_PAID === "FALSE"){
+                            $('#printModal #payment-mode').hide();
+                        }else{
+                            $('#printModal #payment-mode').show();
+                            if (parseInt(sh_pagesValue) == 1){
+                                $("#share_page_range_section").hide();
+                            }else{
+                                $("#share_page_range_section").show();
+                            }
+                            if (parseInt(sh_level) === 2){
+                                $("#high_rate_msg").show();
+                            }
+                            $('#ecoRate').text(sh_rateObject['BW']['EC'][sh_level]);
+                            $('#superRate').text(sh_rateObject['BW']['SP'][sh_level]);
+                            checkSharePageRange();
+                            shareCalculatePrice();
+                        }
+                        // $("#check_access_form_submit").hide();
+                        openPrintNowInstance();
+                        $("#print_now").show();
+                    }
+                    else{
+                        openPrintNowInstance();
+                        let errorAbbr = response.INFO.ERROR_CODE;
+                        printingError(errorAbbr)
+                    }
+                },
+                error: function (err){
+                    console.log(err);
+                    openPrintNowInstance();
+                    printingError('Something Went Wrong! Please try again.');
+                }
+            })
+        }
+        $('#print_now').submit(function(e) {
+            e.preventDefault();
+            let formData = {
+                // 'csrfmiddlewaretoken': $(this).find("input[name='csrfmiddlewaretoken']").val(),
+                'station_code': $(this).find("input[name='station_code']").val(),
+                'scr_no': $(this).find("input[name='scr_no']").val(),
+                'print_codes': pc,
+                'payment_mode': $("input[name='shared-payment-mode']:checked").val(),
+            };
+            // console.log(formData);
+            $('#loadermessage').text('Preparing to print');
+            $('.tz-loader').removeClass("tz-hidden");
+            console.log($("input[name='shared-payment-mode']:checked").val());
+            $.ajax({
+                url:$(this).attr("action"),
+                type: 'post',
+                data: formData,
+                success: function(response) {
+                    response = JSON.parse(response);
+                    if(response.COMMAND_STATUS === 'SUCCESS'){
+                        window.location.href = response['INFO'].REDIRECT_URL;
+                    }else{
+                        $('.tz-loader').addClass("tz-hidden");
+                        let errorAbbr = response.INFO.ERROR_CODE;
+                        printingError(errorAbbr);
+                    }
+                },
+                error: function(jqXHR, exception){
+                    console.log("err", jqXHR.status, typeof jqXHR.status);
+                    $('.tz-loader').addClass("tz-hidden");
+                    var msg = 'Something went wrong! Please try again.';
+                    /*
+                    if (jqXHR.status === 0) {
+                        msg = 'Not connect. Verify Network.';
+                    } else if (jqXHR.status == 404) {
+                        msg = 'Requested page not found. [404]';
+                    } else if (jqXHR.status == 500) {
+                        console.log("500 yes");
+                        msg = 'Internal Server Error [500].';
+                    } else if (exception === 'parsererror') {
+                        msg = 'Requested JSON parse failed.';
+                    } else if (exception === 'timeout') {
+                        msg = 'Time out error.';
+                    } else if (exception === 'abort') {
+                        msg = 'Ajax request aborted.';
+                    } else {
+                        msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                    }
+                    */
+                    console.log(msg)
+                    printingError(null, msg);
+                }
+            });
+        });
+        function printingError(errorAbbr=null, msg=null){
+            if (msg === null){
+                msg = errorAbbreviations[errorAbbr];
+            }
+            $('#printModal #print-code-error').show();
+            $('#printModal #printCodeError').text(msg);
+            window.scrollTo(0, 0);
+        }
+
+        //Print OPtion Function
+        function checkSharePageRange(){
+            console.log(sh_pagesValue);
+            if(sh_pagesValue > limited_copies){
+                sh_pagesToPrint = limited_copies;
+                $('#share_custom_range').val("1-"+limited_copies);
+                $('#sh_total_pages').text(sh_pagesValue);
+                $('.page-range-error').show();
+                document.querySelector('#custom_pages').checked = true;
+                radioShareCustomPageChange();
+                $("#share_page_range_section").hide();
+                // pageRangeFlag = 0;
+            }else{
+                sh_pagesToPrint = sh_pagesValue;
+                $('#share_custom_range').val("");
+                $('.page-range-error').hide();
+                document.querySelector('#all_pages').checked = true;
+                radioShareCustomPageChange();
+            }
+        }
+        //Calculate Price
+        function shareCalculatePrice(){
+            // Setting payment value to null
+            $('input[name="shared-payment-mode"]').prop('checked', false);
+            $('#label_coin, #label_wallet, #label_free').removeClass('tz-radio-active');
+            let rate;
+            rate = sh_rateObject[sh_colorModeValue][sh_qualityModeValue][sh_level];
+            let copiesValue = parseInt($('#sh_copies').val());
+            let amount = rate * sh_pagesToPrint * copiesValue;
+            $('#print-amount-txt').text(amount);
+            $('#print-pages-txt').text(sh_pagesToPrint * copiesValue);
+            if(isAuthenticated){
+                document.querySelector('#printModal #wallet').disabled = walletBalance < amount;
+                if(walletBalance < amount){
+                    $('#label_wallet').addClass('tz-radio-disabled');
+                    $('#walletLessInfo').show();
+                }else{
+                    $('#label_wallet').removeClass('tz-radio-disabled');
+                    $('#walletLessInfo').hide();
+                }
+                document.querySelector('#printModal #free').disabled = freeBalance < amount;
+                if(freeBalance < amount){
+                    $('#label_free').addClass('tz-radio-disabled');
+                    $('#freeLessInfo').show();
+                }else{
+                    $('#label_free').removeClass('tz-radio-disabled');
+                    $('#freeLessInfo').hide();
+                }
+            }
+            if(sh_qualityModeValue == "SP"){
+                document.querySelector('#free').disabled = true;
+                $('#label_free').addClass('tz-radio-disabled');
+                $('#freeLessInfo').hide();
+                $('#superNotForFree').show();
+            }else{
+                document.querySelector('#free').disabled = false;
+                $('#label_free').removeClass('tz-radio-disabled');
+                $('#superNotForFree').hide();
+            }
+        }
+        // Share Print Option
+        let sh_colorModeValue = 'BW', sh_qualityModeValue = 'EC';
+        // Radio Button Style Change
+        $('input[name="share_color_mode"]').click(function () {
+            radioShareColorChange();
+            shareCalculatePrice();
+        });
+        function radioShareColorChange(){
+            let colorMode = $("input[name='share_color_mode']:checked"). val();
+            let radioClasses = {
+                'CL': '#label_color',
+                'BW': '#label_black'
+            }
+            $(".color-mode-radio").removeClass('tz-radio-active');
+            $(radioClasses[colorMode]).addClass('tz-radio-active');
+            sh_colorModeValue = colorMode;
+            $('#ecoRate').text(sh_rateObject[colorMode]['EC'][sh_level]);
+            $('#superRate').text(sh_rateObject[colorMode]['SP'][sh_level]);
+        }
+        $('#print_now #coin, #print_now #wallet, #print_now #free').on('click', function() {
+            radioSharePaymentChange();
+        });
+        $("input[name='share_quality']").click(function () {
+            radioShareQualityChange();
+            shareCalculatePrice();
+        });
+        function radioShareQualityChange(){
+            let quality = $("input[name='share_quality']:checked"). val();
+            let radioClasses = {
+                'SP': '#label_super',
+                'EC': '#label_eco'
+            }
+            let helpTexts = {
+                'SP': 'For cheap price select Eco',
+                'EC': 'For superior quality select Super'
+            }
+            $(".quality-radio").removeClass('tz-radio-active');
+            $(radioClasses[quality]).addClass('tz-radio-active');
+            $('#qualityHelpText').text(helpTexts[quality]);
+            sh_qualityModeValue = quality;
+            // if(quality == "SP"){
+            //     $('#qualityHelpText').parent().addClass('superHelpText');
+            // }else{
+            //     $('#qualityHelpText').parent().removeClass('superHelpText');
+            // }
+        }
+        $('input[name="share_page_range_type"]').click(function () {
+            radioShareCustomPageChange();
+            shareCalculatePrice();
+        });
+        function radioShareCustomPageChange(){
+            let pageRange = $("input[name='share_page_range_type']:checked").val();
+            let radioClasses = {
+                'AP': '#label_all_pages',
+                'CP': '#label_custom_pages'
+            }
+            $(".pages-to-print-radio").removeClass('tz-radio-active');
+            $(radioClasses[pageRange]).addClass('tz-radio-active');
+            if(pageRange == "AP"){
+                $("#share_custom_range").val("");
+                $('#share-custom-range-block').hide();
+                // pagesToPrint = pagesValue;
+            }else{
+                $('#share-custom-range-block').show();
+            }
+        }
+        // Validate Range
+        $("#share_custom_range").keyup(function () {
+            validateRange();
+            shareCalculatePrice();
+        });
+        let pageRangeFlag = 1;
+        function validateRange(){
+            let rangeRegx = /^ ?\d+ ?(- ?\d+ ?)?(, ?\d+ ?(- ?\d+ ?)?)*$/;
+            let ele = document.querySelector('#share_custom_range');
+            let range = ele.value;
+            let checkEqualFlag = 0;
+            if(!rangeRegx.test(range)){
+                // $('#page-range-error-text').text("Please enter a valid page range.");
+                // $('#custom-range-input-block').addClass('tz-custom-range-input-error');
+                pageRangeFlag = 1;
+            }else{
+                pageRangeFlag = 0;
+                let removeComma = range.split(',');
+                let removeHyphen;
+                let pages = new Array();
+                let k=0;
+                removeComma.forEach(commaElement => {
+                    if(commaElement.includes('-')){
+                        removeHyphen = commaElement.split('-');
+                            if(removeHyphen.length == 2){
+                                if(parseInt(removeHyphen[0]) <= parseInt(removeHyphen[1])){
+                                    for(let i=parseInt(removeHyphen[0]);i<=parseInt(removeHyphen[1]);i++){
+                                        // let checkEqualFlag = 0;
+                                        for(let j=0;j<k;j++){
+                                            if(pages[j]== i){
+                                                checkEqualFlag = 1;
+                                                pageRangeFlag = 1;
+                                                break;
+                                            }
+                                        }
+                                        if(checkEqualFlag == 0){
+                                            pages[k] = i;
+                                            k++;
+                                        }
+                                    }
+                                }
+                                else{
+                                    pageRangeFlag = 1;
+                                }
+                            }
+                    }else{
+                        // let checkEqualFlag = 0;
+                        for(let j=0;j<k;j++){
+                            if(pages[j]== parseInt(commaElement)){
+                                checkEqualFlag = 1;
+                                pageRangeFlag = 1;
+                                break;
+                            }
+                        }
+                        if(checkEqualFlag == 0){
+                            pages[k]=parseInt(commaElement);
+                            k++;
+                        }
+
+                    }
+                });
+                for(let i=0;i<pages.length;i++){
+                    if(pages[i]>sh_pagesValue){
+                        pageRangeFlag = 1;
+                        break;
+                    }
+                }
+                if(pages.length > limited_copies){
+                    pageRangeFlag = 1;
+            }
+                if(pageRangeFlag == 0){
+                    $('#custom-range-input-block').removeClass('tz-custom-range-input-error');
+                    sh_pagesToPrint = pages.length;
+                }else{
+                    if(checkEqualFlag == 0){
+                        $('#page-range-error-text').text("Please enter a valid page range.");
+                    }else{
+                        $('#page-range-error-text').text("No repeated pages are allowed.");
+                    }
+                    $('#custom-range-input-block').addClass('tz-custom-range-input-error');
+                }
+                validateLimitedCopies();
+            }
+        }
+        // Caculating Copies
+        $("#sh_add-btn").click(function () {
+            addShareCopies();
+            shareCalculatePrice();
+        });
+        $("#sh_sub-btn").click(function () {
+            subtractShareCopies();
+            shareCalculatePrice();
+        });
+        function validateLimitedCopies(){
+            // $('#limitedCopiesError').hide();
+            let copies = $('#sh_copies').val();
+            if(sh_pagesToPrint * copies > limited_copies){
+                alert("You can't print more than our page range limit("+limited_copies+" pages).");
+            }
+            while(sh_pagesToPrint * copies > limited_copies){
+                copies--;
+            }
+            $('#sh_copies').val(copies);
+        }
+        $("#sh_copies").change(function(){
+            let copies = $('#sh_copies').val();
+
+            if(copies < 1){
+                copies = 1;
+                $('#sh_copies').val(copies);
+            }else{
+                validateLimitedCopies()
+            }
+            shareCalculatePrice();
+        })
+        function addShareCopies(){
+            let copies = $('#sh_copies').val();
+            if(copies > 0){
+                copies++;
+                if(sh_pagesToPrint * copies > limited_copies){
+                    alert("You can't print more than our page range limit("+limited_copies+" pages).");
+                }else{
+                    $('#sh_copies').val(copies);
+                }
+            }else{
+                copies = 1;
+                $('#sh_copies').val(copies);
+            }
+        }
+
+        function subtractShareCopies(){
+            let copies = $('#sh_copies').val();
+            if(copies > 1){
+                copies--;
+                if(sh_pagesToPrint * copies > limited_copies){
+                    alert("You can't print more than our page range limit("+limited_copies+" pages).");
+                }else{
+                    $('#sh_copies').val(copies);
+                }
+            }else{
+                copies = 1;
+            }
+            $('#sh_copies').val(copies);
+        }
+
+        function radioSharePaymentChange(){
+            let paymentMode = $("input[name='shared-payment-mode']:checked"). val();
+            let helpTexts = {
+                'CO': "2₹ coin is not allowed.",
+                'FR': 'There will be additional footer at the bottom of printed page.',
+                'AC': 'Your amount will deducted from your wallet.',
+            }
+            let radioClasses = {
+                'FR': '#label_free',
+                'CO': '#label_coin',
+                'AC': '#label_wallet',
+            }
+            let radioInputs = {
+                'FR': '#free',
+                'CO': '#coin',
+                'AC': '#wallet',
+            }
+            // $("#print_now input[name='shared-payment-mode']").removeAttr("checked");
+            // $("#print_now").find(radioInputs[paymentMode]).attr("checked", "checked");
+            $(".payment-mode-radio").removeClass('tz-radio-active');
+            $(radioClasses[paymentMode]).addClass('tz-radio-active');
+            $('#info-text-for-paymode').show();
+            $('#infoTextForPayModePopup').text(helpTexts[paymentMode]);
+        }
+    </script>
+
+    <script>
+
+        $(function () {
+            showFormError();
+            activateNavLink();
+            // Registering PWA Service worker js file
+            if('serviceWorker' in navigator){
+                navigator.serviceWorker.register('{% url "sw.js" %}', { scope: '/' })
+                .then(() => {})
+                .catch((err) => console.log('error with service worker'));
+            }
+
+        });
+
+        function activateNavLink() {
+            let url = window.location.pathname;
+            $(".tz-nav-link").each(function () {
+                if ($(this).attr("href") === url){
+                    $(this).parent(".tz-nav-item").addClass("tz-nav-active-item")
+                }
+            })
+        }
+
+    </script>
+    <!-- FCM CONTENT -->
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-messaging.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        var firebaseConfig = {
+            apiKey: "AIzaSyD3GzrLgisBqO8g_JTgzy353eJDMv0Sx-0",
+            authDomain: "fir-project-a3804.firebaseapp.com",
+            databaseURL: "https://fir-project-a3804.firebaseio.com",
+            projectId: "fir-project-a3804",
+            storageBucket: "fir-project-a3804.appspot.com",
+            messagingSenderId: "974674388974",
+            appId: "1:974674388974:web:b4a3cd79c34b13a8ba10ff",
+            measurementId: "G-4LRRDSM5N8"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const messaging = firebase.messaging();
+        messaging.onMessage((payload) => {
+            showNotification(payload);
+            console.log('Message received. ', payload);
+          // ...
+        });
+        messaging.requestPermission()
+        .then(function (){
+            console.log("Permission Granted");
+            return messaging.getToken({"vapidKey": "BNqkUCzrckoWhqzZz4MJmXPFenU9ZfB1yeNH_o9kDcYoOCa_KXEBQeytj6PvT-WOh6eZjj4pSXR7us3n2G2zU_0"});
+        })
+        .then(function (token){
+            console.log(user_logged_in);
+            checkNotificationTokenStatus(token, user_logged_in);
+        })
+        .catch(function (err){
+            console.log("Error Occured : ", err);
+        })
+        function showNotification(payload){
+            var instance = M.Modal.getInstance(document.querySelector('#pushNotificationPopup'));
+            $('#pushNotificationPopup #m-header').text(payload.data.foreground_title);
+            $('#pushNotificationPopup #m-content').text(payload.notification.body);
+            if(payload.notification.link){
+                $('#pushNotificationPopup .modal-footer').show();
+                $('#pushNotificationPopup #m-link').attr('href',payload.notification.link);
+            }else{
+                $('#pushNotificationPopup .modal-footer').hide();
+            }
+            instance.open();
+        }
+        function sendNotificationToken(token){
+            var xmlHttp = new XMLHttpRequest();
+            var url = "{% url "notifications_app:notification_device_create" token='pmc-temp-token' %}".replace('pmc-temp-token', token);
+            xmlHttp.open( "GET", url, false ); // false for synchronous request
+            xmlHttp.send( null );
+            return xmlHttp.responseText;
+        }
+        let user_logged_in = {% if user.is_authenticated %}true{% else %}false{% endif %};
+        function checkNotificationTokenStatus(token, user_logged_in){
+            {#sendNotificationToken(token); // Temporary fo testing - need to remove before live#}
+            if (localStorage.getItem("notificationToken") == null || localStorage.getItem("userLoggedIn") === null){
+                sendNotificationToken(token);
+                localStorage.setItem("notificationToken", token);
+                localStorage.setItem('userLoggedIn', "true");
+            }
+            if (user_logged_in && localStorage.getItem('userLoggedIn') !== "true"){
+                sendNotificationToken(token);
+                localStorage.setItem('userLoggedIn', "true");
+            }
+            else if (!user_logged_in && localStorage.getItem('userLoggedIn') === "true"){
+                sendNotificationToken(token);
+                localStorage.setItem('userLoggedIn', "false");
+            }
+        }
+    </script>
+    <!-- FCM CONTENT END -->
+
+    {% block custom_script_below %}
+    {% endblock %}
+
+</body>
+</html>

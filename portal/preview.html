@@ -1,0 +1,20 @@
+{% load static %}
+<!--Preview Modal Structure -->
+<div id="preview-modal" class="modal tz-preview-container">
+    <div class="modal-header top-bar"  >
+        <span class="tz-previewtopbar">
+            <i id="prev" class="fas fa-chevron-left"></i>
+            <!-- <i class="material-icons" id="prev" onclick="showPrevPage()">chevron_left</i> -->
+            <span class="page-info tz-page-info">
+                Page <span id="page-num"></span> of <span id="page-count"></span>
+            </span>
+            <i id="next" class="fas fa-chevron-right" ></i>
+            <!-- <i class="material-icons" id="next" onclick="showNextPage()">chevron_right</i> -->
+        </span>
+        <span class="modal-close waves-effect btn-flat right">
+            <i class="fas fa-times"></i>
+        </span>
+    </div>
+    <div id="canvas-container" class="modal-content">
+    </div> 
+</div>

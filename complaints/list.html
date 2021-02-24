@@ -1,0 +1,87 @@
+{% extends 'portal/base.html' %}
+{% block title %}My Complaints{% endblock %}
+{% block content %}
+    <div class="tz-container">
+        <div class="mt-16">
+            <span class="font-size-2rem font-bold color-secondary border-bottom-2">Complaints</span>
+            {% if user.is_authenticated %}
+                <a href="{% url "complaints:add" %}" class="btn right tz-add-complaint-btn"><i class="fas fa-plus mr-4"></i><span class="vertical-top">New Complaint</span></a>
+            {% endif %}
+        </div>
+        {% if request.user.is_authenticated %}
+            <div>
+            {% if complaints %}
+                <div class="tz-table table-accordion mt-32" >
+                <div class="thead">
+                    <div class="tr light">
+                        <div class="th">Date</div>
+                        <div class="th">Category</div>
+                        <div class="th">Description</div>
+                        <div class="th">Attachment</div>
+                        <div class="th">Reply</div>
+                        <div class="th">Status</div>
+                        <div class="th">Delete</div>
+                    </div>
+                </div>
+                <div class="tbody">
+                    {% for complaint in complaints %}
+                        <div class="rh row-active"><span>{{ complaint.created_on }}</span></div>
+                        <div class="tr {% if forloop.counter|divisibleby:2 %}light{% endif %}">
+                            <div class="td tz-ps-table-td" data-header="Date:">{{ complaint.created_on }}</div>
+                            <div class="td tz-ps-table-td" data-header="Category:">{{ complaint.get_category_display }}</div>
+                            <div class="td tz-ps-table-td" data-header="Description:">{{ complaint.description }}</div>
+                            <div class="td tz-ps-table-td" data-header="Attachment:">
+                                {% if complaint.attachment %}
+                                    <a href="{{ complaint.get_view_attachment_url }}"><i class="fa fa-eye color-primary" ></i></a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </div>
+                            <div class="td tz-ps-table-td" data-header="Reply:">{{ complaint.reply|default:"pending" }}</div>
+                            <div class="td tz-ps-table-td" data-header="Status:">{{ complaint.get_status_display }}</div>
+                            <div class="td tz-ps-table-td" data-header="Delete:">
+                                <form method="post" action="{% url "complaints:delete" pk=complaint.id %}" onsubmit="return confirm('Do you really want to delete this?');">
+                                    {% csrf_token %}
+                                    <button type="submit" style="border: none!important;box-shadow: none!important;background-color: transparent!important;">
+                                        <i class="fas fa-trash color-danger font-size-20"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+            {% else %}
+                <br>
+                <h6>You haven't raised any complaint yet!</h6>
+            {% endif %}
+
+            <div id="deleteModal" class="modal" style="max-width: 460px;">
+                <span class="right font-size-24 modal-close" style="position: absolute;top:4px;right: 8px;"><i class="fas fa-times"></i></span>
+                <div class="modal-content text-center">
+                    <i class="fas fa-trash-alt color-danger font-size-56"></i>
+                    <h5>Are you sure?</h5>
+                    <p style="line-height: 1.2rem;">Do you really want to delete this complaint? This process cannot be undone.</p>
+                    <div class="text-right">
+                        <button class="btn waves-effect waves-light bg-white color-black mr-16">Cancel</button>
+                        <button class="btn waves-effect waves-light bg-danger">Delete</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% else %}
+            <br><br>
+            <div class="text-center" style="max-width: 320px;margin: auto;">
+                <i class="fas fa-user-lock large color-primary" style="font-size: 8rem;"></i>
+                <h5 style="margin-top: 28px;" class="color-grey">You are not logged in! Please login or register for FREE to raise a Complaint!</h5>
+                <div style="margin-top: 28px;">
+                    <a class="btn" href="{% url "accounts:login" %}" style="color: #0b355a;background: transparent;border: 1px solid;box-shadow: none;margin-right: 16px;">Login</a>
+                    <a class="btn" href="{% url "accounts:register" %}">Register</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <br><br>
+{% endblock %}

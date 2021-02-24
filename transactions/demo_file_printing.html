@@ -1,0 +1,213 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Print Printing | {{ print_code }}{% endblock %}
+{% block custom_head_above %}
+    <style>
+        .tz-header{
+            margin-bottom: 0 !important;
+        }
+    </style>
+    <script>
+        let shop ={
+            "name" : "Royal Cake Shop",
+            "phone" : "+919897969594",
+            "email" : "service@royalcakeshop.com",
+            "website" : "royalcakeshop.com",
+            "address" : "Calista Merritt Ap #938-5470 Posuere AveChickasha LA 58520",
+            "mainOffer" : "20% OFF for All Product till 5th of August",
+            "products" :[{
+                "id" : "1",
+                "photo" : "{% static 'img/cake/cake1.jpg' %}",
+                "name": "Regular Cake",
+                "descrpition" : "Maiores eos doloremque optio impedit architecto veritatis quas excepturi error nulla dolorem ut cumque natus, adipisci id animi et temporibus itaque voluptate.",
+                "price" : "280",
+                "discount" : "20%",
+                "actualPrice" : "350"
+            },
+            {
+                "id" : "2",
+                "photo" : "{% static 'img/cake/cake2.jpg' %}",
+                "name": "Birthday Cake",
+                "descrpition" : "Expedita facilis fuga vitae repellat dolorum fugit ut eaque illo aliquid veritatis iusto optio odit nemo veniam doloribus eius, ad id aut.",
+                "price" : "360",
+                "discount" : "20%",
+                "actualPrice" : "450"
+            },
+            {
+                "id" : "3",
+                "photo" : "{% static 'img/cake/cake3.jpg' %}",
+                "name": "Special Kids Cake",
+                "descrpition" : "Itaque praesentium rerum a dolorum voluptatibus quasi nesciunt ad, minus, distinctio at ratione facere ducimus culpa eos officia reiciendis odio repellendus eius.",
+                "price" : "480",
+                "discount" : "20%",
+                "actualPrice" : "600"
+            },
+            {
+                "id" : "4",
+                "photo" : "{% static 'img/cake/cake4.jpg' %}",
+                "name": "Wedding Cake",
+                "descrpition" : "Officia dolorem ipsum atque aut itaque, voluptatum ad consequatur in dicta delectus iste excepturi dolore assumenda? Possimus in asperiores magni quaerat delectus.",
+                "price" : "640",
+                "discount" : "20%",
+                "actualPrice" : "800"
+            }]
+        }
+    </script>
+{% endblock %}
+{% block content %}
+        <div class="tz-printingProgressStatus alert-info">
+            <div id="progress_message">Printing <span id="currentPage"></span>/<span id="totalPages"></span></div>
+            <div id="printing_animation" class="progress" style="margin: 0px 0 12px 0;max-width: 300px;display: inline-block;height: 2px">
+              <div class="indeterminate"></div>
+          </div>
+        </div>
+        <div class="text-center mb-16">
+            <a style="display: none;" class="btn font-bold font-size-16" id="back_btn" href="{% url "transactions:list" %}"><i class="fa fa-arrow-left mr-8"></i>Back</a>
+        </div>
+        <div class="tz-ad-container tz-relative">
+            <button id="showDetailsBtn" class="btn tz-shop-detail-btn" ><i class="fas fa-info-circle mr-8"></i><span class="vertical-top">Details</span></button>
+            <button id="closeDetailsBtn" class="btn tz-shop-detail-btn"><i class="fas fa-sort-up"></i></button>
+            <div id="shopName">Royal Cake Shop</div>
+            <div id="shopDetails">
+                <div class="word-break">
+                    <span class="tz-first-span">
+                        <span class="font-bold">Phone : </span>
+                        <span>+919897969594</span>
+                    </span>
+                    <span class="tz-second-span">
+                        <span class="font-bold">Email : </span>
+                        <span >service@royalcakeshop.com</span>
+                    </span>
+                </div>
+                <div>
+                    <span class="tz-first-span">
+                        <span class="font-bold">Address : </span>
+                        <span>Calista Merritt Ap #938-5470 Posuere AveChickasha LA 58520</span>
+                    </span>
+                    <span class="tz-second-span">
+                        <span class="font-bold">Website : </span>
+                        <span>royalcakeshop.com</span>
+                    </span>
+                </div>
+            </div>
+            <div id="shopOffer">20% OFF for All Product till 5th of August</div>
+            <div id="item-list" class="scale-transition scale-in tz-item-list">
+                <div class="tz-item-block">
+                    <img src="{% static 'img/cake/cake1.jpg' %}" class="tz-item-img">
+                    <div class="tz-item-details">
+                        <div class="inline-block">
+                            <div>Regular Cake</div>
+                            <div style="font-weight: bold;color: darkred;font-size: 16px;">280/-</div>
+                        </div>
+                        <div>
+                            <button class="btn" style="width: 100%" productid = "1" onclick="openAdItemDetails(this)">View</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tz-item-block">
+                    <img src="{% static 'img/cake/cake2.jpg' %}"  class="tz-item-img">
+                    <div class="tz-item-details">
+                        <div class="inline-block">
+                            <div>Birthday Cake</div>
+                            <div style="font-weight: bold;color: darkred;font-size: 16px;">360/-</div>
+                        </div>
+                        <div>
+                            <button class="btn" style="width: 100%" productid = "2" onclick="openAdItemDetails(this)">View</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tz-item-block">
+                    <img src="{% static 'img/cake/cake3.jpg' %}"  class="tz-item-img">
+                    <div class="tz-item-details">
+                        <div class="inline-block">
+                            <div>Special Kids Cake</div>
+                            <div style="font-weight: bold;color: darkred;font-size: 16px;">480/-</div>
+                        </div>
+                        <div>
+                            <button class="btn" style="width: 100%" productid = "3" onclick="openAdItemDetails(this)">View</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tz-item-block">
+                    <img src="{% static 'img/cake/cake4.jpg' %}"  class="tz-item-img">
+                    <div class="tz-item-details">
+                        <div class="inline-block">
+                            <div>Wedding Cake</div>
+                            <div style="font-weight: bold;color: darkred;font-size: 16px;">640/-</div>
+                        </div>
+                        <div>
+                            <button class="btn" style="width: 100%" productid = "4" onclick="openAdItemDetails(this)">View</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="item-details" class="scale-transition scale-out" style="display: none; ">
+                <span class="tz-ad-details-close" onclick="closeAdItemDetails()"><i class="fas fa-window-close "></i></span>
+                <div class="item-top-block">
+                    <img id="item-img" src="{% static 'img/cake/cake2.jpg' %}">
+                    <div class="item-side-block">
+                        <div id="item-name">Super Cake</div>
+                        <div>Actual Price: <span id="item-actualPrice">300 Rs</span></div>
+                        <div>Discount: <span id="item-discount">50%</span></div>
+                        <div>Price: <span id="item-price">150 Rs</span></div>
+                    </div>
+                </div>
+                <div class="item-bottom-block">
+                    <span class="font-bold">Description :</span>
+                    <span id="ad-description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas id maxime expedita, doloremque aspernatur tempore sint inventore, saepe corporis consequuntur distinctio dolor, debitis dolorum obcaecati dolores similique! Accusantium, repellendus dolore.</span>
+                </div>
+            </div>
+        </div>
+        <div class="tz-advertiseFooter">Advertisement</div>
+{% endblock %}
+
+{% block custom_script_below %}
+    <script>
+
+        let print_done = false;
+        let print_codes = "2459-8975";
+        let station_code = "048A05";
+        let security_code = "536";
+        let refresh_time = 7;
+        let print_progress_url = "{% url "transactions:print_progress" %}";
+        let total_pages = 3;
+        let current_page = 0;
+        let ajax_running = false;
+
+        $("#totalPages").text(total_pages);
+        $("#currentPage").text(current_page);
+
+
+        // Continuously sending ajax request for checking printing update
+
+        function checkPrinting(){
+            current_page += 1;
+            if (current_page <= total_pages){
+                $("#currentPage").text(current_page);
+            }
+            else{
+                $("#progress_message").text("File Printed Successfully! You can press BACK now.").parent().removeClass("alert-info").addClass("alert-success");
+                $('#printing_animation').hide();
+                $(".tz-printingProgressStatus").css("padding", "16px 0");
+                print_done = true;
+            }
+        }
+
+        function sleep(ms) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function checkProgress(){
+            while(!print_done){
+                await sleep(refresh_time * 1000);
+                checkPrinting();
+            }
+            $("#back_btn").show();
+        }
+
+        $(document).ready(function(){
+            checkProgress();
+        });
+    </script>
+{% endblock %}

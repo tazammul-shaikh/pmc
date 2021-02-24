@@ -1,0 +1,331 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+{% block title %}All Prints{% endblock %}
+{% block content%}
+    <div class="tz-alert alert-debug" style="display: none">
+        <span class="message"></span>
+        <button type="button" class="alert-close">
+                <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="tz-container">
+        <h5 class="font-bold color-secondary tz-all-prints-header">
+            <span class="border-bottom-2 font-size-2rem">All Prints</span>
+            <button class="modal-trigger" data-target="infoModel">
+                Info Text
+                <i class="fas fa-question-circle "></i>
+            </button>
+        </h5>
+{#        {% include "portal/anonymous_user_msg.html" with msg="files" %}#}
+        <div class="tz-history-btn-grp">
+            <button id="not-printed-btn" class="btn waves-effect tz-not-btn tz-history-active-btn">
+                Pending ({{ non_printed_transactions.count|default:0 }})
+                <!-- <span class="badge white" style="margin-top: 5px">{{ non_printed_transactions.count|default:0 }}</span> -->
+            </button>
+            <button id="printed-btn" class="btn waves-effect tz-printed-btn">
+                Printed ({{ printed_transactions.count }})
+                <!-- <span class="badge white" style="margin-top: 5px">{{ printed_transactions.count }}</span> -->
+            </button>
+            <button id="share-btn" class="btn waves-effect tz-share-btn">
+                Shared ({{ public_transactions.count }})
+                <!-- <span class="badge white" style="margin-top: 5px">{{ public_transactions.count }}</span> -->
+            </button>
+        </div>
+
+       <div id="not-printed-container">
+            <div class="tz-twoline-table mt-32 mb-32">
+                {% if non_printed_transactions %}
+                    {% for transaction in non_printed_transactions %}
+                    <div class="tr" style="padding-bottom: 28px;">
+                        <div class="td">
+                            <div class="font-bold table-header tb-label pr-28" data-header="File Name: ">
+                                <a href="#preview-modal" class="modal-trigger font-bold color-primary preview-model-event"  data-url="{{ transaction.file.converted_file.url  }}">{{ transaction.get_reference }}<i class="fas fa-eye ml-4 font-size-16"></i></a>
+                            </div>
+                        </div>
+                        <div class="td">
+                            <div class="font-bold color-primary table-header tb-label font-size-16" data-header="Printcode: ">{{ transaction.get_print_codes }}</div>
+                            <div class="tb-label ml-8" data-header="Created On: ">{{ transaction.get_created_on }}</div>
+                        </div>
+                        <button class="btn print-now-trigger btn-floating btn-large halfway-fab waves-effect waves-light" data-print-codes="{{ transaction.get_print_codes }}"><i class="fas fa-print"></i></button>
+                        <span class="row-delete-container">
+                            <form method="post" action="{{ transaction.get_delete_url }}" onsubmit="return confirm('Do you really want to delete this?');">
+                                {% csrf_token %}
+                                <button type="submit">
+                                    <i class="fa fa-times tz-delete-icon"></i>
+                                </button>
+                            </form>
+                        </span>
+                    </div>
+                {% endfor %}
+                {% else %}
+                    <div class="text-center">
+                        <h5>No Non-Printed Prints yet!</h5>
+                        <a href="{% url "transactions:file_add" %}"><button class="btn btn-default height-auto">Create New <i class="fa fa-plus"></i></button></a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div id="printed-container">
+            <div class="tz-twoline-table mt-32 mb-32">
+                {% if printed_transactions %}
+                    {% for transaction in printed_transactions %}
+                    <div class="tr" style="padding-bottom: 28px;">
+                        <div class="td">
+                            <div class="font-bold table-header tb-label  pr-28" data-header="File Name: ">
+                                <a href="#preview-modal" class="modal-trigger font-bold color-primary preview-model-event" data-url="{{ transaction.file.converted_file.url  }}">{{ transaction.get_reference }}<i class="fas fa-eye ml-4 font-size-16"></i></a>
+                            </div>
+                        </div>
+                        <div class="td">
+                            <div class="font-bold color-primary table-header tb-label font-size-16" data-header="Printcode: ">{{ transaction.get_print_codes }}</div>
+                            <div  class="tb-label" data-header="Printed On :">{{ transaction.get_last_printed_on }}</div>
+                        </div>
+                        <div class="td">
+                            <div  class="tb-label" data-header="Colormode & Payment : ">
+                                    {% if transaction.color_mode == "CL" %}
+                                        <img src="{% static "images/color.png" %}" class="colormode-img">
+                                    {% else %}
+                                        <img src="{% static "images/black.png" %}" class="colormode-img">
+                                    {% endif %}
+                                <span class="amount-container">
+                                    {% if transaction.payment_mode == "CO" %}
+                                        <i class="fas fa-coins mr-8"></i>
+                                    {% elif transaction.payment_mode == "AC" %}
+                                        <i class="fas fa-wallet mr-8"></i>
+                                    {% else %}
+                                        <span class="font-bold">Free</span>
+                                    {% endif %}
+                                    <span>
+                                        <i class="fas fa-rupee-sign"></i>
+                                        <span>{{ transaction.amount }}</span>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+{#                        <span class="row-delete-container">#}
+                            <form method="post" action="{{ transaction.get_hide_url }}" onsubmit="return confirm('Do you really want to delete this?');">
+                                {% csrf_token %}
+                                <button class="btn modal-trigger bg-danger share-file-trigger btn-floating btn-large halfway-fab waves-effect waves-lights" ><i class="fas fa-trash"></i></button>
+                                {#                                <button type="submit">#}
+{#                                    <i class="fa fa-times tz-delete-icon"></i>#}
+{#                                </button>#}
+                            </form>
+{#                        </span>#}
+                    </div>
+                {% endfor %}
+                {% else %}
+                    <div class="text-center">
+                        <h5>No Printed Prints yet!</h5>
+                        <a href="{% url "transactions:file_add" %}"><button class="btn btn-default height-auto">Create New <i class="fa fa-plus"></i></button></a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div id="share-container">
+            <div class="tz-twoline-table mt-32 mb-32">
+                {% if public_transactions %}
+                    {% for transaction in public_transactions %}
+                    <div class="tr" style="padding-bottom: 28px;">
+                        <div class="td">
+                            <div class="font-bold table-header tb-label  pr-28" data-header="File Name: ">
+                                <a href="#preview-modal" class="modal-trigger font-bold color-primary preview-model-event"  data-url="{{ transaction.file.converted_file.url  }}">{{ transaction.get_reference }}<i class="fas fa-eye ml-4 font-size-16"></i></a>
+                            </div>
+                            <div class="tb-label mr-24">
+                                {% if transaction.printed_count == 0 %}
+                                    Not Printed Yet
+                                {% else %}
+                                    <b>{{ transaction.printed_count }}</b> time{% if transaction.printed_count > 1 %}s{% endif %} printed
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="td">
+                            <div class="font-bold color-primary table-header tb-label font-size-16" data-header="Printcode: ">{{ transaction.get_print_codes }}</div>
+                            <div class="tb-label mr-24" data-header="Created On:">{{ transaction.get_created_on }}</div>
+                        </div>
+                        <button class="btn print-now-trigger btn-floating btn-large halfway-fab waves-effect waves-light" data-print-codes="{{transaction.get_print_codes}}" style="right: 100px;"><i class="fas fa-print"></i></button>
+                        <button class="btn orange accent-2 modal-trigger share-file-trigger btn-floating btn-large halfway-fab waves-effect waves-lights" data-share-link="{{transaction.get_sharing_link}}" data-target="shareFileModal"><i class="fas fa-share-alt"></i></button>
+                        <span class="row-delete-container">
+                            <form method="post" action="{{ transaction.get_hide_url }}" onsubmit="return confirm('Do you really want to delete this?');">
+                                {% csrf_token %}
+                                <button type="submit">
+                                    <i class="fa fa-times tz-delete-icon"></i>
+                                </button>
+                            </form>
+                        </span>
+                    </div>
+                {% endfor %}
+                {% else %}
+                    <div class="text-center">
+                        <h5>No Shared Prints yet!</h5>
+                        <a href="{% url "transactions:file_add" %}"><button class="btn btn-default height-auto">Create New <i class="fa fa-plus"></i></button></a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Help Text Modal  -->
+        <div id="infoModel" class="modal" style="max-width: 288px;">
+            <div class="modal-content" style="padding: 20px 18px">
+                <div class="mb-16">
+                    <button class="btn btn-floating btn-large waves-effect waves-light"><i class="fas fa-eye"></i></button> <span class="font-size-16 ml-16">- Use for Preview File</span>
+                </div>
+                <div class="mb-16">
+                    <button class="btn btn-floating btn-large waves-effect waves-light"><i class="fas fa-print"></i></button> <span class="font-size-16 ml-16">- Use for Print File</span>
+                </div>
+                <div>
+                    <button class="btn btn-floating btn-large waves-effect waves-light"><i class="fas fa-share-alt"></i></button> <span class="font-size-16 ml-16">- Use for Share File Link</span>
+                </div>
+            </div>
+        </div>
+        <!-- Print File Model  -->
+        <div id="printFileModal" class="modal">
+            <div class="modal-content" style="padding: 20px 18px">
+            <h4 class="primary-bold-text font-size-18" style="color: rgba(0,0,0,0.5);">Print File : <span id="lz_print_code"></span></h4>
+            <div class="divider mb-12"></div>
+            <form action="{% url "transactions:print_now" %}" method="post" id="print_now_form">
+                {% csrf_token %}
+                <div class="primary-bold-text mb-4" style="display: none">Print Code:</div>
+                <input hidden type="text" name="print_codes" id="print_codes" class="browser-default tz-printoption-input tz-rmvbtn-num-input mb-16">
+                <input hidden type="text" name="payment_mode">
+                <div class="primary-bold-text mb-4">STN No:</div>
+                <input required type="text" name="station_code" class="browser-default tz-printoption-input tz-rmvbtn-num-input mb-16" maxlength="6">
+                <div class="primary-bold-text mb-4">SCR No:</div>
+                <input required type="number" name="scr_no" class="browser-default tz-printoption-input tz-rmvbtn-num-input mb-16 tz-rmvbtn-num-input" data-mask="000">
+                <div class="right mt-8 mb-32">
+                    <a href="#!" class="modal-close waves-effect waves-green btn-flat mr-4" style="border: 1px solid #ccc;color: #888;">Close</a>
+                    <button type="submit" class="btn">Submit</button>
+                </div>
+            </form>
+            </div>
+        </div>
+        <div id="shareFileModal" class="modal tz-share-modal">
+            <div class="modal-content">
+                <div class="mb-16 font-bold font-size-16">Share this Print</div>
+                <div class="tz-copy-text-container">
+                    <input id="share_file_link"  type="text" readonly style="text-overflow: ellipsis;">
+                    <button onclick="copyShareLink();" class="btn btn-secondary float-right" id="copy_link_btn">Copy Link</button>
+                </div>
+                <div>
+                    <div class="mb-12">Share to</div>
+                    <div class="tz-share-link-container row">
+                        <div class="col s12 m6">
+                            <!-- Whatsapp -->
+                            <a onclick="dontShowLoader()" style="background: #1BD741" id="whatsapp-share" data-action="share/whatsapp/share">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                            <!-- Facebook -->
+                            <a onclick="dontShowLoader()" style="background: #3A559F" id="facebook-share" target="_blank">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <!-- Twitter -->
+                            <a onclick="dontShowLoader()" style="background: #1CB7EB" id="twitter-share" target="_blank">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                        <div  class="col s12 m6">
+                            <!-- Telegram -->
+                            <a onclick="dontShowLoader()" style="background: #2BA3D7" id="telegram-share" target="_blank">
+                                <i class="fab fa-telegram-plane"></i>
+                            </a>
+                            <!-- LinkedIn -->
+                            <a onclick="dontShowLoader()" style="background: #0077B7" id="linkedin-share" target="_blank">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <!-- Email -->
+                            <a onclick="dontShowLoader()" style="background: #F4511E" id="email-share">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span class="modal-close tz-share-close"><i class="fas fa-times-circle small"></i></span>
+        </div>
+        <!-- Delete File Model  -->
+        <div id="deleteModal" class="modal" style="max-width: 460px;">
+            <span class="right font-size-24 modal-close" style="position: absolute;top:4px;right: 8px;"><i class="fas fa-times"></i></span>
+            <div class="modal-content text-center">
+                <i class="fas fa-trash-alt color-danger font-size-56"></i>
+                <h5>Are you sure?</h5>
+                <p style="line-height: 1.2rem;">Do you really want to delete this transaction? This process cannot be undone.</p>
+                <div class="text-right">
+                    <button class="btn waves-effect waves-light bg-white color-black mr-16">Cancel</button>
+                    <button class="btn waves-effect waves-light bg-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block custom_script_below %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+     $(function () {
+            let url = new URL(window.location.href);
+            let print = url.searchParams.get('print');
+            if (print){
+                printNow(print)
+            }
+        });
+    </script>
+    <script>
+
+
+
+        // {#let walletBallance = {{ user.customer.wallet.balance }};#}
+        // {#let walletFreeBalance = {{ user.customer.wallet.free_balance }};#}
+        // {#let errorAbbreviations = {#}
+        // {#    'UTP': 'Unable to process',#}
+        // {#    'WSCR': 'Wrong SCR-No',#}
+        // {#    'SNL': 'Station is temporarily inactive.',#}
+        // {#    'SNF': 'No Station found with this station code.',#}
+        // {#    'NAC': 'You don\'t have access to print this file',#}
+        // {#    'AP': 'File is already printed.',#}
+        // {#    'TNF': 'File not found with this print code.',#}
+        // {#    'SIP': 'A file is already being printed on station! Please wait to get it done.'#}
+        // {##}
+        // {#};#}
+
+        $(function () {
+            let url = new URL(window.location.href);
+            let printcode = url.searchParams.get('shared-code');
+            if (printcode !== null){
+                sendPrintCodeRequest(printcode);
+            }
+        })
+        function sendPrintCodeRequest(printcode){
+            $('#print_now_form-container').toggle(500);
+            $("#sharable-print-code-inp").val(printcode);
+            $("#check-access-form").submit();
+        }
+
+        $(document).on("click", ".share-file-trigger", function () {
+            let shareLink = $(this).data('share-link'),
+                whatsappText = "whatsapp://send?text=I have uploaded File on Printmycopy, get Print by this link : " + shareLink,
+                facebookText = "http://www.facebook.com/sharer.php?u= " + shareLink,
+                twitterText ="https://twitter.com/share?url= " +shareLink+ " &amp;text=I%20have%20uploaded%20File%20on%20Printmycopy%20you%20can%20now%20take%20print&amp;hashtags=printmycopy",
+                telegramText ="https://telegram.me/share/url?url=" +shareLink+ "&amp;text=I%20have%20uploaded%20File%20on%20Printmycopy%20you%20can%20now%20take%20print&amp",
+                linkedinText ="http://www.linkedin.com/shareArticle?mini=true&amp;url= " +shareLink,
+                emailText = "mailto:?Subject=Visit Printmycopy &amp;Body=I%20have%20uploaded%20File%20on%20Printmycopy,%20get%20Print%20by%20this%20link%20:%20%20" +shareLink;
+
+            $('#whatsapp-share').attr('href', whatsappText);
+            $('#facebook-share').attr('href', facebookText);
+            $('#twitter-share').attr('href', twitterText);
+            $('#telegram-share').attr('href', telegramText);
+            $('#linkedin-share').attr('href', linkedinText);
+            $('#email-share').attr('href', emailText);
+
+            $("#share_file_link").val(shareLink);
+        });
+
+        function copyShareLink() {
+            let copyText = document.getElementById("share_file_link");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+            document.execCommand("copy");
+        }
+    </script>
+{% endblock %}
+
+

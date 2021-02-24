@@ -1,0 +1,54 @@
+{% extends "vendors/vendor_base.html" %}
+{% load hosts %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <div class="mdc-layout-grid">
+        <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+                <div class="mdc-card p-0">
+                  <h6 class="card-title card-padding pb-0">
+                      <i style="vertical-align: middle!important;" class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">help</i>
+                      <span style="vertical-align: middle!important;"> Query Details</span>
+                  </h6>
+                  <br>
+                  <div class="table-responsive">
+                    <table class="table table-hoverable">
+                      <tbody>
+                        <tr>
+                          <td class="text-left">Date</td>
+                          <td class="text-left">{{ query.created_on|date:"d/m/Y" }}</td>
+                        </tr>
+                        <tr>
+                          <td class="text-left">Status</td>
+                          <td class="text-left">
+                              {% if query.solved_on is not None %}
+                                <p class="text-success">Solved on {{ query.solved_on|date:"d/m/Y" }}</p>
+                              {% else %}
+                                <p class="text-warning">Processing</p>
+                              {% endif %}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-left">Subject</td>
+                          <td class="text-left">{{ query.get_subject_display }}</td>
+                        </tr>
+                        <tr>
+                          <td class="text-left">Query Description</td>
+                          <td class="text-left">{{ query.description }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div style="margin: 20px">
+                      <form action="{% host_url "vendors:queries_delete" host "vendors_host" id=query.id %}" method="post">
+                          {% csrf_token  %}
+                        <button class="mdc-button bg-secondary mdc-button--unelevated mdc-ripple-upgraded" type="submit" style="width:200px; float:right;--mdc-ripple-fg-size:51px; --mdc-ripple-fg-scale:2.0247; --mdc-ripple-fg-translate-start:24.7813px, -6.5px; --mdc-ripple-fg-translate-end:17.5156px, -7.5px;">
+                            <i class="material-icons mdc-button__icon">delete</i>
+                            Delete
+                        </button>
+                      </form>
+                  </div>
+                </div>
+              </div>
+    </div>
+{% endblock %}

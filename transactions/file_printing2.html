@@ -1,0 +1,388 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Print Printing | {{ print_code }}{% endblock %}
+{% block custom_head_above %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js" integrity="sha512-B4skI5FiLurS86aioJx9VfozI1wjqrn6aTdJH+YQUmCZum/ZibPBTX55k5d9XM6EsKePDInkLVrN7vPmJxc1qA==" crossorigin="anonymous"></script>
+    <style>
+        #qrcode img, #qrcode canvas{
+            width: 80%!important;
+            max-width: 500px!important;
+            align-items: center!important;
+            margin: auto;
+        }
+    #offer-container, #coin-message-container{
+            display: none;
+        }
+        .tz-header{
+            margin-bottom: 0 !important;
+        }
+        .tz-refer-offers{
+            margin: 0 24px;
+        }
+        .tz-share-modal .modal-content{
+            padding: 0!important;
+        }
+        @media screen and (max-width: 523px) {
+            .refer-image{
+                height: 200px;
+            }
+        }
+        .tz-refer-offers{
+            {#width: 500px;#}
+            {#margin: auto;#}
+            border: 1px solid #ccc;
+            {#padding: 16px 24px;#}
+        }
+        @media screen and (min-width: 524px) {
+            .tz-refer-offers{
+                width: 500px;
+                margin: auto;
+                border: 1px solid #ccc;
+                padding: 16px 24px;
+            }
+        }
+        .tz-coin-warning{
+            margin: 0 16px;
+            border: 1px solid #ccc;
+            padding: 6px;
+            max-width: 332px;
+        }
+        @media screen and (min-width: 364px) {
+            .tz-coin-warning{
+                margin: 0 auto;
+            }
+        }
+        .star-checked{
+            color: #ffc107 !important;
+        }
+        #review-container{
+            border: 1px solid #eee;
+            padding: 16px;
+            position: relative;
+            max-width: 360px;
+            margin: auto;
+            margin-top: 16px;
+            text-align: center;
+        }
+        @media screen and (min-width: 524px) {
+            #review-container{
+                max-width: 400px;
+                padding: 16px 36px;
+            }
+        }
+    </style>
+{% endblock %}
+{% block content %}
+        <div class="tz-printingProgressStatus alert-info" style="border-top: solid 1px grey;">
+            <div id="progress_message">Preparing for Print.</div>
+            <div id="printing_animation" class="progress" style="margin: 0px 0 12px 0;max-width: 300px;display: inline-block;height: 2px">
+              <div class="indeterminate"></div>
+          </div>
+        </div>
+        <div class="text-center mb-16">
+            <a class="btn font-bold font-size-16" id="back_btn" href="{% url "transactions:list" %}" style="display: none;"><i class="fa fa-arrow-left mr-8"></i>Back</a>
+        </div>
+        {% if user.is_authenticated %}
+            <div class="tz-container" id="offer-container">
+                <h5 class="font-bold color-secondary">
+                    <span class="border-bottom-2 font-size-2rem">Refer And Earn 10Rs</span>
+                </h5>
+                <div class="tz-refer-offers" >
+                    <div>
+        {#                <img src="{% static "images/refer.svg" %}" style="width: 100%; max-width: 500px; align-items: center" class="refer-image">#}
+                        <div class="tz-referral-info" style="font-size: 16px">
+                            Refer Printmycopy to your friends or relatives and get Free printouts of 10 Rupees instantly on their registration.
+                        </div>
+                        <h5 style="text-align: center">Your Refer Code : <span style="font-weight: bold">{{ user.customer.referral_number }}</span></h5>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:36px;">
+                    <div class="col s12 l6">
+                        <input style="position:absolute;margin: 0; padding: 0; height: 1px; width: 1px; font-size: 1px; border: transparent!important;" id="referral_link" value="{{ user.customer.get_referral_link }}" type="text" readonly>
+                        <div class="tz-share-link-container row">
+                            <div class="tz-referral-sharevia-text">Share via :</div>
+                            <div class="col s12 mt-32-l">
+                                <!-- Copy Link -->
+                                <a id="copy_link_btn" onclick="copyReferralLink()" style="background: #999999">
+                                    <i class="fa fa-copy"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Copy</div>
+                                </a>
+                                <!-- Whatsapp -->
+                                <a onclick="dontShowLoader()" style="background: #1BD741" href="whatsapp://send?text=Join Printmycopy and get reward : {{ user.customer.get_referral_link }}" data-action="share/whatsapp/share">
+                                    <i class="fab fa-whatsapp"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Whatsapp</div>
+                                </a>
+                                <!-- Facebook -->
+                                <a onclick="dontShowLoader()" style="background: #3A559F" href="http://www.facebook.com/sharer.php?u= {{ user.customer.get_referral_link }}" target="_blank">
+                                    <i class="fab fa-facebook-f"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Facebook</div>
+                                </a>
+                            </div>
+                            <div  class="col s12 mt-32-12">
+                                <!-- Telegram -->
+                                <a onclick="dontShowLoader()" style="background: #2BA3D7" href="https://telegram.me/share/url?url={{ user.customer.get_referral_link }}&amp;text=Join%20Printmycopy%20and%20get%20reward&amp" target="_blank">
+                                    <i class="fab fa-telegram-plane"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Telegram</div>
+                                </a>
+                                <!-- Twitter -->
+                                <a onclick="dontShowLoader()" style="background: #1CB7EB" href="https://twitter.com/share?url={{ user.customer.get_referral_link }}&amp;text=Join%20Printmycopy%20and%20get%20reward&amp;hashtags=printmycopy" target="_blank">
+                                    <i class="fab fa-twitter"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Twitter</div>
+                                </a>
+        {#                            <!-- LinkedIn -->#}
+        {#                            <a onclick="dontShowLoader()" style="background: #0077B7" href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{ user.customer.get_referral_link }}" target="_blank">#}
+        {#                                <i class="fab fa-linkedin-in"></i>#}
+        {#                            </a>#}
+                                <!-- Email -->
+                                <a onclick="dontShowLoader()" style="background: #F4511E" href="mailto:?Subject=Visit Printmycopy &amp;Body=I%20saw%20this%20and%20thought%20of%20you!%20Join%20Printmycopy%20and%20get%20reward%20:%20%20{{ user.customer.get_referral_link }}">
+                                    <i class="fas fa-envelope"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Email</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s12 l6 text-center">
+                        <div class="hide-on-large-only" style="width: 100%;text-align: center; border-bottom: 1px solid #000; line-height: 0.1em;margin:18px 0 26px">
+                            <span style="padding:0 10px; background:#fff">OR</span>
+                        </div>
+                        <div id="qrcode" style="max-width: 360px;margin: auto;"></div>
+                        <div style="font-size: 16px;color: #0b355a;margin-top:8px;font-weight: 700;">Scan this QR code on other person device.</div>
+        {#                <button class="btn">Download</button>#}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="tz-container" id="offer-container" style="border: solid 1px grey">
+                <div class="text-center" style="max-width: 320px;margin: auto;padding: 16px 10px;">
+                    <i class="fas fa-user-lock large color-primary" style="font-size: 8rem;"></i>
+                    <h5 style="margin-top: 28px;" class="color-grey">You currently are not logged in! Please login or register for FREE to enjoy advanced features!</h5>
+                    <div style="margin-top: 28px;">
+                        <a class="btn" href="{% url "accounts:login" %}" style="color: #0b355a;background: transparent;border: 1px solid;box-shadow: none;margin-right: 16px;">Login</a>
+                        <a class="btn" href="{% url "accounts:register" %}">Register</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div  id="coin-message-container" class="tz-coin-warning">
+            <div style="border: 1px solid #ccc;text-align: center;font-size: 21px;background: orange;"><i class="fas fa-exclamation-triangle"></i> Warning</div>
+            <div style="border: 1px solid #ccc;text-align: center;">
+                <div style="display: inline-flex;align-items: center;">
+                        <img src="{% static "images/2₹coin.png" %}" style="width: 80px;margin:8px 0;">
+                        <span style="font-size: 16px;margin-left: 8px;">Do not insert ₹2 coin.</span>
+                </div>
+            </div>
+        </div>
+        <div id="review-container" class="container">
+            <form id="review-form" action='{% url "complaints:review_add" %}' method="POST">
+                <div style="font-size: 20px;font-weight: 600;color: #0f4c81;">How much you are satisfied with PrintMyCopy service</div>
+                <input type="text" name="lazy-print" value="{{ lazy_print_id }}" hidden>
+                <div style="margin:16px 0">
+                    <span star="1" class="fa fa-star review-star" style="color: #bdbdbd;margin-right: 8px;font-size: 24px;"></span>
+                    <span star="2" class="fa fa-star review-star" style="color: #bdbdbd;margin-right: 8px;font-size: 26px;"></span>
+                    <span star="3" class="fa fa-star review-star" style="color: #bdbdbd;margin-right: 8px;font-size: 28px;"></span>
+                    <span star="4" class="fa fa-star review-star" style="color: #bdbdbd;margin-right: 8px;font-size: 26px;"></span>
+                    <span star="5" class="fa fa-star review-star" style="color: #bdbdbd;font-size: 24px;"></span>
+                    <div style="display: flex;justify-content: space-between;font-size: 12px;color: #888;">
+                        <span>Not Satisfied</span>
+                        <span>Satisfied</span>
+                    </div>
+                    <input type="number" name="rating" id="star-rating" hidden>
+                    <div class ="tz-input-error" id="rating-error" style="font-size: 14px;margin-top:6px;"><i class="fas fa-exclamation-circle"></i><span></span></div>
+                </div>
+                <div class="mb-16">
+                    <div class="mb-4" style="font-size: 16px;text-align: left;">Suggestion/feedback</div>
+                    <div>
+                        <textarea required id="feedback" name="feedback" placeholder="Write your valuable feedback to help us improve our service." class="browser-default tz-account-input" rows='10' style="height: auto;"></textarea>
+                    </div>
+                </div>
+                <div class ="tz-input-error" id="rating-form-error" style="font-size: 16px;margin-bottom:8px;"><i class="fas fa-exclamation-circle"></i><span></span></div>
+                <div style="text-align: right;">
+                    <button class="btn">Submit</button>
+                </div>
+            </form>
+            <div id="review-success-container" style="display: none;">
+                <i class="fas fa-check-circle font-size-56" style="color: #00B74A;"></i>
+                <div style="font-size: 20px;font-weight: 600;"> Your Feedback is Submitted Successfully</div>
+            </div>
+        </div>
+
+{% endblock %}
+
+{% block custom_script_below %}
+    <script>
+        function copyReferralLink() {
+            let copyText = document.getElementById("referral_link");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+            alert("Your referral link has been copied to clipboard! You can paste it anywhere.")
+            document.execCommand("copy");
+        }
+    </script>
+     <script type="text/javascript" src="{% static "qr/qrcode.js" %}"></script>
+     <script type="text/javascript">
+         var qrcode = new QRCode(document.getElementById("qrcode"), {
+             width : 500,
+             height : 500
+         });
+         function makeCode () {
+             var refer_link = "{{ user.customer.get_referral_link }}";
+             qrcode.makeCode(refer_link);
+         }
+
+         makeCode();
+     </script>
+    <script>
+        let print_done = false;
+        let print_codes = "{{ print_codes }}";
+        let total_pages = {{ total_pages }};
+        let current_page = 0;
+        let lazy_print_id = "{{ lazy_print_id }}";
+        $("#totalPages").text(total_pages);
+        $(function () {
+            // Correctly decide between ws:// and wss://
+            var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+            var ws_path = ws_scheme + '://' + window.location.host + "/ws/lazy_prints/progress/" + lazy_print_id + "/";
+            // console.log(ws_path);
+            // console.log("Connecting to " + ws_path);
+            var socket = new WebSocket(ws_path);
+
+            // Handle incoming messages
+            socket.onmessage = function (message) {
+                var data = JSON.parse(message.data);
+                // console.log(data);
+                if (typeof data === "string") {
+                    data = JSON.parse(data);
+                }
+                $("#offer-container").show();
+                $("#coin-message-container").hide()
+                checkResponse(data);
+
+            };
+
+            socket.onopen = function () {
+                // console.log("Connected to server");
+            };
+
+            socket.onerror = function (error) {
+                if (!print_done){
+                    let  txt = "Print has been cancelled due to technical reasons. Any coin payment will be refunded quickly.";
+                    $('#progress_message').text(txt).parent().removeClass("alert-info alert-success").addClass("alert-debug progress-without-loader");
+                    $("#back_btn").show();
+                    $("#printing_animation").hide();
+                }
+            };
+
+            socket.onclose = function () {
+                // console.log("closed");
+                if (!print_done){
+                    let  txt = "Print has been cancelled due to technical reasons. Any coin payment will be refunded quickly.";
+                    $('#progress_message').text(txt).parent().removeClass("alert-info alert-success").addClass("alert-debug progress-without-loader");
+                    $("#back_btn").show();
+                    $("#printing_animation").hide();
+
+                }
+            };
+            function checkResponse(data){
+                let txt;
+                // console.log(data.COMMAND)
+                if(data.COMMAND == "PD"){
+                    // Waiting for print to start
+                    txt = "Waiting for print to start";
+                }else if(data.COMMAND == "CP"){
+                    // Payment with Coin
+                    txt = "Insert coin. (Amount: " +data.INFO_DICT.amount+ ")";
+                    $("#offer-container").hide();
+                    $("#coin-message-container").show()
+
+                }else if(data.COMMAND == "PR"){
+                    // Printing File
+                    if(data.INFO_DICT.current_page == 0){
+                        txt = "Waiting for print to start";
+                    }
+                    else{
+                        txt = "Printing " +data.INFO_DICT.current_page+ "/ {{ total_pages }}";
+                        $('#progress_message').parent().removeClass("alert-warning").addClass("alert-info");
+                    }
+                }else if(data.COMMAND == "PC"){
+                    // Printing Completed
+                    print_done = true;
+                    txt = "File is Printed Successfully! Please take your printouts. You can press BACK now.";
+                    $('#progress_message').text(txt);
+                    $('#progress_message').parent().removeClass("alert-info alert-warning").addClass("alert-success progress-without-loader");
+                    $("#printing_animation").hide();
+                    $("#back_btn").show();
+                    socket.close()
+                }else if(data.COMMAND == "JB"){
+                    // Print is on hold
+                    txt = "Printing " +data.INFO_DICT.current_page+ "/ {{ total_pages }}.\nPrint on Hold. Please Contact Shopkeeper";
+                    $('#progress_message').parent().removeClass("alert-info").addClass("alert-warning");
+                }else{
+                    socket.close()
+                    // Print is Cancelled
+                    let pagesPrint = data.INFO_DICT.current_page - 1;
+                    if(pagesPrint < 0){
+                        pagesPrint = 0;
+                    }
+                    txt = "Printing is Cancelled!. Pages Completed: " +pagesPrint+ ".\nYour payment will be refund soon";
+                    $('#progress_message').parent().removeClass("alert-info alert-warning").addClass("alert-debug progress-without-loader");
+                    $("#back_btn").show();
+                    $("#printing_animation").hide();
+                }
+                $('#progress_message').text(txt);
+            }
+
+        });
+
+        //Review Star
+        $('.review-star').click(function(){
+            $('#rating-error').hide();
+            fillStar($(this).attr('star'));
+            $('#star-rating').val(($(this).attr('star')));
+        })
+        function fillStar(num){
+            $('.review-star').removeClass('star-checked');
+            let elements = document.getElementsByClassName('review-star');
+            for(let i=0;i<num;i++){
+                $(elements[i]).addClass('star-checked');
+            }
+        }
+        $('#review-form').submit(function(e){
+            e.preventDefault();
+            if(!$('#star-rating').val()){
+                $('#rating-error span').text("Please give rating!");
+                $('#rating-error').show();
+                return;
+            }
+            let formData = new FormData(this);
+            $.ajax({
+                url:$(this).attr("action"),
+                type: 'post',
+                data: formData,
+                success: function(response) {
+                    response = JSON.parse(response);
+                    if(response.COMMAND_STATUS === 'SC'){
+                        if(response.REDIRECT_URL){
+                            window.location.href = response.REDIRECT_URL;
+                        }
+                        $('#review-success-container').show();
+                        $('#review-form').hide();
+                    }else{
+                        var msg = 'Getting Issues! Please try again.';
+                        $('#rating-form-error').show();
+                        $('#rating-form-error span').text(msg);
+                    }
+                },
+                error: function(jqXHR, exception){
+                    console.log("err", jqXHR.status, typeof jqXHR.status);
+                    var msg = 'Getting Issues! Please try again.';
+                    $('#rating-form-error').show();
+                    $('#rating-form-error span').text(msg);
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+
+

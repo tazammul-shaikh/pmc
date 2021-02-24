@@ -1,0 +1,52 @@
+{% extends "vendors/vendor_base.html" %}
+{% load hosts %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+    <div class="mdc-layout-grid">
+        <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+                <div class="mdc-card p-0">
+                  <h6 class="card-title card-padding pb-0">
+                      <i style="vertical-align: middle!important;" class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">payments</i>
+                      <span style="vertical-align: middle!important;"> Profile Details</span>
+                  </h6>
+                  <br>
+                  <div class="table-responsive">
+                    <table class="table table-hoverable">
+                      <tbody>
+                        <tr>
+                          <td class="text-left">Station Code</td>
+                          <td class="text-left">{{ station.station_code }}</td>
+                        </tr>
+                        <tr>
+                          <td class="text-left">Name</td>
+                          <td class="text-left">{{ vendor.name }}</td>
+                        </tr>
+                        <tr>
+                          <td class="text-left">Contact</td>
+                          <td class="text-left">{{ vendor.user.phone }} | {{ vendor.email }}</td>
+                        </tr>
+                        <tr>
+                          <td class="text-left">Bank Account</td>
+                          <td class="text-left">
+                              {% for account in vendor.vendorbankaccount_set.all %}
+                                  <p>{{ account.account_number }} - {{ account.bank_name }}</p>
+                              {% endfor %}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-left">GST No.</td>
+                          <td class="text-left">{{ vendor.gst_number }}</td>
+                        </tr>
+                        <tr>
+                          <td class="text-left">Reference</td>
+                          <td class="text-left">{{ payment.reference }}</td>
+                        </tr>
+                      </tbody>
+
+                    </table>
+                  </div>
+                </div>
+              </div>
+    </div>
+{% endblock %}

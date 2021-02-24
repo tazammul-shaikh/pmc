@@ -1,0 +1,39 @@
+{% extends "portal/base.html" %}
+{% load static %}
+{% block title %}{{ offer_pack.get_display_text }}{% endblock %}
+{% block body %}
+    <div class=" text-center">
+        <br>
+        <h3 class="tz-offer-head">{{ offer_pack.name }}</h3>
+        <ul class="list-group">
+            <li class="list-group-item">{{  offer_pack.headline }}</li>
+            <li class="list-group-item tz-offer-li">Price : {{ offer_pack.price }}</li>
+            <li class="list-group-item tz-offer-li">Balance : {{ offer_pack.balance }}</li>
+        </ul>
+        <p>{{ offer_pack.details }}</p>
+        <form action="{{ offer_pack.get_make_recharge_url }}" method="post">
+            {% csrf_token %}
+            <div style="color:slategray;font-weight: 500;">
+                Select Payment Gateway:
+            </div>
+            <div class="col-md text-center" style="height:80px">
+                     <div class=" custom-control-inline">
+                        <input value="PAYU" name="gateway" id="payu" type="radio" class="custom-control-input"  required>
+                        <label class="tz-paymentlabel" id="payu-label" for="payu" onclick="paymentMethodChange(this.id)">
+                            <img style="width: 80px;" src="{% static "images/payu.svg" %}">
+                        </label>
+                    </div>
+                    <div class=" custom-control-inline">
+                        <input  value="PAYTM" name="gateway" id="paytm" type="radio" class="custom-control-input"  >
+                        <label class="tz-paymentlabel" id="paytm-label" for="paytm" onclick="paymentMethodChange(this.id)">
+                            <img style="width: 80px;height: 50px;" src="{% static "images/paytm.svg" %}">
+                        </label>
+                    </div>
+            </div>
+            <div style="margin-top:20px">
+                <button class="btn tz-getotpbtn">Recharge Now</button>
+            </div>
+        </form>
+        <p>by clicking Recharge button you will be redirected to payumoney payment integration.</p>
+    </div>
+{% endblock %}

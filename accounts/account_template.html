@@ -1,0 +1,27 @@
+{% extends 'portal/base.html' %}
+{% load widget_tweaks %}
+
+{% block custom_head_below %}
+    <style>
+        body{
+            background: #f1f1f1;
+        }
+    </style>
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="tz-account-header">
+    </div>
+    <div class="tz-account-container1">
+
+        {% block area %}
+        {% endblock %}
+    </div>
+    <script>
+        {% if not user.is_authenticated %}
+            document.querySelector('#guest-mode-banner').style.display ="none";
+        {% endif %}
+    </script>
+{% endblock %}

@@ -1,0 +1,269 @@
+{% load static %}
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+        <!-- Google Fonts -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+        <!-- Bootstrap core CSS -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Material Design Bootstrap -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+        <link rel="apple-touch-icon" href="{% static "images/pmc_icon.png" %}">
+        <link rel="icon" href="{% static "images/pmc_icon.png" %}">
+        <title>New Year contest - Printmycopy</title>
+        <style>
+            @media screen and (max-width: 991px) {
+            .card{
+                margin-bottom: 32px;
+            }
+            .m-f-24{
+                font-size: 24px;
+            }
+            .m-f-18{
+                font-size: 18px;
+            }
+
+        }
+
+/* ---- reset ---- */
+
+body {
+  margin: 0;
+  font:normal 75% Arial, Helvetica, sans-serif;
+}
+
+canvas {
+  display: block;
+  vertical-align: bottom;
+}
+
+/* ---- particles.js container ---- */
+
+#particles-js {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: #bd002f;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+
+
+        </style>
+    </head>
+    <body>
+
+<!-- particles.js container -->
+<div id="particles-js" style="z-index: -1;"></div>
+        <div class="container " style="padding-top: 32px;">
+            <div>
+    <a href="{% url "portal:home" %}">
+        <img src="{% static "images/printmycopy_log_red.png" %}" height="60" >
+        <p class="white-text h5 tagline" style="display: inline-block;margin-left:18px;vertical-align: middle;">
+            <span class="text-left">
+                Online Printing Service<br>
+                In Kondhwa / Pune
+            </span>
+        </p>
+    </a>
+                <div class="clearfix"></div>
+            </div>
+            <hr class="white">
+            <!-- <p class="white-text h5">Online Printing Service</p> -->
+            <!--Section: Content-->
+            <h2 class="font-weight-bold text-center white-text m-f-24" style="margin-top:32px">Celebrate Christmas & New Year with our exciting winning contests.</h2>
+            <hr class="w-header my-4 white">
+            <h4 class="font-weight-bold text-center my-4 white-text m-f-18">Offer valid till 9 Jan 2021 (For Pune Users Only).</h4>
+            <div class="row"  style="justify-content: space-evenly;">
+                <div class="col-lg-4 col-sm-12">
+                    <div class="card">
+                        <div class="card-header white">
+                            <h4 class="font-weight-bold mb-0">Wrist Watch</h4>
+                        </div>
+                        <img
+                          src="{% static "images/watch.png" %}"
+                          class="card-img-top"
+                          alt="..."
+                        />
+                        <div class="card-body">
+                          <h5 class="card-title">Guaranteed Wrist Watch on 20 Refers.</h5>
+                          <ol class="card-text" style="padding-left: 24px;">
+                            <li>Refer PrintMyCopy to your friends, family or relatives.</li>
+                            <li>You will win Wrist Watch if atleast 20 people gets registered with your referral code.</li>
+                            <li>We will call you within 48 hours once you complete 20 referrals.</li>
+                            <li>Offer valid till 8 Jan 2021</li>
+                          </ol>
+                        </div>
+                            <a href="{% url "customers:referral_list" %}" class="btn btn-danger font-weight-bold">
+                                <i class="fa fa-share-alt"></i> Refer Now and win
+                            </a>
+                      </div>
+                </div>
+                <div class="col-lg-4 col-sm-12">
+                    <div class="card">
+                        <div class="card-header white">
+                            <h4 class="font-weight-bold mb-0">Stylish Jacket</h4>
+                        </div>
+                        <img
+                            src="{% static "images/jacket.png" %}"
+                          class="card-img-top"
+                          alt="..."
+                        />
+                        <div class="card-body">
+                            <h5 class="card-title">5 Lucky Users will win Stylish Jacket.</h5>
+                            <ol class="card-text" style="padding-left: 24px;">
+                              <li>Get atleast 1 printout from any PrintMyCopy Station before 9 Jan 2021.</li>
+                              <li>You will be added automatically in Christmas Lucky Contest.</li>
+                              <li>We will select 5 lucky winners on 9 Jan 2021</li>
+                              <li>If your name comes in lucky winners, we will call you and give you Stylish Jacket.</li>
+                            </ol>
+                          </div>
+                            <a href="{% url "transactions:file_add" %}" class="btn btn-danger font-weight-bold">
+                                <i class="fa fa-print"></i> Print File Now and win
+                            </a>
+                        </div>
+                </div>
+            </div>
+		<br><br>
+            <div class="my-3">
+                <p class="h4 white-text font-weight-normal text-center">Contact : +91 9112617788</p>
+            </div>
+        </div>
+<br><br><br><br>
+
+
+
+        <!-- JQuery -->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <!-- Bootstrap tooltips -->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+        <!-- Bootstrap core JavaScript -->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <!-- MDB core JavaScript -->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+        <script type="text/javascript" src="https://threejs.org/examples/js/libs/stats.min.js"></script>
+        <script>
+            /* ---- particles.js config ---- */
+
+particlesJS("particles-js", {
+  "particles": {
+    "number": {
+      "value": 50,
+      "density": {
+        "enable": true,
+        "value_area": 800
+      }
+    },
+    "color": {
+      "value": "#ffffff"
+    },
+    "shape": {
+      "type": "circle",
+      "stroke": {
+        "width": 0,
+        "color": "#000000"
+      },
+      "polygon": {
+        "nb_sides": 5
+      },
+      "image": {
+        "src": "img/github.svg",
+        "width": 100,
+        "height": 100
+      }
+    },
+    "opacity": {
+      "value": 0.5,
+      "random": false,
+      "anim": {
+        "enable": false,
+        "speed": 1,
+        "opacity_min": 0.1,
+        "sync": false
+      }
+    },
+    "size": {
+      "value": 3,
+      "random": true,
+      "anim": {
+        "enable": false,
+        "speed": 40,
+        "size_min": 0.1,
+        "sync": false
+      }
+    },
+    "line_linked": {
+      "enable": true,
+      "distance": 150,
+      "color": "#ffffff",
+      "opacity": 0.4,
+      "width": 1
+    },
+    "move": {
+      "enable": true,
+      "speed": 6,
+      "direction": "none",
+      "random": false,
+      "straight": false,
+      "out_mode": "out",
+      "bounce": false,
+      "attract": {
+        "enable": false,
+        "rotateX": 600,
+        "rotateY": 1200
+      }
+    }
+  },
+  "interactivity": {
+    "detect_on": "canvas",
+    "events": {
+      "onhover": {
+        "enable": true,
+        "mode": "grab"
+      },
+      "onclick": {
+        "enable": true,
+        "mode": "push"
+      },
+      "resize": true
+    },
+    "modes": {
+      "grab": {
+        "distance": 140,
+        "line_linked": {
+          "opacity": 1
+        }
+      },
+      "bubble": {
+        "distance": 400,
+        "size": 40,
+        "duration": 2,
+        "opacity": 8,
+        "speed": 3
+      },
+      "repulse": {
+        "distance": 200,
+        "duration": 0.4
+      },
+      "push": {
+        "particles_nb": 4
+      },
+      "remove": {
+        "particles_nb": 2
+      }
+    }
+  },
+  "retina_detect": true
+});
+
+        </script>
+
+    </body>
+</html>

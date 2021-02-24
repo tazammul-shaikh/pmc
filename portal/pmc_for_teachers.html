@@ -1,0 +1,45 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+{% block title %}Teacher Benefits{% endblock %}
+{% block custom_head_above %}
+    <style>
+        footer{
+            width: 100%!important;
+            position: fixed!important;
+            bottom: 0!important;
+        }
+    </style>
+{% endblock %}
+{% block content%}
+    {% block guest_mode_banner %}
+    {% endblock %}
+    <div class="tz-container" style="max-width: 900px;">
+        <div class="tz-page-header">
+            <div style="font-size: 1.64rem;font-weight: 600;color: #0b355a;text-decoration:underline">
+               Teacher Benefits
+            </div>
+        </div>
+        
+        <div style="font-size: 20px;font-weight: 600;color: #0b355a;text-align: center;margin-bottom: 12px;">Benefits for Teacher and its Students</div>
+        <div style="text-align: center">
+            <div style="border: solid 1px lightgrey; padding: 30px 15px; margin: 0 auto">
+                <div style="font-size: 18px;color: #0b355a;text-align: center;">
+                    Student who Register with your refer code will get Print worth <b>₹200/-</b> in his account to take printouts.
+                </div>
+                <div style="margin-top: 24px;">
+                    <hr style="width: 150px;">
+                    <div style="    font-size: 13px;font-weight: 600;margin-top: -18px;display: table;margin-left: calc(50% - 15px);background: #fff;padding: 0 6px;">AND</div>
+                </div>
+                <div style="font-size: 18px;color: #0b355a;text-align: center;margin-top:20px">
+                    You will get Free Print worth <b>₹200/-</b> On Teacher Registration 
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center;margin-top: 16px;"><a href="{% url "accounts:register_teacher" %}" class="btn waves-effect tz-account-btn"><i class="fa fa-pen"></i> Create Teacher Account</a></div>
+        <div style="text-align: center;margin-top: 16px;">
+            <a href="{% url "accounts:login" %}" class="btn" style="background: transparent;color: #0f4c81;border: 1px solid #0f4c81;font-weight: bold;height: 30px;line-height: 30px;box-shadow: none;">Login</a>
+        </div>
+        <div style="font-size: 20px;font-weight: 600;color: #0b355a;text-align: center;margin-top: 12px;">Special Notes Sharing Features for Teacher</div>
+{% endblock %}
+{% block custom_script_below %}
+{% endblock %}

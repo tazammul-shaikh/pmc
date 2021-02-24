@@ -1,0 +1,294 @@
+{% extends 'portal/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Print {% endblock %}
+{% block content %}
+    <div class="tz-alert alert-debug" style="display: none">
+        <span class="message"></span>
+        <button type="button" class="alert-close">
+                <i class="fas fa-times"></i>
+        </button>
+    </div>
+     <div class="tz-container">
+          <div id="printCodeContainer">
+              <div class="mt-32">
+                    <i class="fas fa-check-circle color-primary font-size-56"></i>
+                    <div class="tz-printcode-header2"> Your Print Code is ready</div>
+                    <div id="printCode" class="tz-printcode-header1">{{ transaction.get_print_codes }}</div>
+                    <div  class="tz-printcode-content">Use this printcode to print your uploaded file.</div>
+              </div>
+              <div class="mt-32">
+                {% if transaction.is_public %}
+                    <button class="btn tz-print-needhelp-btn modal-trigger" data-target="needHelpShareModal" style="padding:0 4px;">How sharing works <i class="fas fa-question-circle"></i></button>
+                    <!-- <button class="btn modal-trigger print-file-trigger tz-station-link" data-transaction-id="{{ transaction.id }}" data-target="printFileModal" data-print-codes="{{ transaction.code_1 }}-{{ transaction.code_2 }}" >Print Now</button> -->
+                {% else %}
+                    <button class="btn tz-print-needhelp-btn modal-trigger" data-target="needHelpModal">How to take print <i class="fas fa-question-circle"></i></button>
+                    <a href="{% url "stations:list" %}" class="btn tz-station-link">Find Print Station</a>
+                {% endif %}
+              </div>
+
+              <div class="mt-32 row">
+
+                {% if transaction.is_public %}
+                    <div class="tz-seperator">
+
+                        <div class="font-size-20 font-bold color-primary">Share Now</div>
+                        <button class="btn modal-trigger  tz-station-link share-file-trigger" data-share-link="{{transaction.get_sharing_link}}"  data-target="shareFileModal"><i class="fas fa-share-square mr-4" style="vertical-align:bottom"></i></i>Share</button>
+                    </div>
+                {% else %}
+                    <div class="col s12 m6 tz-seperator">
+
+                        <div class="font-size-20 font-bold color-primary">Print Now</div>
+                        <button class="btn print-file-trigger tz-station-link" data-transaction-id="{{ transaction.id }}" data-target="printFileModal" data-print-codes="{{ transaction.code_1 }}-{{ transaction.code_2 }}" >Print</button>
+                    </div>
+                    <div class="col s12 m6">
+                        <div class="font-size-20 font-bold color-primary">Print Later</div>
+                        <div class="font-size-14 font-bold pform">Your print code is saved in all prints. You can goto all prints and print from there.</div>
+                    </div>
+                {% endif %}
+              </div>
+              <div class="mt-32">
+                  <div class="tz-printcode-header2">
+                      <span>Pages to print:</span>
+                      <span style="margin-left:5px;">{{ transaction.total_pages }}</span>
+                  </div>
+                  <div class="tz-printcode-header2">
+                      <span>Amount:</span>
+                          <span style="margin-left:8px;">
+                              <i class="fas fa-rupee-sign"></i>
+                          <span>{{ transaction.amount }}</span>
+                      </span>
+                  </div>
+
+                {% if not transaction.is_public %}
+                  {% if transaction.payment_mode == "AC" %}
+                      <div class="tz-printcode-header2">
+                          <span>Payment:</span>
+                          <span style="margin-left:5px;">Wallet</span>
+                      </div>
+                      <div  class="tz-printcode-content">Amount deducted from your wallet</div>
+                      <div class="tz-printcode-content">Remaining Wallet Balance: <span>{{ user.customer.wallet.balance }}</span></div>
+                  {% elif transaction.payment_mode == "CO" %}
+                      <div class="tz-printcode-header2">
+                          <span>Payment:</span>
+                          <span style="margin-left:5px;">Coin</span>
+                      </div>
+                      <div  class="tz-printcode-content">Please keep exact coin.</div>
+                      <div  class="tz-printcode-content red-text">2 Rs coin is not allowed.</div>
+                  {% else %}
+                    <div class="tz-printcode-header2">
+                        <span>Payment:</span>
+                        <span style="margin-left:5px;">Free</span>
+                    </div>
+                    <div  class="tz-printcode-content orange-text">There will be additional footer at bottom of print.</div>
+                    <div  class="tz-printcode-content">Amount deducted from your free balance.</div>
+                    <div class="tz-printcode-content">Remaining Free Balance: <span>{{ user.customer.wallet.free_balance }}</span></div>
+                  {% endif %}
+                {% endif %}
+              </div>
+          </div>
+     </div>
+
+
+            <!-- Print File Model  -->
+{#        <div id="printFileModal" class="modal">#}
+{#            <div class="modal-content" style="padding: 20px 18px">#}
+{#            <h4 class="primary-bold-text font-size-18" style="color: rgba(0,0,0,0.5);">Print File : <span id="lz_print_code">{{ transaction.get_print_codes }}</span></h4>#}
+{#            <div class="divider mb-12"></div>#}
+{#            <form action="{% url "transactions:print_now" %}" method="post" id="print_now_form">#}
+{#                {% csrf_token %}#}
+{#                <div class="primary-bold-text mb-4" style="display: none">Print Code:</div>#}
+{#                <input hidden type="text" name="print_codes" value="{{ transaction.get_print_codes }}" id="print_codes" class="browser-default tz-printoption-input tz-rmvbtn-num-input mb-16">#}
+{#                <div class="primary-bold-text mb-4">STN No:</div>#}
+{#                <input required type="text" name="station_code" class="browser-default tz-printoption-input tz-rmvbtn-num-input mb-16" maxlength="6">#}
+{#                <div class="primary-bold-text mb-4">SCR No:</div>#}
+{#                <input required type="text" name="scr_no" class="browser-default tz-printoption-input tz-rmvbtn-num-input mb-16" data-mask="000">#}
+{#                <div class="right mt-8 mb-32">#}
+{#                    <a href="#!" class="modal-close waves-effect waves-green btn-flat mr-4" style="border: 1px solid #ccc;color: #888;">Close</a>#}
+{#                    <button type="submit" class="btn">Submit</button>#}
+{#                </div>#}
+{#            </form>#}
+{#            </div>#}
+{#        </div>#}
+
+
+     <!-- Need Help Model  -->
+     <div id="needHelpModal" class="modal needHelpModal">
+        <div class="modal-content">
+          <h4 class="primary-bold-text">How to take print?</h4>
+          <h6>Follow the instruction to take print</h6>
+          <ol>
+            <li>Find & go to near by print station.</li>
+            <li>Click on Print on file which you want to print.</li>
+            <li>Enter STN No and SCR No (The numbers are on Screen of Print Station).</li>
+            <li>If your payment is with coin then insert the coin.</li>
+            <li>Printing will start automatically, and after that you can take your copy.</li>
+        </ol>
+        </div>
+        <div class="modal-footer">
+          <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+      </div>
+
+       <!-- Need Help for Sharing Model  -->
+     <div id="needHelpShareModal" class="modal needHelpModal">
+        <div class="modal-content">
+          <h4 class="primary-bold-text">How sharing works?</h4>
+          <ol>
+            <li>After uploading your file, it is saved at our web.</li>
+            <li>If you have choosen share option then you can share your file whenever you want.</li>
+            <li>You can share your file to anyone by sending file link to whatsapp and other social apps.</li>
+            <li>The reciever can click on that link to take printout of your shared file.</li>
+        </ol>
+        </div>
+        <div class="modal-footer">
+          <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+      </div>
+
+      <div id="shareFileModal" class="modal tz-share-modal">
+        <div class="modal-content">
+            <div class="mb-16 font-bold font-size-16">Share this Print</div>
+            <div class="tz-copy-text-container">
+                <input id="share_file_link"  type="text" readonly style="text-overflow: ellipsis;">
+                <button onclick="copyShareLink();" class="btn btn-secondary float-right" id="copy_link_btn">Copy Link</button>
+            </div>
+            <div>
+                <div class="mb-12">Share to</div>
+                <div class="tz-share-link-container row">
+                    <div class="col s12 m6">
+                        <!-- Whatsapp -->
+                        <a onclick="dontShowLoader()" style="background: #1BD741" id="whatsapp-share" data-action="share/whatsapp/share">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <!-- Facebook -->
+                        <a onclick="dontShowLoader()" style="background: #3A559F" id="facebook-share" target="_blank">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <!-- Twitter -->
+                        <a onclick="dontShowLoader()" style="background: #1CB7EB" id="twitter-share" target="_blank">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                    <div  class="col s12 m6">
+                        <!-- Telegram -->
+                        <a onclick="dontShowLoader()" style="background: #2BA3D7" id="telegram-share" target="_blank">
+                            <i class="fab fa-telegram-plane"></i>
+                        </a>
+                        <!-- LinkedIn -->
+                        <a onclick="dontShowLoader()" style="background: #0077B7" id="linkedin-share" target="_blank">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <!-- Email -->
+                        <a onclick="dontShowLoader()" style="background: #F4511E" id="email-share">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="modal-close tz-share-close"><i class="fas fa-times-circle small"></i></span>
+    </div>
+
+{% endblock %}
+
+
+{% block custom_script_below %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+
+        let walletBallance = {{ user.customer.wallet.balance }};
+        let walletFreeBalance = {{ user.customer.wallet.free_balance }};
+        let errorAbbreviations = {
+            'UTP': 'Unable to process',
+            'WSCR': 'Wrong SCR-No',
+            'SNL': 'Station is temporarily inactive.',
+            'SNF': 'No Station found with this station code.',
+            'NAC': 'You don\'t have access to print this file',
+            'AP': 'File is already printed.',
+            'TNF': 'File not found with this print code.',
+            'SIP': 'A file is already being printed on station! Please wait to get it done.'
+
+        };
+
+        $(document).on("click", ".print-file-trigger", function () {
+        });
+
+        $('#print_now_form').submit(function(e) {
+            e.preventDefault();
+            $(".base-alert").remove();
+            let formData = {
+                'csrfmiddlewaretoken': $(this).find("input[name='csrfmiddlewaretoken']").val(),
+                'station_code': $(this).find("input[name='station_code']").val(),
+                'scr_no': $(this).find("input[name='scr_no']").val(),
+                'print_codes': $(this).find("input[name='print_codes']").val(),
+            };
+            console.log(formData);
+            $('#loadermessage').text('Preparing to print');
+            $('.tz-loader').removeClass("tz-hidden");
+            $.ajax({
+                url:$(this).attr("action"),
+                type: 'post',
+                data: formData,
+                success: function(response) {
+                    response = JSON.parse(response);
+                    {#console.log(typeof response, response, response.INFO, response.COMMAND_STATUS);#}
+                    if(response.COMMAND_STATUS == 'SUCCESS'){
+                        window.location.href = response['INFO'].REDIRECT_URL;
+                    }else{
+                        let errorAbbr = response.INFO.ERROR_CODE;
+                        var msg = errorAbbreviations[errorAbbr];
+                        console.log(msg);
+                        printingError(msg);
+                    }
+                },
+                error: function(jqXHR, exception){
+                    var msg = '';
+                    if (jqXHR.status === 0) {
+                        msg = 'Not connect. Verify Network.';
+                    } else if (jqXHR.status == 404) {
+                        msg = 'Requested page not found. [404]';
+                    } else if (jqXHR.status == 500) {
+                        msg = 'Internal Server Error [500].';
+                    } else if (exception === 'parsererror') {
+                        msg = 'Requested JSON parse failed.';
+                    } else if (exception === 'timeout') {
+                        msg = 'Time out error.';
+                    } else if (exception === 'abort') {
+                        msg = 'Ajax request aborted.';
+                    } else {
+                        msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                    }
+                    printingError(msg);
+                }
+            });
+        });
+
+        function printingError(txt){
+            var instance = M.Modal.getInstance(document.querySelector('#printFileModal'));
+            instance.close();
+            $('.tz-alert .message').text(txt);
+            $('.tz-alert').show();
+            $('.tz-loader').addClass('tz-hidden');
+        }
+
+        $(document).on("click", ".share-file-trigger", function () {
+            let shareLink = $(this).data('share-link'),
+                whatsappText = "whatsapp://send?text=I have uploaded File on Printmycopy, get Print by this link : " + shareLink,
+                facebookText = "http://www.facebook.com/sharer.php?u= " + shareLink,
+                twitterText ="https://twitter.com/share?url= " +shareLink+ " &amp;text=I%20have%20uploaded%20File%20on%20Printmycopy%20you%20can%20now%20take%20print&amp;hashtags=printmycopy",
+                telegramText ="https://telegram.me/share/url?url=" +shareLink+ "&amp;text=I%20have%20uploaded%20File%20on%20Printmycopy%20you%20can%20now%20take%20print&amp",
+                linkedinText ="http://www.linkedin.com/shareArticle?mini=true&amp;url= " +shareLink,
+                emailText = "mailto:?Subject=Visit Printmycopy &amp;Body=I%20have%20uploaded%20File%20on%20Printmycopy,%20get%20Print%20by%20this%20link%20:%20%20" +shareLink;
+
+            $('#whatsapp-share').attr('href', whatsappText);
+            $('#facebook-share').attr('href', facebookText);
+            $('#twitter-share').attr('href', twitterText);
+            $('#telegram-share').attr('href', telegramText);
+            $('#linkedin-share').attr('href', linkedinText);
+            $('#email-share').attr('href', emailText);
+            $("#share_file_link").val(shareLink);
+        });
+    </script>
+
+{% endblock %}
+

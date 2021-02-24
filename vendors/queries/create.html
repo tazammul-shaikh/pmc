@@ -1,0 +1,28 @@
+{% extends "vendors/vendor_base.html" %}
+{% load hosts %}
+{% load crispy_forms_tags %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <div class="mdc-layout-grid">
+        <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+                <div class="mdc-card p-0">
+                  <h6 class="card-title card-padding pb-0">
+                      <i style="vertical-align: middle!important;" class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">help</i>
+                      <span style="vertical-align: middle!important;"> Raise New Query</span>
+                  </h6>
+                  <br>
+                  <div class="table-responsive">
+                      <form method="post" action="{% host_url "vendors:queries_create" host "vendors_host" %}">
+                          {% csrf_token %}
+
+                          {{ form|crispy }}
+
+                          <button class="" type="submit">Raise</button>
+
+                      </form>
+                  </div>
+                </div>
+              </div>
+    </div>
+{% endblock %}

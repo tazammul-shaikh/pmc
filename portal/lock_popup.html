@@ -1,0 +1,12 @@
+{% load static %}
+{#<button class="modal-trigger" data-target="lockModal">Click</button>#}
+<div id="lockModal" class="modal" style="max-width: 330px;">
+    <span class="modal-close right color-danger" style="margin: 4px 4px 0 0;"><i class="fas fa-times-circle small font-size-24"></i></span>
+    <div class="modal-content">
+        <div class="font-bold font-size-16">This Feature is only for registered users!<br>Please register totally FREE to use advanced options.</div>
+    </div>
+    <div class="modal-footer" style="border-top: 1px solid rgba(0, 0, 0, 0.1);">
+        <a href="{% url 'accounts:login' %}" class="modal-close btn waves-effect waves-green btn-flat color-primary font-bold">Login</a>
+        <a href="{% url 'accounts:register' %}" class="modal-close btn btn-primary waves-effect waves-green btn-flat color-primary font-bold">Register</a>
+      </div>
+</div>

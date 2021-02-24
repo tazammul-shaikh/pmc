@@ -1,0 +1,104 @@
+{% extends 'portal/base.html' %}
+{% block title %}Update Profile{% endblock %}
+{% block custom_head_below %}
+    <style>
+        @media screen and (min-width: 720px){
+          .tz-overflow, body{
+            background:aliceblue
+          }
+        }
+    </style>
+{% endblock %}
+{% block content %}
+
+    <div class="tz-container">
+        <div class="tz-change-password-container white">
+            <h5 class="font-bold color-secondary mb-20">
+                <span class="border-bottom-2 font-size-2rem">Update Profile</span>
+            </h5>
+            <div>
+                <div class="text-center" style="font-weight: 700;color: #888;">My number</div>
+                <h4 id="my-mobile-num" class="font-bold color-secondary text-center" style="margin-top: 0;">{{ customer.get_phone }}</h4>
+            </div>
+            <form action="" method="post" onsubmit="return validateUpdateProfile()" class="mt-32 mb-32 form-error" errortext="{{ form.non_field_errors.0 }}">
+{#                <h4 id="my-mobile-num" class="font-bold color-secondary text-center" style="margin-top: 0;">+919876543210</h4>#}
+{#                <div class="red">#}
+{#                    {{ form.errors }}#}
+{#                </div>#}
+                {% csrf_token %}
+                <div class="mb-16">
+                    <div class="mb-4">Full Name</div>
+                    <div>
+                        <input class="browser-default tz-account-input" errortext="{{ form.name.errors.0 }}" value="{{ form.instance.name|default_if_none:"" }}" type="text" name="name" id="full-name"/>
+                    </div>
+                    <div class ="tz-input-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+                </div>
+                <div id="mobile-number-block" class="mb-16">
+                    <div class="mb-4" id="mobile-number-label">Whatsapp Mobile Number</div>
+                    <div  class="tz-relative">
+                        <span class="tz-default-num">+91</span>
+                        <input  type="number" name="whatsapp" id="mobile-number" errortext="{{ form.whatsapp.errors.0 }}" value="{{ form.instance.whatsapp|default_if_none:"" }}" data-mask="0000000000" class="browser-default tz-account-input tz-remaining-num tz-rmvbtn-num-input"/>
+                    </div>
+                    <div class= "tz-input-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+                    <div>
+                        <p class="mt-8">
+                            <label>
+                              <input type="checkbox" onchange="sameWhatsAppNo(this)"/>
+                              <span  id="i-agree-text" class="color-black">Use same number as above.</span>
+                            </label>
+                          </p>
+                    </div>
+                </div>
+                <div class="mb-16">
+                    <div class="mb-4">Email Address</div>
+                    <div>
+                        <input class="browser-default tz-account-input" errortext="{{ form.email.errors.0 }}" value="{{ form.instance.email|default_if_none:"" }}" type="email" name="email" id="email-id"/>
+                    </div>
+                    <div class ="tz-input-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+                </div>
+                <div class="mb-16">
+                    <div class="mb-4">Gender</div>
+                    <div class="tz-radiogrp">
+                        <label id="label_male" class="tz-radio tz-gender-radio tz-radio-drm" for="male">
+                            <input {% if form.instance.gender == "ML" %}checked="checked"{% endif %} id="male" value="ML" class="with-gap" type="radio" name="gender">
+                            <span class="tz-radio-right-pad pl-24">Male</span>
+                            <span class="badge color-inherit ml-0" style="min-width: 1rem;">
+                                <i class="fas fa-male"></i>
+                            </span>
+                        </label>
+                        <label id="label_female" class="tz-radio tz-gender-radio tz-radio-drm" for="female">
+                            <input {% if form.instance.gender == "FL" %}checked="checked"{% endif %} id="female" value="FL" class="with-gap" name="gender" type="radio"/>
+                            <span class="pl-24">Female</span>
+                            <span class="badge color-inherit ml-0" style="min-width: 1rem;">
+                                <i class="fas fa-female"></i>
+                            </span>
+                        </label>
+                        <label id="label_custom" class="tz-radio tz-gender-radio" for="custom">
+                            <input {% if form.instance.gender == "CS" %}checked="checked"{% endif %} id="custom" value="CS" class="with-gap" name="gender" type="radio"/>
+                            <span class="pl-24">Custom</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="mb-16">
+                    <div class="mb-4">Profession</div>
+                    <div class="tz-select">
+                        <select name="profession" >
+                            <option value="" disabled selected>Choose your profession</option>
+                            {% for option in form.profession.field.choices %}
+                                <option {% if option.0 == form.instance.profession %}selected{% endif %} value="{{ option.0 }}">{{ option.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="tz-account-btn-sec"><button class="btn waves-effect tz-account-btn">Update Profile</button></div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block custom_script_below %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        radioGenderChange();
+    </script>
+{% endblock %}

@@ -1,0 +1,356 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+{% block title %}Create New Print{% endblock %}
+{% block custom_head_above %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.9/cropper.min.css" integrity="sha512-w+u2vZqMNUVngx+0GVZYM21Qm093kAexjueWOv9e9nIeYJb1iEfiHC7Y+VvmP/tviQyA5IR32mwN/5hTEJx6Ng==" crossorigin="anonymous" />
+    <style>
+        #cropper_modal{
+            width: 92%;
+            max-height: 100%;
+            top:0.2% !important;
+        }
+        #cropper_modal .modal-content{
+            padding: 0;
+            padding-bottom: 24px;
+        }
+        #cropper_modal .cropper-container{
+            margin: auto;
+        }
+        .cropper-preview{
+            overflow: hidden;
+            margin-top: 10px;
+            max-width: 100% !important;
+            width:200px;
+            height: 200px;
+            border: 1px solid #39f;
+        }
+        .cropper-big-vertices{
+            height: 20px;
+            width: 20px;
+            opacity: 1
+        }
+        #cropper_image{
+                max-height: 90vh;
+        }
+        @media screen and (max-width: 523px) {
+            #cropper_image{
+                max-height: 60vh;
+            }
+        }
+    </style>
+{% endblock %}
+{% block content%}
+    <div class="tz-container">
+        <!-- Page Header -->
+        <div class="tz-page-header">
+            <div class="tz-page-heading">
+                Create Print
+            </div>
+            <button class="tz-need-help-btn right modal-trigger" data-target="needHelpModal">
+                How to create print
+                <i class="fas fa-question-circle tz-icon-help"></i>
+            </button>
+        </div>
+        <!-- Need Help Model  -->
+        <div id="needHelpModal" class="modal needHelp">
+            <div class="modal-content">
+              <h4 class="primary-bold-text">How to upload file & create print code</h4>
+              <h6>Follow the instruction to upload file</h6>
+              <ol>
+                <li>Choose File from your device by clicking on upload button.</li>
+                <li>Click on preview for previewing your file.</li>
+                <li>Choose the colour mode by selecting the option.(Option: Black / Colour)</li>
+                <li>Select the number of copies by + and - button.</li>
+                <!-- <li>Choose the payment mode by selecting option.(Option: Coin / Wallet / Free.)</li> -->
+                <li>Click on submit and get printcode.</li>
+            </ol>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+            </div>
+          </div>
+        <!-- Stepper -->
+        <div class="tz-stepper">
+            <div id="step1" class="tz-step tz-step-active">
+                <div class="tz-step-circle">
+                    <i class="fas fa-upload tz-step-icon tz-incompleted-icon font-size-24"></i>
+                    <i class="fas fa-check tz-step-icon tz-completed-icon font-size-24"></i>
+                </div>
+                <div class="tz-step-title">Select File</div>
+                <div class="tz-stepbar-right"></div>
+            </div>
+            <div id="step2" class="tz-step">
+                <div class="tz-step-circle">
+                    <i class="fas fa-print tz-step-icon tz-incompleted-icon font-size-24"></i>
+                    <i class="fas fa-check tz-step-icon tz-completed-icon font-size-24"></i>
+
+                </div>
+                <div class="tz-step-title">Print Options</div>
+                <div class="tz-stepbar-left"></div>
+                <!-- <div class="tz-stepbar-right"></div> -->
+            </div>
+            <!-- <div id="step3" class="tz-step">
+                <div class="tz-step-circle">
+                    <i class="fas fa-rupee-sign tz-step-icon tz-incompleted-icon font-size-24"></i>
+                    <i class="fas fa-check tz-step-icon tz-completed-icon font-size-24"></i>
+                </div>
+                <div class="tz-step-title">Payment Options</div>
+                <div class="tz-stepbar-left"></div>
+            </div> -->
+        </div>
+         <!-- Step1 - Upload File -->
+         <div id="step1-container" class="tz-step-container">
+            <form id="uploadFileForm" action='{% url "transactions:file_add"%}' method="POST">
+                {% csrf_token %}
+                <div id="uploadFileBox">
+                    <i class="fas fa-cloud-upload-alt tz-primary-color font-size-68" id="cloud-icon"></i>
+                    <div id="loading-preview-div" style="display: none">
+                        <div class="tz-animation-loader"></div>
+                        <div class="font-bold">Loading Preview...</div>
+                        <div class="font-size-14">You can skip preview.</div>
+                    </div>
+                    <div class="mb-12" id="preview-btn-container">
+                        <i class="fas fa-eye tz-primary-color font-size-68 modal-trigger"  id="preview-icon" data-target="preview-modal"></i>
+                        <a href="#preview-modal" class="modal-trigger font-bold color-primary font-size-16" id="preview-btn">Preview</a>
+                    </div>
+                    <div id="fileText" class="primary-bold-text color-black mb-16"></div>
+                    <div id="uploadInputContainer">
+                        <div id="dragText" class="primary-bold-text onDesktopShow">Drag and Drop</div>
+                        <div id="fileHelpText">
+                            <div>Allowed file types: <span class="font-bold"> pdf, doc/docx, xls/xlsx, ppt/pptx, txt, jpg, jpeg, png.</span></div>
+                            <div>Maximum file size: <span class="font-bold">10mb</span></div>
+                            <div class="font-bold font-size-18 mt-8">Drop File</div>
+                            <div class="font-size-16 mb-8 mt-8">Or</div>
+                        </div>
+                    </div>
+                    <div id="excelHelpText" class="font-size-13">
+                        <div>
+                            <div class="font-bold">Excel Message :</div>
+                            <div>
+                                <div>Xls/Xlsx files may change its layout in printout.</div>
+                                <div>Printout may not have borders for xls/xlsx column if not has assigned.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="uploadButton" class="tz-fileOptionGrp">
+                        <!-- Camera Input Container -->
+                        <div class="mb-6 onMobile">
+                            <label for="cameraFile" class="btn mt-4">
+                                <i class="fas fa-camera"></i>
+                                <span class="font-size-11 vertical-top"> Camera</span>
+                                <input id="cameraFile" type="file" form="capture" accept="image/*" capture="camera">
+                            </label>
+                            <label for="imageFile" class="btn mt-4">
+                                <span class="font-size-11 vertical-top">Choose Image</span>
+                                <input id="imageFile" type="file"  accept="image/*" style="display:none">
+                            </label>
+                        </div>
+                        <!-- <label for="pdfFile" class="btn mt-4">
+                            <span class="font-size-11 vertical-top">Choose Pdf</span>
+                            <input id="pdfFile" type="file"  accept="application/pdf" style="display:none">
+                        </label> -->
+                        <!-- <label for="officeFile" class="btn mt-4">
+                            <span class="font-size-11 vertical-top">Choose Office File</span>
+                            <input id="officeFile" type="file"  accept=".doc, .docx, .xls, .xlsx, .ppt, .pptx" style="display:none">
+                        </label> -->
+                        <input type="file" name="input_file" id="fileInput" accept="">
+                        <!-- <input type="file" name="file" id="fileInput" onchange="fileChange()" accept=".pdf,.jpeg,.JPEG,.png,.PNG,.jpg,.JPG,.svg,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.odp,.ods,.txt,.rtf"> -->
+
+                        <!-- Upload button for front & Back Id Card Container -->
+                        <button type="button" class="btn waves-effect tz-upload-btn mb-6" id="uploadCardbtn">
+                            <i class="fas fa-address-card"></i>
+                            <span class="vertical-top">Id Card</span>
+                        </button>
+
+                        <label for="fileInput" class="btn waves-effect tz-upload-btn mb-6 ">
+                            <i class="fas fa-paperclip"></i>
+                            <span  id="fileLabel" class="vertical-top"> Choose File</span>
+                        </label>
+                    </div>
+                    <!-- Progress Bar  -->
+                    <div id="progressContainer">
+                        <div class="primary-bold-text">Please wait file is Uploading...</div>
+                        <div class="progress">
+                            <div class="determinate" id="progressBar"></div>
+                        </div>
+                        <!-- <div  class="primary-bold-text font-size-13" id="progress-status">99% uploaded...(41.34kb/93.2kb)</div> -->
+                        <div  class="primary-bold-text font-size-13" id="progress-status"></div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Front & Back Id Card Container -->
+            <div id="id-card-container" style="display: none;">
+                <div style="font-size: 20px;font-weight: 600;color: #0b355a;">ID Card Generator</div>
+                <div style="width: 82%;margin: auto;margin-top: 16px;max-width: 380px;">
+                    <label style="display: inline-block;width: 100%;padding-top: 62.9693%;position: relative;border: 1px solid #ccc;cursor: pointer;">
+                        <img id="front-id-img" src="{% static 'images/front-id.png' %}" style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;">
+                        <input type="file" name="front-id" id="front-id" style="display: none;" accept="image/*">
+                    </label>
+                </div>
+                <div style="width: 82%;margin: auto;margin-top: 16px;max-width: 380px;">
+                    <label style="display: inline-block;width: 100%;padding-top: 62.9693%;position: relative;border: 1px solid #ccc;cursor: pointer;">
+                        <img id="back-id-img" src="{% static 'images/back-id.png' %}" style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;">
+                        <input type="file" name="back-id" id="back-id" style="display: none;" accept="image/*">
+                    </label>
+                </div>
+                <div id="id_card_error" class="mt-4 text-center red-text" style="display: none">
+                    <i class="fas fa-exclamation-circle font-size-20"></i>
+                    <span class="vertical-top" id="fileError">Please choose a file to continue.</span>
+                </div>
+                <div class="tz-btn-grp" >
+                    <button  class="btn waves-effect tz-prev-btn" id="idCardBackBtn">Back</button>
+                    <button  class="btn waves-effect tz-next-btn" id="idCardSubmitBtn">Upload</button>
+                </div>
+            </div>
+
+            <div class="mt-4 text-center orange-text page-range-error" style="display: none">
+                <i class="fas fa-exclamation-circle font-size-20"></i>
+                 <span class="vertical-top">Your file contains <span id="total_pages1"></span> pages which is more than our page range (<span class="limited_copies_text"></span> pages). So you can only print <span class="limited_copies_text"></span> pages.</span>
+            </div>
+            <div id="file-input-error" class="mt-4 text-center red-text">
+                <i class="fas fa-exclamation-circle font-size-20"></i>
+                <span class="vertical-top" id="fileError">Please choose a file.</span>
+            </div>
+            <form method="get" action="#" id="captureForm"></form>
+            <div class="tz-btn-grp" id="step1-next-btn-container">
+                <button id="step1-next-btn" class="btn waves-effect tz-next-btn">Next</button>
+            </div>
+        </div>
+        <!-- Step2 - Print Options -->
+        <div id="step2-container" class="tz-step-container">
+{#            {% include "portal/anonymous_user_msg.html" with msg="file_upload" %}#}
+            <form  action='{% url "transactions:add" %}' method="POST" id="print-option-form">
+                {% csrf_token %}
+                <input hidden name="file">
+                <div class="tz-form-group">
+                    <div id="high_rate_msg" class="tz-highlight-div" style="display: none">File consume more ink hence rate is quite high!</div>
+                </div>
+                <div class="tz-form-group" id="share_file_section">
+                    <div class="tz-form-label tz-lg-dvde1">File Visibility</div>
+                    <div class="tz-radiogrp tz-lg-dvde2">
+                        <label id="label_share_false" class="tz-radio tz-radiolm" for="share_false">
+                            <input id="share_false" value="false" class="with-gap is_sharable" type="radio" name="is_public" required>
+                            <span class="pl-24">To Print</span>
+                            <span class="badge color-inherit ml-0">
+                                    <i class="fas fa-print"></i>
+                            </span>
+                            <div class="helper-text">Only you can print</div>
+                        </label>
+                        <label id="label_share_true" class="tz-radio" for="share_true">
+                            <input id="share_true" value="true" class="with-gap is_sharable" name="is_public" type="radio"/>
+                            <span class="pl-24">To Share</span>
+                            <span class="badge color-inherit ml-0">
+                                    <i class="fas fa-share-alt"></i>
+                            </span>
+                            <div class="helper-text text-center">You and others can print</div>
+                        </label>
+                    </div>
+                </div>
+                <div id="share-info-text" style="border: 1px solid #0F4C81;padding: 10px;border-radius: 4px;margin-bottom: 8px;display: none">
+                    <div class="text-center"><i class="fas fa-users medium color-primary"></i></div>
+                    <div style="font-size: 16px; color: #0F4C81">You will be able to share this file with others. They can print this file from your share link.</div>
+                    <div><span>--</span> You can also take print. </div>
+                    <div><span>--</span> Print option will be asked to the person who is taking print. </div>
+                    <div><span>--</span> Payment option will be asked to the person who is taking print. </div>
+                </div>
+                <div id="printing-option-block" style="border: 1px solid #0F4C81;padding: 10px;border-radius: 4px;margin-bottom: 8px;display: none">
+                    <div class="text-center"><i class="fas fa-user medium color-primary"></i></div>
+                    <div style="font-size: 16px; color: #0F4C81">Your file is private. Only yoy can print this file.</div>
+                    <div><span>--</span> Print option will be asked while taking print. </div>
+                    <div><span>--</span> Payment option will be asked while taking print. </div>
+                </div>
+                <div class="tz-btn-grp">
+                    <button type="button" class="btn waves-effect tz-prev-btn step2-prev-btn">Back</button>
+                    <button  type="submit" id="share-submit" class="btn waves-effect tz-next-btn">Done</button>
+                </div>
+            </form>
+        </div>
+        <!--Preview Loader-->
+        <div id="preview-loader" class="modal tz-preview-container">
+            <span class="modal-close waves-effect btn-flat">
+                <i class="fas fa-times"></i>
+            </span>
+            <div class="modal-content">
+                <div class="tz-loader"></div>
+            </div>
+        </div>
+        <!--Preview Modal Structure -->
+        <div id="preview-modal" class="modal tz-preview-container">
+                <div class="modal-header top-bar"  >
+                    <span class="tz-previewtopbar">
+                        <i id="prev" class="fas fa-chevron-left"></i>
+                        <!-- <i class="material-icons" id="prev" onclick="showPrevPage()">chevron_left</i> -->
+                        <span class="page-info tz-page-info">
+                            Page <span id="page-num"></span> of <span id="page-count"></span>
+                        </span>
+                        <i id="next" class="fas fa-chevron-right" ></i>
+                        <!-- <i class="material-icons" id="next" onclick="showNextPage()">chevron_right</i> -->
+                    </span>
+                    <span class="modal-close waves-effect btn-flat right">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                <div id="canvas-container" class="modal-content">
+                </div>
+        </div>
+        <!--Cropper Modal Structure -->
+        <div id="cropper_modal" class="modal">
+            <div class="modal-content">
+                <div class="row" style="margin-bottom:12px;">
+                    <div class="col s12 l8" style="padding: 0;">
+                        <img src="" id="cropper_image" style="max-width: 100%;">
+                    </div>
+                    <div class="col s12 l4">
+                        <div class="row" style="margin-bottom:12px;">
+                            <div class="col s6">
+                                <div class="cropper-preview"></div>
+                            </div>
+                            <div class="col s6">
+                                <div style="margin-top: 10px;">
+                                    <button class="btn" id="rotateLeft" style="width: 48%;"><i class="fas fa-undo"></i></button>
+                                    <button class="btn" id="rotateRight" style="width: 48%;"><i class="fas fa-redo"></i></button>
+                                </div>
+                                <div style="margin-top: 10px;">
+                                    <button class="btn" id="zoomIn" style="width: 48%;"><i class="fas fa-search-plus"></i></button>
+                                    <button class="btn" id="zoomOut" style="width: 48%;"><i class="fas fa-search-minus"></i></button>
+                                </div>
+                                <div style="margin-top: 10px;">
+                                    <button class="btn" id="moveLeft" style="width: 48%;"><i class="fas fa-arrow-left"></i></button>
+                                    <button class="btn" id="moveRight" style="width: 48%;"><i class="fas fa-arrow-right"></i></button>
+                                </div>
+                                <div style="margin-top: 10px;">
+                                    <button class="btn" id="moveUp" style="width: 48%;"><i class="fas fa-arrow-up"></i></button>
+                                    <button class="btn" id="moveDown" style="width: 48%;"><i class="fas fa-arrow-down"></i></button>
+                                </div>
+                                <!-- <div style="margin: 10px;">
+                                    <button class="btn" id="fullImage">Full Image</button>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <button class="btn modal-close" style="color: #0f4c81;margin: 0 10px;background: #fff;border: 1px solid;box-shadow: none;min-width: 100px;">Cancel</button>
+                    <button class="btn" id="crop" style="margin: 0 10px;min-width: 100px;">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br><br><br>
+{% endblock %}
+{% block custom_script_below %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.69/pdfmake.js" integrity="sha512-06pfPPWMUu3q9/9XZBEACzQzhRABMp1D70S23j+hd4H57FOr4zTrLijBDSKYzf25VlhOK/5YKPxZjBG46MoEAg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.69/vfs_fonts.js" integrity="sha512-vv3EN6dNaQeEWDcxrKPFYSFba/kgm//IUnvLPMPadaUf5+ylZyx4cKxuc4HdBf0PPAlM7560DV63ZcolRJFPqA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.9/cropper.min.js" integrity="sha512-9pGiHYK23sqK5Zm0oF45sNBAX/JqbZEP7bSDHyt+nT3GddF+VFIcYNqREt0GDpmFVZI3LZ17Zu9nMMc9iktkCw==" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function(){
+            // file add user is not authenticated
+            if( !isAuthenticated ){
+                // Color Locked
+                document.querySelector('#color').disabled = true;
+                document.querySelector('#wallet').disabled = true;
+            }
+        });
+    </script>
+{% endblock %}

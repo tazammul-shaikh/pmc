@@ -1,0 +1,239 @@
+{% load static %}
+{% block custom_head_above %}
+    <style>
+        .app-bar{
+            z-index: 2;
+            width:100%;
+            height:60px;
+            position:fixed;
+            bottom:0px;
+            left:0;
+        }
+        .app-bar .bar{
+            line-height:60px;
+            position:relative;
+            width:100%;
+            height:60px;
+            {#background: radial-gradient(circle 35px at 50% 0, transparent 700px, #0F4C81 60px);#}
+            {#background: -o-radial-gradient(circle 35px at 50% 0, transparent 700px, #0F4C81 60px);#}
+            {#background: -moz-radial-gradient(circle 35px at 50% 0, transparent 700px, #0F4C81 60px);#}
+            {#background: -webkit-radial-gradient(circle 35px at 50% 0, transparent 700px, #0F4C81 60px);#}
+            background: #0F4C81!important;
+            box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.14), 0 -3px 1px -2px rgba(0, 0, 0, 0.12), 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
+        }
+        .app-bar .bar i{
+            color:#FFF;
+            /* display:block; */
+            /* line-height:60px; */
+            /* float:left; */
+            width:50px;
+            text-align:center;
+            cursor:pointer;
+            margin-top:6px;
+            font-size: 28px;
+
+        }
+        .app-bar .bar i:hover{
+             background-color:rgba(0,0,0,.1);
+        }
+        .app-bar .bar button{
+            padding: 0px;
+            box-sizing: border;
+            text-align: center;
+            margin: 0px;
+            bordeR: 0px;
+            outline: 0px;
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            cursor: pointer;
+            color: #FFFFFF;
+            display: block;
+            border-radius: 50%;
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            margin-left: -30px;
+            background-color: #0b355a;
+            transition: all .2s ease;
+            {#box-shadow: 0 0 10px 2px rgba(0,0,0,0.2);#}
+            {#box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);#}
+            box-shadow: 0 0 8px black;
+        }
+        .app-bar .bar button i{
+            display: inline;
+            line-height:60px;
+            font-size:30px;
+        }
+
+    </style>
+{% endblock %}
+{#{% if user.is_authenticated %}#}
+    <div class="row tz-header">
+    <!-- Title Sub Header -->
+        <div class="col m5 s12 tz-title">
+            <a href="{% url "portal:home" %}" class="tz-logo-container left {% if user.is_authenticated and user.customer.customer_type != "NC" %}tz-adding-subheader{% endif %}">
+                <span class="tz-brandname">Printmycopy</span>
+                {% if user.is_authenticated and user.customer.is_teacher %}
+                    <span class="tz-subheader">Teacher</span>
+                {% elif user.is_authenticated and user.customer.is_vendor %}
+                    <span class="tz-subheader">Vendor</span>
+                {% endif %}                
+            </a>
+            <!-- Sidenav For Mobile -->
+            <a href="#" data-target="sidenav-more" class="sidenav-trigger tz-sidenav-trigger"><i class="fas fa-bars"></i></a>
+        </div>
+     <!-- Nav Menu Sub Header -->
+        <div class="col m7 s12 tz-nav-menu hide-on-small-only" >
+            <ul class="tz-nav" role="">
+                <li class="tz-nav-item">
+                    <a class="tz-nav-link waves-effect" id="" href="{% url "transactions:list" %}">
+                        <i id="history-icon" class="fas fa-history  font-size-24"></i>
+                        <span id="history-badge" class="badge tz-badge tz-menu-badge">
+                            <span id="allPrints">{{ user.customer.get_non_printed_transactions.count }}</span>
+                        </span>
+                        <div class="mt-4"><span>ALL PRINTS</span></div>
+                    </a>
+                </li>
+                <li class="tz-nav-item">
+                    <a class="tz-nav-link waves-effect" id="" href="{% url "transactions:file_add" %}" >
+                        <i class="fas fa-file-medical font-size-24"></i>
+                        <div class="mt-4"><span>UPLOAD</span></div>
+                    </a>
+                </li>
+                <li class="tz-nav-item">
+                    <a class="tz-nav-link waves-effect" id="" href="{% url "stations:list" %}">
+                        <i class="fas fa-map-marked-alt font-size-24"></i>
+                        <div class="mt-4"><span>STATIONS</span></div>
+                    </a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="tz-nav-item">
+                        <a class="tz-nav-link waves-effect" id="" href="{% url "wallets:view" %}">
+                            <i class="fas fa-wallet font-size-24"></i>
+                            <div class="mt-4"><span>ACCOUNT</span></div>
+                        </a>
+                    </li>
+                    <li class="tz-nav-item">
+                        <a class="tz-nav-link waves-effect" id="" href="{% url "customers:referral_list" %}">
+                            <i class="fas fa-share font-size-24"></i>
+                            <div class="mt-4"><span>REFER</span></div>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="tz-nav-item">
+                        <a class="tz-nav-link waves-effect" id="" href="{% url "games:list" %}">
+                            <i class="fas fa-puzzle-piece font-size-24"></i>
+                            <div class="mt-4"><span>GAMES</span></div>
+                        </a>
+                    </li>
+                    <li class="tz-nav-item">
+                        <a class="tz-nav-link waves-effect" id="" href="{% url "accounts:login" %}">
+                            <i class="fas fa-user font-size-24"></i>
+                            <div class="mt-4"><span>Login</span></div>
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="tz-nav-item tz-show-more-on-med">
+                    <a class="dropdown-trigger tz-nav-link waves-effect" id="" href="#" data-target='more'>
+                        <i class="fas fa-ellipsis-v font-size-24"></i>
+                        <div class="mt-4"><span>MORE</span></div>
+                    </a>
+                    <!-- Dropdown for more navbar options -->
+                    <ul id='more' class='dropdown-content tz-moredrop'>
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url "accounts:update_profile" %}">Update Profile</a></li>
+                            <li><a href="{% url "accounts:password_change" %}">Change Password</a></li>
+                        {% endif %}
+                        <li><a href="{% url "games:list" %}">Games</a></li>
+                        <li><a href="{% url "complaints:list" %}">Complaints</a></li>
+                        <li><a href="{% url "customers:referral_list" %}">Referrals</a></li>
+                        <li id="hSBtnDropDown" class="homeScreenBtn"><span>Add to Home Screen</span></li>
+                        <li class="divider" tabindex="-1"></li>
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url "accounts:logout" %}">Logout</a></li>
+                        {% else %}
+                            <li><a href="{% url "accounts:login" %}">Login</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <ul class="sidenav tz-sidenav" id="sidenav-more">
+
+        {% if user.is_authenticated %}
+            <li><a href="{% url "accounts:update_profile" %}">Update Profile</a></li>
+            <li><a href="{% url "accounts:password_change" %}">Change Password</a></li>
+        {% endif %}
+        <li><a href="{% url "games:list" %}">Games</a></li>
+        <li><a href="{% url "complaints:list" %}">Complaints</a></li>
+        <li><a href="{% url "customers:referral_list" %}">Referrals</a></li>
+        <li id="hSBtnSidenav" class="homeScreenBtn"><span>Add to Home Screen</span></li>
+        <li class="divider" tabindex="-1"></li>
+        {% if user.is_authenticated %}
+            <li><a href="{% url "accounts:logout" %}">Logout</a></li>
+        {% else %}
+            <li><a href="{% url "accounts:login" %}">Login</a></li>
+        {% endif %}
+    </ul>
+
+
+    <!-- footer navbar  -->
+    <div class="app-bar hide-on-med-and-up">
+        <div class="bar">
+          <div style="width: calc(50% - 35px);display: inline-flex;justify-content: space-around;position: absolute;left: 0;">
+              {% if user.is_authenticated %}
+                <a href="{% url "customers:referral_list" %}" style="display: flex;flex-direction: column;">
+                    <i class="fas fa-share"></i>
+                    <div style="display: inline-block;line-height: 16px;font-size: 12px;font-weight:bold;width: 100%;text-align: center;margin-top: 6px;color: #fff;">REFER</div>
+                </a>
+              {% else %}
+                <a href="{% url "games:list" %}" style="display: flex;flex-direction: column;">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <div style="display: inline-block;line-height: 16px;font-size: 12px;font-weight:bold;width: 100%;text-align: center;margin-top: 6px;color: #fff;">GAMES</div>
+                </a>
+              {% endif %}
+            <a href="{% url "transactions:list" %}" style="display: flex;flex-direction: column;">
+                <i class="fas fa-history"></i>
+                <div style="display: inline-block;line-height: 16px;font-size: 12px;font-weight:bold;width: 100%;text-align: center;margin-top: 6px;color: #fff;">FILES</div>
+            </a>
+          </div>
+          <div style="width: calc(50% - 35px);display: inline-flex;justify-content: space-around;position: absolute;right: 0;">
+            <a href="{% url "stations:list" %}" style="display: flex;flex-direction: column;">
+                <i class="fas fa-map-marked-alt"></i>
+                <div style="display: inline-block;line-height: 16px;font-size: 12px;font-weight:bold;width: 100%;text-align: center;margin-top: 6px;color: #fff;">STATIONS</div>
+            </a>
+            {% if user.is_authenticated %}
+                <a href="{% url "wallets:view" %}" style="display: flex;flex-direction: column;">
+                    <i class="fas fa-wallet"></i>
+                    <div style="display: inline-block;line-height: 16px;font-size: 12px;font-weight:bold;width: 100%;text-align: center;margin-top: 6px;color: #fff;">ACCOUNT</div>
+                </a>
+            {% else %}
+                <a href="{% url "accounts:login" %}" style="display: flex;flex-direction: column;">
+                    <i class="fas fa-user"></i>
+                    <div style="display: inline-block;line-height: 16px;font-size: 12px;font-weight:bold;width: 100%;text-align: center;margin-top: 6px;color: #fff;">Login</div>
+                </a>
+            {% endif %}
+          </div>
+          <button class="button">
+            <a href="{% url "transactions:file_add" %}"><i class="fas fa-upload"></i></a>
+          </button>
+          <div style="display:inline-block;width: 70px;position: absolute;left:calc(50% - 35px);line-height: 16px;bottom: 4px;color: #fff;font-weight: bold;font-size: 13px;text-align: center;">
+            <a href="{% url "transactions:file_add" %}" style="color: inherit;">UPLOAD</a>
+          </div>
+        </div>
+      </div>
+
+
+{#{% else %}#}
+{#    <div class="tz-header">#}
+{#    <!-- Title Sub Header -->#}
+{#    <div class="tz-title">#}
+{#        <a href="{% url "portal:home" %}" class="tz-logo-container left">#}
+{#            <!-- <img src="logo.png" class="tz-logo"> -->#}
+{#            <span class="tz-brandname">Print My Copy</span>#}
+{#        </a>#}
+{#    </div>#}
+{#</div>#}
+{#{% endif %}#}

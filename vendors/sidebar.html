@@ -1,0 +1,60 @@
+{% load static %}
+{% load hosts %}
+<aside class="mdc-drawer mdc-drawer--dismissible mdc-drawer--open">
+      <div class="mdc-drawer__header">
+        <a href="index.html" class="brand-logo">
+          <!-- <img src="{% static "vendors_static/images/logo.svg" %}" alt="logo"> -->
+          <h4 style="color: white">Printmycopy</h4>
+
+        </a>
+      </div>
+      <div class="mdc-drawer__content">
+        <div class="user-info">
+          <p class="name">{{ user.vendor.get_station_display }}</p>
+          <p class="email">{{ user.vendor.name }}</p>
+        </div>
+        <div class="mdc-list-group">
+          <nav class="mdc-list mdc-drawer-menu">
+            <div class="mdc-list-item mdc-drawer-item">
+              <a class="mdc-drawer-link" href="{% host_url "vendors:dashboard" host "vendors_host" %}">
+                <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">home</i>
+                Dashboard
+              </a>
+            </div>
+            <div class="mdc-list-item mdc-drawer-item">
+              <a class="mdc-drawer-link" href="{% host_url "vendors:payments_list" host "vendors_host" %}">
+                <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">payment</i>
+                Payments
+              </a>
+            </div>
+            <div class="mdc-list-item mdc-drawer-item">
+              <a class="mdc-drawer-link" href="pages/forms/basic-forms.html">
+                <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">track_changes</i>
+                Ads
+              </a>
+            </div>
+            <div class="mdc-list-item mdc-drawer-item">
+              <a class="mdc-drawer-link" href="{% host_url "vendors:queries_list" host "vendors_host" %}">
+                <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">help</i>
+                Queries
+              </a>
+            </div>
+            <div class="mdc-list-item mdc-drawer-item">
+              <a class="mdc-drawer-link" href="{% host_url "vendors:profile" host "vendors_host" %}">
+                <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">track_changes</i>
+                Profile
+              </a>
+            </div>
+            <div class="mdc-list-item mdc-drawer-item">
+              <a class="mdc-drawer-link" href="{% host_url "vendors:add_network" host "vendors_host" %}">
+                <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">add</i>
+                Add Network
+              </a>
+            </div>
+          </nav>
+        </div>
+        <div class="profile-actions">
+          <a href="{% host_url "vendors:logout" host "vendors_host" %}">Logout</a>
+        </div>
+      </div>
+    </aside>

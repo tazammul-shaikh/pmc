@@ -1,0 +1,12 @@
+{% load static %}
+<div class="lock-message" style="border: 3px solid #0F4C81;text-align: center;padding: 4px 6px 10px;border-radius: 8px;margin: auto;max-width: 330px;">
+    {% if msg == "file_upload" %}
+        <h6 class="font-bold color-primary">You are not logged in</h6>
+        <div>Your files will be temporarily saved. They may be removed if you erase history o browser session data.</div>
+        <div>To save your file properly you must <a href="{% url 'accounts:login' %}" class="pmc-text-btn">Login</a></div>
+    {% else %}
+        <h6 class="font-bold color-primary">You are not logged in</h6>
+        <div>Your files will be temporarily saved. They may be removed if you erase history o browser session data.</div>
+        <div>To save your file properly you must <a href="{% url 'accounts:login' %}" class="pmc-text-btn">Login</a></div>
+    {% endif %}
+</div>

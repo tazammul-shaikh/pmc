@@ -1,0 +1,424 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+{% block title %}Create New Print{% endblock %}
+{% block content%}
+    <div class="tz-container">
+        <!-- Page Header -->
+        <div class="tz-page-header">
+            <div class="tz-page-heading">
+                Create Print
+            </div>
+            <button class="tz-need-help-btn right modal-trigger" data-target="needHelpModal">
+                How to create print
+                <i class="fas fa-question-circle tz-icon-help"></i>
+            </button>
+        </div>
+        <!-- Need Help Model  -->
+        <div id="needHelpModal" class="modal needHelp">
+            <div class="modal-content">
+              <h4 class="primary-bold-text">How to upload file & create print code</h4>
+              <h6>Follow the instruction to upload file</h6>
+              <ol>
+                <li>Choose File from your device by clicking on upload button.</li>
+                <li>Click on preview for previewing your file.</li>
+                <li>Choose the colour mode by selecting the option.(Option: Black / Colour)</li>
+                <li>Select the number of copies by + and - button.</li>
+                <li>Choose the payment mode by selecting option.(Option: Coin / Wallet / Free.)</li>
+                <li>Click on submit and get printcode.</li>
+            </ol>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+            </div>
+          </div>
+        <!-- Stepper -->
+        <div class="tz-stepper">
+            <div id="step1" class="tz-step tz-step-active">
+                <div class="tz-step-circle">
+                    <i class="fas fa-upload tz-step-icon tz-incompleted-icon font-size-24"></i>
+                    <i class="fas fa-check tz-step-icon tz-completed-icon font-size-24"></i>
+                </div>
+                <div class="tz-step-title">Upload File</div>
+                <div class="tz-stepbar-right"></div>
+            </div>
+            <div id="step2" class="tz-step">
+                <div class="tz-step-circle">
+                    <i class="fas fa-print tz-step-icon tz-incompleted-icon font-size-24"></i>
+                    <i class="fas fa-check tz-step-icon tz-completed-icon font-size-24"></i>
+
+                </div>
+                <div class="tz-step-title">Print Options</div>
+                <div class="tz-stepbar-left"></div>
+                <div class="tz-stepbar-right"></div>
+            </div>
+            <div id="step3" class="tz-step">
+                <div class="tz-step-circle">
+                    <i class="fas fa-rupee-sign tz-step-icon tz-incompleted-icon font-size-24"></i>
+                    <i class="fas fa-check tz-step-icon tz-completed-icon font-size-24"></i>
+                </div>
+                <div class="tz-step-title">Payment Options</div>
+                <div class="tz-stepbar-left"></div>
+            </div>
+        </div>
+         <!-- Step1 - Upload File -->
+         <div id="step1-container" class="tz-step-container">
+            <form id="uploadFileForm" action='{% url "transactions:file_add"%}' method="POST">
+                {% csrf_token %}
+                <div id="uploadFileBox">
+                    <i class="fas fa-cloud-upload-alt tz-primary-color font-size-68" id="cloud-icon"></i>
+                    <div id="loading-preview-div" style="display: none">
+                        <div class="tz-animation-loader"></div>
+                        <div class="font-bold">Loading Preview...</div>
+                        <div class="font-size-14">You can skip preview.</div>
+                    </div>
+                    <div class="mb-12" id="preview-btn-container">
+                        <i class="fas fa-eye tz-primary-color font-size-68 modal-trigger"  id="preview-icon" data-target="preview-modal"></i>
+                        <a href="#preview-modal" class="modal-trigger font-bold color-primary font-size-16" id="preview-btn">Preview</a>
+                    </div>
+                    <div id="fileText" class="primary-bold-text color-black mb-16"></div>
+                    <div id="uploadInputContainer">
+                        <div id="dragText" class="primary-bold-text onDesktopShow">Drag and Drop</div>
+                        <div id="fileHelpText">
+                            <div>Allowed file types: <span class="font-bold"> pdf, doc/docx, xls/xlsx, ppt/pptx, txt, jpg, jpeg, png.</span></div>
+                            <div>Maximum file size: <span class="font-bold">10mb</span></div>
+                            <div class="font-bold font-size-18 mt-8">Drop File</div>
+                            <div class="font-size-16 mb-8 mt-8">Or</div>
+                        </div>
+                    </div>
+                    <div id="excelHelpText" class="font-size-13">
+                        <div>
+                            <div class="font-bold">Excel Message :</div>
+                            <div>
+                                <div>Xls/Xlsx files may change its layout in printout.</div>
+                                <div>Printout may not have borders for xls/xlsx column if not has assigned.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="uploadButton" class="tz-fileOptionGrp">
+                        <!-- Camera Input Container -->
+                        <div class="mb-6 onMobile">
+                            <label for="cameraFile" class="btn mt-4">
+                                <i class="fas fa-camera"></i>
+                                <span class="font-size-11 vertical-top"> Camera</span>
+                                <input id="cameraFile" type="file" form="capture" accept="image/*" capture="camera">
+                            </label>
+                            <label for="imageFile" class="btn mt-4">
+                                <span class="font-size-11 vertical-top">Choose Image</span>
+                                <input id="imageFile" type="file"  accept="image/*" style="display:none">
+                            </label>
+                        </div>
+                        <!-- <label for="pdfFile" class="btn mt-4">
+                            <span class="font-size-11 vertical-top">Choose Pdf</span>
+                            <input id="pdfFile" type="file"  accept="application/pdf" style="display:none">
+                        </label> -->
+                        <!-- <label for="officeFile" class="btn mt-4">
+                            <span class="font-size-11 vertical-top">Choose Office File</span>
+                            <input id="officeFile" type="file"  accept=".doc, .docx, .xls, .xlsx, .ppt, .pptx" style="display:none">
+                        </label> -->
+                        <input type="file" name="input_file" id="fileInput" accept="">
+                        <!-- <input type="file" name="file" id="fileInput" onchange="fileChange()" accept=".pdf,.jpeg,.JPEG,.png,.PNG,.jpg,.JPG,.svg,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.odp,.ods,.txt,.rtf"> -->
+                        <label for="fileInput" class="btn waves-effect tz-upload-btn ">
+                            <i class="fas fa-paperclip"></i>
+                            <span  id="fileLabel" class="vertical-top"> Choose File</span>
+                        </label>
+                    </div>
+                    <!-- Progress Bar  -->
+                    <div id="progressContainer">
+                        <div class="primary-bold-text">Please wait file is Uploading...</div>
+                        <div class="progress">
+                            <div class="determinate" id="progressBar"></div>
+                        </div>
+                        <!-- <div  class="primary-bold-text font-size-13" id="progress-status">99% uploaded...(41.34kb/93.2kb)</div> -->
+                        <div  class="primary-bold-text font-size-13" id="progress-status"></div>
+                    </div>
+                </div>
+            </form>
+                <div class="mt-4 text-center orange-text page-range-error" style="display: none">
+                <i class="fas fa-exclamation-circle font-size-20"></i>
+                 <span class="vertical-top">Your file contains <span id="total_pages1"></span> pages which is more than our page range (<span class="limited_copies_text"></span> pages). So you can only print <span class="limited_copies_text"></span> pages.</span>
+            </div>
+            <div id="file-input-error" class="mt-4 text-center red-text">
+                <i class="fas fa-exclamation-circle font-size-20"></i>
+                <span class="vertical-top" id="fileError">Please choose a file.</span>
+            </div>
+            <form method="get" action="#" id="captureForm"></form>
+            <div class="tz-btn-grp">
+                <button id="step1-next-btn" class="btn waves-effect tz-next-btn">Next</button>
+            </div>
+        </div>
+        <!-- Step2 - Print Options -->
+        <div id="step2-container" class="tz-step-container">
+{#            {% include "portal/anonymous_user_msg.html" with msg="file_upload" %}#}
+            <form  action='{% url "transactions:add" %}' method="POST" id="print-option-form">
+                {% csrf_token %}
+                <input hidden name="file">
+                <div class="tz-form-group">
+                    <div id="high_rate_msg" class="tz-highlight-div" style="display: none">File consume more ink hence rate is quite high!</div>
+                </div>
+                <div class="tz-form-group" id="share_file_section">
+                    <div class="tz-form-label tz-lg-dvde1">File Visibility</div>
+                    <div class="tz-radiogrp tz-lg-dvde2">
+                        <label id="label_share_false" class="tz-radio tz-radiolm" for="share_false">
+                            <input id="share_false" value="false" class="with-gap is_sharable" type="radio" name="is_public" required>
+                            <span class="pl-24">To Print</span>
+                            <span class="badge color-inherit ml-0">
+                                    <i class="fas fa-print"></i>
+                            </span>
+                            <div class="helper-text">Only you can print</div>
+                        </label>
+                        <label id="label_share_true" class="tz-radio" for="share_true">
+                            <input id="share_true" value="true" class="with-gap is_sharable" name="is_public" type="radio"/>
+                            <span class="pl-24">To Share</span>
+                            <span class="badge color-inherit ml-0">
+                                    <i class="fas fa-share-alt"></i>
+                            </span>
+                            <div class="helper-text text-center">You and others can print</div>
+                        </label>
+                    </div>
+                </div>
+                <div id="share-info-text" style="border: 1px solid #0F4C81;padding: 10px;border-radius: 4px;margin-bottom: 8px;display: none">
+                    <div class="text-center"><i class="fas fa-users medium color-primary"></i></div>
+                    <div style="font-size: 16px; color: #0F4C81">You will be able to share this file with others. They can print this file from your share link.</div>
+                    <div><span>--</span> You can also take print. </div>
+                    <div><span>--</span> Print option will be asked to the person who is taking print. </div>
+                    <div><span>--</span> Payment option will be asked to the person who is taking print. </div>
+                </div>
+                <div id="printing-option-block" style="display: none;">
+                    <div class="tz-form-group">
+                        <div class="tz-form-label tz-lg-dvde1">Color Mode</div>
+                        <div class="tz-radiogrp tz-lg-dvde2">
+                            <label id="label_black" class="tz-radio tz-radio-active tz-radiolm" for="black">
+                                <input id="black" value="BW" class="with-gap" type="radio" name="color_mode" checked/>
+                                <span class="pl-24">Black</span>
+                                <span class="badge">
+                                    <img src="{% static "images/black.png" %}">
+                                </span>
+                            </label>
+                            <label id="label_color" class="tz-radio unlocked" for="color">
+                                <i class="fas fa-lock" style="display:none"></i>
+                                <input id="color" value="CL" class="with-gap" name="color_mode" type="radio"/>
+                                <span class="pl-24">Color</span>
+                                <span class="badge">
+                                    <img src="{% static "images/color.png" %}">
+                                </span>
+                            </label>
+                            <div class="lock-message" style="display: none">
+                                <span>Color feature is locked. To unlock it you must Login.</span>
+                           </div>
+                        </div>
+                    </div>
+                    <div class="tz-form-group">
+                        <div class="tz-form-label tz-lg-dvde1" style="vertical-align: top;">Quality Mode</div>
+                        <div class="tz-radiogrp tz-lg-dvde2">
+                            <label id="label_eco" class="tz-radio tz-radio-active tz-radiolm" for="eco">
+                                <input id="eco" value="EC" class="with-gap" type="radio" name="quality"  checked />
+                                <span class="pl-24">Eco</span>
+                                <span class="badge tz-badge">
+                                    <i class="fas fa-rupee-sign"></i>
+                                    <span id="ecoRate">2</span>
+                                </span>
+                            </label>
+                            <label id="label_super" class="tz-radio" for="super">
+                                <input id="super" value="SP" class="with-gap" name="quality" type="radio"/>
+                                <span class="pl-24">Super</span>
+                                <span class="badge tz-badge">
+                                    <i class="fas fa-rupee-sign"></i>
+                                    <span id="superRate">3</span>
+                                </span>
+                            </label>
+                            <div class="tz-upload-help-text">
+                                <i class="fas fa-info-circle mr-4"></i>
+                                <span id="qualityHelpText">For superior quality select Super</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tz-form-group" id="page_range_section">
+                        <div class="tz-form-label tz-lg-dvde1">Pages to Print</div>
+                        <div class="tz-radiogrp tz-lg-dvde2">
+                            <label id="label_all_pages" class="tz-radio tz-radio-active tz-radiolm" for="all_pages">
+                                <input id="all_pages" value="all" class="with-gap" type="radio" name="page_range_type" checked>
+                                <span class="pl-24">All Pages</span>
+                            </label>
+                            <label id="label_custom_pages" class="tz-radio" for="custom_pages">
+                                <input id="custom_pages" value="custom" class="with-gap" name="page_range_type" type="radio"/>
+                                <span class="pl-24">Custom Pages</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div id="custom-range-block" class="tz-form-group">
+                        <div class="tz-form-label tz-lg-dvde1" id="custom-range-label">Custom Page Range</div>
+                        <div  class="tz-lg-dvde2 text-center">
+                            <div class="tz-custom-rang  e-placment" id="custom-range-input-block">
+                                <input class="browser-default tz-printoption-input" type="text" name="page_range" id="custom_range"/>
+                                <div class="tz-printoption-small">For example: 1, 3-5, 12</div>
+                                <div id="custom-range-error" class="red-text lighten-1 mt-4">
+                                    <i class="fas fa-exclamation-circle font-size-18"></i>
+                                     <span class="vertical-top font-size-13" id="page-range-error-text">Please enter a valid page range.</span>
+                                </div>
+                                <div class="tz-printoption-small page-range-error" style="display: none">
+                                    <span>Your file contains <span id="total_pages2"></span> pages which is more than our page range (<span class="limited_copies_text"></span> pages). So you can only print <span class="limited_copies_text"></span> pages.</span>
+                               </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tz-form-group">
+                        <div class="tz-form-label tz-lg-dvde1">Copies</div>
+                        <div class="tz-copies-btn-grp tz-lg-dvde2">
+                            <div class="tz-copies-grp">
+                                <button id="sub-btn" type="button" class="btn waves-effect tz-copies-btn tz-copies-left"><i class="fas fa-minus"></i></button>
+                                <input class="browser-default tz-copies-input tz-rmvbtn-num-input" type="number" name="copies" id="copies" value='1'>
+                                <button id="add-btn" type="button" class="btn waves-effect tz-copies-btn tz-copies-right"><i class="fas fa-plus"></i></button>
+                            </div>
+    {#                        <div id="limitedCopiesError" class="red-text lighten-1 mt-4">#}
+    {#                            <i class="fas fa-exclamation-circle font-size-18"></i>#}
+    {#                             <span class="vertical-top font-size-13"><span>Your file contains <span id="total_pages2"></span> pages which is more than our page range (<span class="limited_copies_text"></span> pages). So you can only print <span class="limited_copies_text"></span> pages.</span></span>#}
+    {#                        </div>#}
+                        </div>
+                    </div>
+                        <hr id="dividerAmount" style="margin:20px 0px">
+                    <div class="tz-amountlbldiv tz-form-group" >
+                        <div class="tz-form-label tz-lg-dvde1">Amount</div>
+                        <div class="tz-lg-dvde2 text-center">
+                            <div  class="tz-display-amnt-pages" style="position: relative;">
+                                <span class="show-on-guest badge tz-badge" style="display:none;background: #0F4C81;color: #fff;border: 1px solid #0f4c81;position: absolute;right: -22px;">Free</span>
+                                <div class="tz-display-amount">
+                                    <i class="fas fa-rupee-sign tz-amount-icon"></i>
+                                    <div id="amountTxt"></div>
+                                </div>
+                                <div class="tz-display-pages">
+                                    Pages
+                                    <span id="pagesTxt"></span>
+                                </div>
+                            </div>
+                            <div class="show-on-guest text-center mt-8" style="display: none"><span style="background: #0f4c81;color: #fff;font-weight: bold;padding: 5px 10px;border-radius: 8px;">Your print is free</span></div>
+                        </div>
+                    </div>
+                    <div class="tz-btn-grp">
+                        <button type="button" class="btn waves-effect tz-prev-btn step2-prev-btn">Back</button>
+                        {% if user.is_authenticated %}
+                            <button id="step2-next-btn" type="button" class="btn waves-effect tz-next-btn">Next</button>
+                        {% else %}
+                            <button id="guestUploadSubmit" type="button" class="btn waves-effect tz-next-btn">Done</button>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="tz-btn-grp" id="sharing-form-btn">
+                    <button type="button" class="btn waves-effect tz-prev-btn step2-prev-btn">Back</button>
+                    <button  type="button" id="share-submit" class="btn waves-effect tz-next-btn">Done</button>
+                </div>
+        </div>
+        <!-- Step3 - Payment Options -->
+        <div  id="step3-container" class="tz-step-container">
+            <div class="tz-amnt-display">
+                <div class="tz-amnt-container">
+                    <div class="tz-amnt">Amount</div>
+                    <div class="tz-amnt-val">
+                        <i class="fas fa-rupee-sign"></i>
+                        <div id="amountPaymntTxt"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="tz-form-group flexforxl">
+                <div class="tz-form-label tz-lg-dvde1">Payment Mode</div>
+                <div class="tz-radiogrp tz-lg-dvde2">
+                    <div class="row tz-mb-s0">
+                        <div class="col tz-s6">
+                           <label id="label_coin" class="tz-radio" for="coin" style="width: 165px">
+                                <input id="coin" value="CO" class="with-gap" type="radio" name="payment_mode" required />
+                                <span class="pl-24">Coin</span>
+                                <span class="badge color-inherit ml-0">
+                                    <i class="fas fa-coins"></i>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="col tz-s6">
+                            <label id="label_wallet" class="tz-radio unlocked" for="wallet" style="width: 165px">
+                                <i class="fas fa-lock" style="display: none;"></i>
+                                <input id="wallet" value="AC" class="with-gap" type="radio" name="payment_mode"/>
+                                <span class="pl-24">Wallet</span>
+                                <span class="badge tz-badge hide-on-lock">
+                                    <i class="fas fa-rupee-sign"></i>
+                                    <span class="walletBalance"></span>
+                                </span>
+                            </label>
+                            <div class="lock-message" style="display:none;">
+                                <span>Wallet feature is locked. To unlock it you must Login.</span>
+                           </div>
+                            <div class="tz-printoption-small tz-pay-recharge-info hide-on-lock" id="walletLessInfo">
+                                <span>Your wallet balance is less than amount please <a href="{% url "wallets:view" %}">Recharge it.</a></span>
+                           </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="col tz-s12">
+                             <label id="label_free" class="tz-radio" for="free" style="width: 165px">
+                                <input id="free" value="FR" class="with-gap" type="radio" name="payment_mode"/>
+                                <span class="pl-24">Free</span>
+                                <span class="badge tz-badge hide-on-lock">
+                                    <i class="fas fa-rupee-sign"></i>
+                                    <span class="freeBalance"></span>
+                                </span>
+                            </label>
+                            <div class="tz-printoption-small tz-pay-recharge-info" id="freeLessInfo">
+                                <span>Your free balance is less than amount, <a href="{% url "customers:referral_list" %}">Refer to your friend</a> to earn more free balance. </span>
+                           </div>
+                           <!-- <div class="tz-printoption-small tz-pay-recharge-info" id="superNotForFree">
+                                <span>Super quality is not allowed in Free.</span>
+                            </div> -->
+                        </div>
+                    </div>
+                    <div class="tz-upload-help-text" id="infoTextPayCont" style="display: none;">
+                        <i class="fas fa-info-circle mr-4"></i>
+                        <span id="infoTextForPayMode">2₹ coin is not allowed.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="tz-btn-grp">
+                <button id="step3-prev-btn" type="button" class="btn waves-effect tz-prev-btn">Back</button>
+                <button  type="submit" id="step3-next-btn" class="btn waves-effect tz-next-btn">Done</button>
+            </div>
+        </form>
+        </div>
+        <!--Preview Loader-->
+        <div id="preview-loader" class="modal tz-preview-container">
+            <span class="modal-close waves-effect btn-flat">
+                <i class="fas fa-times"></i>
+            </span>
+            <div class="modal-content">
+                <div class="tz-loader"></div>
+            </div>
+        </div>
+        <!--Preview Modal Structure -->
+        <div id="preview-modal" class="modal tz-preview-container">
+                <div class="modal-header top-bar"  >
+                    <span class="tz-previewtopbar">
+                        <i id="prev" class="fas fa-chevron-left"></i>
+                        <!-- <i class="material-icons" id="prev" onclick="showPrevPage()">chevron_left</i> -->
+                        <span class="page-info tz-page-info">
+                            Page <span id="page-num"></span> of <span id="page-count"></span>
+                        </span>
+                        <i id="next" class="fas fa-chevron-right" ></i>
+                        <!-- <i class="material-icons" id="next" onclick="showNextPage()">chevron_right</i> -->
+                    </span>
+                    <span class="modal-close waves-effect btn-flat right">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                <div id="canvas-container" class="modal-content">
+                </div>
+        </div>
+    </div>
+    <br><br><br>
+{% endblock %}
+{% block custom_script_below %}
+    <script>
+        $(document).ready(function(){
+            // file add user is not authenticated
+            if( !isAuthenticated ){
+                // Color Locked
+                document.querySelector('#color').disabled = true;
+                document.querySelector('#wallet').disabled = true;
+            }
+        });
+    </script>
+{% endblock %}

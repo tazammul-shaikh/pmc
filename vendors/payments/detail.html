@@ -1,0 +1,54 @@
+{% extends "vendors/vendor_base.html" %}
+{% load hosts %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <div class="mdc-layout-grid">
+        <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+                <div class="mdc-card p-0">
+                  <h6 class="card-title card-padding pb-0">
+                      <i style="vertical-align: middle!important;" class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">payments</i>
+                      <span style="vertical-align: middle!important;"> Payment Details</span>
+                  </h6>
+                  <br>
+                  <div class="table-responsive">
+                    <table class="table table-hoverable">
+                      <tbody>
+                        <tr>
+                          <td class="text-left">Date</td>
+                          <td class="text-left">{{ payment.paid_on|date:"d/m/Y" }}</td>
+                        </tr>
+                        <tr>
+                          <td class="text-left">Amount</td>
+                          <td class="text-left">{{ payment.amount }}</td>
+                        </tr>
+                        <tr>
+                          <td class="text-left">Payment Method</td>
+                          <td class="text-left">{{ payment.payment_method }}</td>
+                        </tr>
+                        <tr>
+                          <td class="text-left">Account</td>
+                          <td class="text-left">{{ payment.account }}</td>
+                        </tr>
+                        <tr>
+                          <td class="text-left">Transaction ID</td>
+                          <td class="text-left">{{ payment.transaction_id }}</td>
+                        </tr>
+                        <tr>
+                          <td class="text-left">Reference</td>
+                          <td class="text-left">{{ payment.reference }}</td>
+                        </tr>
+                      </tbody>
+
+                    </table>
+                      <div style="margin: 10px">
+                      <a class="mdc-button mdc-button--unelevated mdc-ripple-upgraded" style="--mdc-ripple-fg-size:51px; --mdc-ripple-fg-scale:2.0247; --mdc-ripple-fg-translate-start:24.7813px, -6.5px; --mdc-ripple-fg-translate-end:17.5156px, -7.5px;">
+                        <i class="material-icons mdc-button__icon">help</i>
+                        Raise Query
+                      </a>
+                      </div>
+                  </div>
+                </div>
+              </div>
+    </div>
+{% endblock %}

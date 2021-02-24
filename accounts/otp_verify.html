@@ -1,0 +1,47 @@
+{% extends 'accounts/account_template.html' %}
+{% block title %}Verify OTP{% endblock %}
+{% block area %}
+    <h5 class="color-secondary font-bold mt-24">
+        <span class="border-bottom-2 font-size-2rem">Verify Mobile Number</span>
+    </h5>
+    <form method="POST" action="{% url "accounts:otp_verify" %}" id="verify-num-form" class="tz-account-form text-center mt-32 mb-32 form-error" errortext="">
+        <div class ="tz-form-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+        {% csrf_token %}
+        <div class="mb-16">Otp has been sent to you on <span style="font-weight: bold">+91 {{ request.session.session_user_phone }}</span>.<br>Please enter it below.</div>
+        <div class="mb-8">
+            <input class="browser-default tz-account-input" type="number" max="999999" name="otp" id="otp" errortext="{{ form.otp.errors.0 }}"/>
+        </div>
+        <div class ="tz-input-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+        <div>
+            <span class="color-primary" style="display: none" id="resent_message">OTP resent!</span>
+            <div id="resent_option">
+                Did'nt get the OTP? <a href="#" onclick="resendOTP();" class="link">Resend OTP</a>
+                <i class="fa fa-spinner fa-spin" style="font-size: 24px; display: none" id="form_loader"></i>
+            </div>
+        </div>
+        <div class="tz-account-btn-sec"><button class="btn waves-effect tz-account-btn">Verify</button></div>
+    </form>
+    <div class="tz-bottom-link-section">
+        <span>Already have an account ? </span><a href="{% url "accounts:login" %}" class="link">Login</a>
+    </div>
+{% endblock %}
+{% block custom_script_below %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        function resendOTP() {
+            $("#form_loader").show();
+            $.ajax({
+                method: "GET",
+                url: "{% url 'accounts:otp_resend' %}",
+                data: {},
+                success: function (response) {
+                    console.log(response);
+                    $("#resent_message").show();
+                    $("#resent_option").hide();
+                    $("#form_loader").hide();
+                }
+            })
+        }
+    </script>
+
+{% endblock %}

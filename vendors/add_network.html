@@ -1,0 +1,73 @@
+{#{% load hosts %}#}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Add New Network</title>#}
+{#</head>#}
+{#<body>#}
+{##}
+{#    <form method="post" action="{% host_url "vendors:add_network" host "vendors_host" %}">#}
+{#        {% csrf_token %}#}
+{#        <label>Network SSID</label>#}
+{#        <input required name="network_ssid">#}
+{#        <br>#}
+{#        <label>Network Password</label>#}
+{#        <input required name="network_password">#}
+{#        <br>#}
+{#        <input type="submit">#}
+{#    </form>#}
+{##}
+{#</body>#}
+{#</html>#}
+
+
+
+{% extends "vendors/vendor_base.html" %}
+{% load hosts %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+    <div class="mdc-layout-grid">
+        <div class="mdc-layout-grid__inner">
+          <div class="stretch-card mdc-layout-grid__cell--span-4-desktop mdc-layout-grid__cell--span-1-tablet"></div>
+          <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-4-desktop mdc-layout-grid__cell--span-6-tablet">
+                <div class="mdc-card p-0">
+                    <h6 class="card-title card-padding pb-0">
+                        <i style="vertical-align: middle!important;" class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">wifi</i>
+                        <span style="vertical-align: middle!important;"> Add New Wifi Network</span>
+                        <hr>
+                    </h6>
+                    <br>
+                    <div style="padding: 10px 20px!important;">
+                        <form class="form" method="post" action="{% host_url "vendors:add_network" host "vendors_host" %}">
+                            {% csrf_token %}
+
+                            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+                                <div class="mdc-text-field w-100">
+                                    <input class="mdc-text-field__input" name="network_ssid" id="text-field-hero-input">
+                                    <div class="mdc-line-ripple"></div>
+                                    <label for="text-field-hero-input" class="mdc-floating-label">Network Name (SSID)</label>
+                                </div>
+                            </div>
+                            <br>
+
+                            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+                                <div class="mdc-text-field w-100">
+                                    <input class="mdc-text-field__input" name="network_password" type="text" id="text-field-hero-input">
+                                    <div class="mdc-line-ripple"></div>
+                                    <label for="text-field-hero-input" class="mdc-floating-label">Network Password</label>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="text-center">
+                                <button type="submit" class="mdc-button mdc-button--raised">Submit</button>
+                            </div>
+                            <br><br>
+                        </form>
+                    </div>
+                </div>
+              </div>
+        </div></div>
+    </div>
+{% endblock %}

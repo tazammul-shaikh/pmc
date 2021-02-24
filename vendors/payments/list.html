@@ -1,0 +1,49 @@
+{% extends "vendors/vendor_base.html" %}
+{% load hosts %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <div class="mdc-layout-grid">
+        <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+                <div class="mdc-card p-0">
+                  <h6 class="card-title card-padding pb-0">
+                      <i style="vertical-align: middle!important;" class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">payments</i>
+                      <span style="vertical-align: middle!important;"> Payments</span>
+                  </h6>
+                  <br>
+                  <div class="table-responsive">
+                    <table class="table table-hoverable">
+                      <thead>
+                        <tr>
+                          <th class="text-left">No.</th>
+                          <th>Date</th>
+                          <th>Amount</th>
+                          <th>Account</th>
+                          <th>Payment Method</th>
+                          <th>Transaction ID</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for payment in payments %}
+                            <tr>
+                              <td class="text-left">{{ forloop.counter }}</td>
+                              <td>{{ payment.paid_on|date:"d/m/Y" }}</td>
+                              <td>{{ payment.amount }}</td>
+                              <td>{{ payment.account.get_display_text }}</td>
+                              <td>{{ payment.payment_method }}</td>
+                              <td>{{ payment.transaction_id }}</td>
+                              <td>
+                                  <a href="{% host_url "vendors:payments_detail" host "vendors_host" host "vendors_host" id=payment.id %}" title="View">
+                                    <i style="vertical-align: middle!important;" class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">visibility</i>
+                                  </a>
+                              </td>
+                            </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+    </div>
+{% endblock %}

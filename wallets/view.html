@@ -1,0 +1,122 @@
+{% extends "portal/base.html" %}
+{% block title %}Account{% endblock %}
+{% block content %}
+    <div class="tz-container">
+        <h5 class="font-bold color-secondary">
+            <span class="border-bottom-2 font-size-2rem">Account</span>
+        </h5>
+        {% if user.is_authenticated %}
+            <div class="tz-account-block tz-wallet-container">
+                <div class="account-info">
+                    <span class="font-size-24 l-font-size-28">{{ wallet.customer.name }}</span>
+                    <span class="tz-edit-btn"><a href="{% url "accounts:update_profile" %}" class="link color-inherit">Edit</a></span>
+                    <div class="font-size-20 l-font-size-24">{{ wallet.customer.get_phone }}</div>
+                </div>
+                <div class="row tz-balance">
+                    {% if user.customer.is_vendor %}
+                        <div class="col m4 s12 text-center" style="margin-bottom: 12px" style="display: none">
+                            <div class=" card" style="padding: 12px 0;background: #0F4C81;color: #fff;max-width: 200px;margin: auto;">
+                                 <div class="mb--8" style="margin-bottom: -8px;"><i class="fas fa-money-bill"></i> Real Cash</div>
+                                <div class="tz-bal-value" style="color: #fff">
+                                    <i class="fas fa-rupee-sign tz-walletamount-icon"></i>
+                                    {{ wallet.real_money }}
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col m6 s12 text-center">
+                            <div class="mb--8" style="margin-bottom: -8px;">Wallet Balance</div>
+                            <div class="tz-bal-value">
+                                <i class="fas fa-rupee-sign tz-walletamount-icon"></i>
+                                {{ wallet.balance }}
+                            </div>
+                        </div>
+                        <div class="col m6 s12 text-center">
+                            <div class="mb--8" style="margin-bottom: -8px;">Free Balance</div>
+                            <div class="tz-bal-value">
+                                <i class="fas fa-rupee-sign tz-walletamount-icon"></i>
+                                {{ wallet.free_balance }}
+                            </div>
+                            <div class="font-size-14 font-bold color-grey">Contains footer at bootom of print</div>
+                            <a href="{% url "customers:referral_list" %}" class="font-size-14 font-bold color-primary underline">For Free Balance refer to you Friend.</a>
+                        </div>
+                    {% else %}
+                        <div class="col m6 s12 text-center">
+                            <div class="mb--8" style="margin-bottom: -8px;">Wallet Balance</div>
+                            <div class="tz-bal-value">
+                                <i class="fas fa-rupee-sign tz-walletamount-icon"></i>
+                                {{ wallet.balance }}
+                            </div>
+                        </div>
+                        <div class="col m6 s12 text-center">
+                            <div class="mb--8" style="margin-bottom: -8px;">Free Balance</div>
+                            <div class="tz-bal-value">
+                                <i class="fas fa-rupee-sign tz-walletamount-icon"></i>
+                                {{ wallet.free_balance }}
+                            </div>
+                            <div class="font-size-14 font-bold color-grey">Contains footer at bootom of print</div>
+                            <a href="{% url "customers:referral_list" %}" class="font-size-14 font-bold color-primary underline">For Free Balance refer to you Friend.</a>
+                        </div>
+                    {% endif %}
+                </div>
+    {#            <div class="tz-balance text-center">#}
+    {#                <div class="mb--8" style="margin-bottom: -8px;">Wallet Balance</div>#}
+    {#                <div class="tz-bal-value">#}
+    {#                    <i class="fas fa-rupee-sign tz-walletamount-icon"></i>#}
+    {#                    {{ wallet.balance }}#}
+    {#                </div>#}
+    {#            </div>#}
+                <div class="text-center mt-4 mb-4">
+                    <a href="{% url "wallets:history" %}" class="tz-wallet-history-btn">Wallet History</a>
+                </div>
+            </div>
+            <div class="tz-account-block">
+            <div class="font-size-16">Recharge Offers</div>
+            <div class="tz-offers-list">
+                <div class="tz-offer custom-recharge-container">
+                    <div class="tz-offer-header">Custom Recharge</div>
+                    <div class="custom-recharge-inp-block">
+                        <form method="post" id="customRechargeForm" action="{% url "recharges:initiate_recharge" %}">
+                            {% csrf_token %}
+                            <input required type="number" min="10" max="500" name="amount" id="customRecharge" class="browser-default tz-account-input">
+                        </form>
+                        <div class="custom-recharge-helptext">Enter Amount</div>
+                        <div class="custom-recharge-helptext">You can recharge any amount more than <i class="fas fa-rupee-sign"></i> 10.</div>
+                    </div>
+                    <div class="text-center mt-8">
+                        <button class="btn font-size-13" type="submit" form="customRechargeForm">Recharge</button>
+                    </div>
+                </div>
+                {% for offer in offer_packs %}
+                    <div class="tz-offer">
+                        <div class="tz-offer-header">{{ offer.name }}</div>
+                        <div class="tz-offer-tagline">Recharge of</div>
+                        <div class="tz-offer-price"><i class="fas fa-rupee-sign"></i>{{ offer.price }}</div>
+                        <div class="tz-offer-tagline">& get</div>
+                        <div class="tz-offer-price"><i class="fas fa-rupee-sign"></i>{{ offer.balance }}</div>
+                        <div class="tz-offer-info">in your wallet.</div>
+                        <div class="text-center mt-8">
+                            <form method="post" action="{% url "recharges:initiate_recharge" %}">
+                                {% csrf_token %}
+                                <input value="{{ offer.id }}" name="pack" hidden>
+                                <button class="btn tz-accountli-btn" data-toggle="modal" type="submit" data-target="#basicrechargemodal">Add Recharge</button>
+                            </form>
+{#                            <button class="btn font-size-13">Recharge</button>#}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+            <br><br>
+            <div class="text-center" style="max-width: 320px;margin: auto;">
+                <i class="fas fa-user-lock large color-primary" style="font-size: 8rem;"></i>
+                <h5 style="margin-top: 28px;" class="color-grey">You currently are not logged in! Please login/register to view your Account!</h5>
+                <div style="margin-top: 28px;">
+                    <a class="btn" href="{% url "accounts:login" %}" style="color: #0b355a;background: transparent;border: 1px solid;box-shadow: none;margin-right: 16px;">Login</a>
+                    <a class="btn" href="{% url "accounts:register" %}">Register</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

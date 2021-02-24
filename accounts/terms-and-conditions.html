@@ -1,0 +1,303 @@
+{% extends 'portal/base.html' %}
+{% load widget_tweaks %}
+{% block title %}Terms and Conditions{% endblock %}
+
+{% block custom_head_below %}
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
+    <style>
+        .tz-overflow{
+            padding-bottom: 0 !important;
+        }
+        .tz-footer{
+            margin-top: 0px !important;
+        }
+        .m-0{
+            margin:0;
+        }
+        .mb-4{
+            margin-bottom: 4px;
+        }
+        .ml-8{
+            margin-left:8px
+        }
+        .text-justify{
+            text-align: justify;
+        }
+        .tz-terms-conditions{
+            margin-bottom: 16px;
+        }
+        .tz-terms-conditions ol, .tz-terms-conditions ul{
+            padding-left: 24px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+{#    <div class="row tz-header">#}
+{#        <!-- Title Sub Header -->#}
+{#        <div class="col m6 s12 tz-title">#}
+{#            <a href="{% url "portal:home" %}" class="tz-logo-container left">#}
+{#                <span class="tz-brandname">Printmycopy</span>#}
+{#            </a>#}
+{#        </div>#}
+{#    </div>#}
+    {% block guest_mode_banner %}
+    {% endblock %}
+    <div class="container tz-terms-conditions">
+        <h4>Terms and Conditions</h4>
+        <h5>Printmycopy - Terms and Conditions - V01 - Sept 20</h5>
+        <div class="text-justify">
+           <h5 class="mb-4">Services</h5>
+           <div class="ml-8">
+                <div>PrintMyCopy.com is an online printing service provider offering two services.</div>
+                <ol class="m-0">
+                    <li>
+                        <h6 class="mb-4">Paid service:</h6>
+                        <div class="ml-8">The customer can avail this service by uploading the images and documents, choose a location, date & time for pickup and based on their order make an online payment.   </div>
+                    </li>
+                    <li>
+                        <h6 class="mb-4">Sponsored service:</h6>
+                        <div class="ml-8">The customer can avail this service by uploading the images and documents, choose a location and date & time for pickup. Here, the customer doesn't need to make any payment for their order, as this is a sponsored service. Every printed document of the order would have advertisements of the sponsor at the footer area. 3.The customer can choose either from both of the services.  </div>
+                    </li>
+                </ol>
+           </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Printing Associate</h5>
+            <div class="ml-8">
+                PrintMyCopy.com has partnered with local businesses to offer printing and delivery at their business to the customers. These printing associates are given printing machine (printers) by PrintMyCopy.com.5.These printing associates cannot charge our customers for printing services.These printing associates cannot deny our printing service to our customers, unless there is power breakdown, no internet/broadband service or printer not in working condition.In-order to fix or repair any breakdown in service, the printing associate & customer should report to Printmycopy.com.Vendor cannot collect any payment on our behalf from the customers. All payment collected are online method or coin access only.
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Advertiser</h5>
+            <div class="ml-8">
+                The Advertiser is an organization, which is sponsoring the free printing service.Their advertisements and promotions would be printed on the footer of the page.PrintMyCopy.com doesn't endorse or support the claims mentioned in the advertisement and is not liable for any loss.4.PrintMyCopy.com is merely offering advertising services in order to provide free service to its customers.
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Pricing</h5>
+            <div class="ml-8">
+                Pricing might change without prior notice.Prices may be change according to the usage of ink in the file that will be calculated by Artificial Intelligence (A.I) system.    
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Tax</h5>
+            <div class="ml-8">
+                All taxes included in the final MRP, which would be published on the website and the shopping cart.    
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Copyright</h5>
+            <div class="ml-8">
+                The customer shall be responsible for obtaining all necessary authority to reproduce pictures, artwork, photographs, etc. The customer will indemnify the Printmycopy.com and his agents from any claim arising thereof.   
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Proofs</h5>
+            <div class="ml-8">
+                The documents and images uploaded by the customer's is assumed as fine approval for print and the Printmycopy.com shall incur no liability for any errors not corrected by the customer in proofs so submitted.
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Variations in Quality</h5>
+            <div class="ml-8">
+                Every endeavor is made to maintain the quality of the printouts, but there might be variation in quality of the printouts.
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Delivery & Payment</h5>
+            <div class="ml-8">
+                Once, the order is only complete when the customer completes their order forms, uploads right quality of images, chooses a pickup location and makes a payment for their order or accepts sponsored printouts.
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Claims</h5>
+            <div class="ml-8">
+                If the customer feels that there that the printouts are of poor quality, delay delivery due to pickup location closed. Then the customer should immediately contact the customer service and explain their problems for resolution.All other claims should be made in writing to Printmycopy.com within 7 days of delivery. Printmycopy.com shall not be liable in respect of any claim unless the aforementioned requirements have been complied with except in any particular case where the customer proves that (a) it was not possible to comply with the requirements and (b) advice (where required) was given and the claim made as soon as reasonably possible.
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Liability</h5>
+            <div class="ml-8">
+                Printmycopy.com shall not be liable for any loss to the customer arising from delay due to power cuts, technical error, no broadband service or any act of nature. 
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Property & Data</h5>
+            <ul class="browser-default m-0">
+                <li>Printers, papers, and other materials are owned by the Printmycopy.com.</li>
+                <li>Customer’s device (Desktop, Laptop, Mobile, Tablet & USB used for uploading the images and documents would remain their property. Printmycopy.com is not liable for them.</li>
+                <li>Customer’s data, orders and transaction history would be hosted on Printmycopy.com's servers or any server selected.</li>
+            </ul>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Materials Uploaded by the Customer</h5>
+            <ul class="browser-default m-0">
+                <li>The Printmycopy.com may reject any order of the customer, which are found to be unsuitable during production.</li>
+                <li>Printmycopy.com will take every care to secure the best results, but responsibility will not be accepted for imperfect work caused by defects in or unsuitability of images or documents so supplied or specified. </li>
+                <li>User would be liable all uploaded material.</li>
+                <li>Uploaded file can be viewed by our system A.I & our legal team.</li>
+            </ul>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Illegal Matter</h5>
+            <ul class="browser-default m-0">
+                <li>Printmycopy.com shall not be required to print any matter which in its opinion is or may be of an illegal or libelous nature or an infringement of the proprietary or other rights of any third party.</li>
+                <li>Printmycopy.com shall be indemnified by the customer in respect of any claims, cost and expenses arising out of any libelous matter or any infringement of copyright, patent, design or of any other proprietary or personal rights contained in any material printed for the customer. The indemnity shall extend to any amounts paid on a lawyer's advice in settlement of any claim. Can disqualify user account with or without any reason any time.</li>
+            </ul>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Force Majeure</h5>
+            <div class="ml-8">
+                Printmycopy.com shall be under no liability if he shall be unable to carry out any provision of the contract for any reason beyond his control including (without limiting the foregoing) Act of God, legislation, war, fire, flood, drought, failure of power supply, lock-out, strike or other action taken by employees in contemplation or furtherance of a dispute or owing to any inability to procure materials required for the performance of the contract.  
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Proofing</h5>
+            <div class="ml-8">
+                As this is online printing service, the customer is supposed to proof read all documents and check the images, which they are uploading for printing. If you decide to bypass the proofing stage for whatever reason, Printmycopy.com cannot be held responsible for any colour or content issues arising from doing so.
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Law</h5>
+            <div class="ml-8">
+                These conditions and all other express terms of the contract shall be governed and construed in accordance with the laws of Republic of India. 
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Payments & Billing</h5>
+            <ul class="browser-default m-0">
+                <li>The customers orders are processed securely using secured servers. </li>
+                <li>The customers are redirected to their servers when completing the checkout process on our store. </li>
+                <li>The accepted card payment methods are Rupay, Visa, Visa Debit, Visa and Master Cards, PayPal, PayTm, Google Pay, PhonePe, Online IMPS Payments.  We may change any above payment method & change with new service & third-party service. </li>
+                <li>Once, payment made the order is processed and you would receive the invoice in the preferred way you requested in your order sheet. It can be via email, SMS & WhatsApp.</li>
+                <li>Any 3rd party payment etc. user should be aware of it. Privacy Policy before proceeding with payment. IOT Excel will not be liable for it. </li>
+            </ul>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Refund Policy</h5>
+            <div class="ml-8">
+                We don't not offer refunds. As this is photocopy and printing service, any document/documents you uploaded would be printed. We are not liable for poor quality images as you are uploading your documents for using our service.  
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Privacy Policy</h5>
+            <div class="ml-8">
+                This Privacy Policy explains what happens to any personal data that you provide to us, or that we collect from you while you visit our site.
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Information We Collect </h5>
+            <ul class="browser-default m-0">
+                <li>We may collect and process the following data about you:</li>
+                <li>Information about your use of our site including details of your visits such as pages viewed and the resources that you access. Such information includes traffic data, location data and other communication data.</li>
+                <li>Information provided voluntarily by you. For example, when you register for information or make a purchase. </li>
+                <li>Information that you provide when you communicate with us by any means.</li>
+                <li>Devices files while uploading required transaction details of payment.</li>
+            </ul>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Use of Cookies </h5>
+            <ul class="browser-default m-0">
+                <li>We use cookies to gather information about the site visitor's or customer’s computer/mobile/tablet in order to assist us in improving our website and ensure that we provide the best possible user experience at PrintMyCopy.com for the visitor/visitors.</li>
+                <li>Cookies help us in gathering information about your general usage of the Internet.</li>
+                <li>Cookies are downloaded visitor's or customer’s computer/mobile/tablet and, stored on the hard drive. </li>
+                <li>Cookies don't provide information or identify you personally or your organization.</li>
+                <li>Cookies are statistical data and does not identify any personal/organizational details whatsoever.</li>
+                <li>Location to navigate print-stations. </li>
+            </ul>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Disabling Cookies</h5>
+            <ul class="browser-default m-0">
+                <li>Cookies can be easily disabled by changing the settings on the computer.</li>
+                <li>Anytime the visitor/customer can decline any cookies by activating the reject cookies setting on the computer.</li>
+                <li>Cookies can be deleted visitor's or customer’s computer/mobile/tablet by going to browser setting and delete history and cookies.</li>
+                <li>If, visitor/customer continue using Printmycopy.com without adjusting your settings, it would be assumed that visitor/customer agree to receive all cookies on our website.</li>
+            </ul>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Usage of Information</h5>
+            <div class="ml-8">
+                The information provided by you (the customer) is collected to provide our services to you (the customer). In addition to this we may use the information for one or more of the following purposes:
+                <ol class="m-0">
+                    <li>To provide information to our customer requests from us regarding our products or services.</li>
+                    <li>To provide information to customer relating to other products that may be of interest to them. These additional information is only provided to consented customers, who agree to receive such information.</li>
+                    <li>To inform customer about any changes to our website, services or goods and products..</li>
+                    <li>The customer profile information may be shared with sponsors to choose all type of files you upload (profile details). This would be only done for sponsored prints services.</li>
+                </ol>
+                If you (the customer) have previously purchased goods or services from us we may provide to you details of similar goods or services, or other goods and services, that you may be interested in.Where your consent has been provided in advance we may allow selected third parties to use your data to enable them to provide you with information regarding unrelated goods and services which we believe may interest you. Where such consent has been provided it can be withdrawn by you at any time.
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Storage Customer’s Personal Data</h5>
+            <ul class="browser-default m-0">
+                <li>By providing your (the customer) personal data to us, you agree to this transfer, storing or processing.</li>
+                <li>All reasonable steps are under taken to make sure that your data is treated and stored securely.</li>
+                <li>Unfortunately the sending of information via the internet is not totally secure and on occasion such information can be intercepted. We cannot guarantee the security of data that you choose to send us electronically, Sending such information is entirely at your own risk.</li>
+            </ul>
+        </div>
+        <div class="text-justify"> 
+            <h5 class="mb-4">Disclosing Customer Information</h5>
+            <div class="ml-8">
+                We would not disclose your (the customer) personal information to any other party other than in accordance with this Privacy Policy and in the circumstances detailed below:
+                <ul class="browser-default m-0">
+                    <li>In the event that we sell any or all of our business to the buyer.</li>
+                    <li>In the event our company is merged with any other business.</li>
+                    <li>Where we are legally required by law to disclose your personal information.</li>
+                    <li>To further fraud protection and reduce the risk of fraud.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Third Party Links</h5>
+            <div class="ml-8">
+                On occasion we include links to third parties on this website. Where we provide a link it does not mean that we endorse or approve that site’s policy towards visitor privacy. You should review their privacy policy before sending them any personal data.
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Sponsored Co (Free Copies)</h5>
+            <div class="ml-8">
+                The company reserves all the rights to print any advertisement on footer of sponsor or free copies of any company & any products.
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Print Code: </h5>
+            <div class="ml-8">
+                All customers would be issued secret print-codes to pickup their printed copies from the vendors. Print-code shared by you to other is as good as sharing file all the responsibility of sharing print-code. Remains with user, incase of any misuse or loss. Print-code is to share with confidential person. Print-Code of print file is totally secret, you are not suggested to share it with anyone. Anyone having secret print-code attached with your file may access and print your file. Printmycopy.com is not liable to any privacy , physical, mental  or financial loss.
+                <ul class="browser-default m-0">
+                    <li>In-order to use our services, the customer should read and agree to the Privacy policy & T&C.</li>
+                    <li>No payment to be made directly to any vendor. All payment/s collected are online method or coin access only.</li>
+                    <li>Refund. ???</li>
+                    <li>Print Station (Printer & Printing Unit) is property of IOT Excel.</li>
+                    <li>Any problem arising out of website or print-station (Printing Unit) will be send through complaint section mention in Printmycopy.com.</li>
+                    <li>Printmycopy will try to attend your problem as soon as possible but  it is not time bounded.</li>
+                    <li>Color/s selected in file may change in the printouts.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-justify">
+            <h5 class="mb-4">Account Section: </h5>
+            <ul class="browser-default m-0">
+                <li>Anyone having your username & password can access account and your file. We are not liable incase your username & password access by another person.</li>
+                <li>We can legally change our popper quality and ink type without information.</li>
+                <li>Uploaded file and printed file may change in structure due to technical issue arising in conversion type.</li>
+                <li>Margin in paper may change in actual printout.</li>
+                <li>Some file not be uploaded due to unacceptable format by our system.</li>
+                <li>Acceptable file format & type may change without prior notice.</li>
+                <li>We can change printing technology & printing system & interface.</li>
+                <li>Shop timing display on website may not be actual sometime.</li>
+                <li>It is self-operating machine so no person will be there to attend you.</li>
+                <li>In case of any tech issue, you may contact Printmycopy complaint section or customer support.</li>
+                <li>If you insert any non-acceptable coin in coin acceptor. It will be not refundable.</li>
+                <li>We can change acceptable coin anytime.</li>
+                <li>File printing process may stop due to electricity or non-technical issue. IOT Excel is not liable for any loss of time, money or anything.</li>
+            </ul>
+        </div>
+    </div>
+{#    <footer class="page-footer tz-footer">#}
+{#        <div class="text-center">#}
+{#            2020 ©#}
+{#            <a href="https://www.printmycopy.com"> PrintMyCopy.com</a>#}
+{#        </div>#}
+{#    </footer>#}
+{% endblock %}

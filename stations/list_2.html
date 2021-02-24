@@ -1,0 +1,41 @@
+{% extends 'portal/base.html' %}
+{% block title %}Print Stations{% endblock %}
+{% block content %}
+    <div class="tz-container">
+        <h5 class="font-bold color-secondary">
+            <span class="border-bottom-2 font-size-2rem">Print Stations</span>
+        </h5>z
+        <div>
+            <div class="station-table mt-32">
+                {% for station in stations %}
+                    <div class="tr">
+                        <div>
+                            <span class="primary-bold-text table-header">{{ station.name }}</span>
+                            <span class="right table-content color-primary font-bold">{{ station.station_code }}</span>
+                        </div>
+                        <div class="mb-4">
+                            <span class="td-label-left">Open Time:</span>
+                            <span class="ml-8 table-content">{{ station.get_open_time }}</span>
+                        </div>
+                        <div class="mb-4">
+                            <div class="td-label-left vertical-top">Address:</div>
+                            <div class="table-address-content table-content">{{ station.address }}</div>
+                        </div>
+                        <div>
+                            <span class="vertical-text-top">
+                                <span class="td-label-left">Pincode:</span>
+                                <span class="ml-8 table-content">{{ station.part.code }}</span>
+                            </span>
+                            <span class="right">
+                                <span class="td-label">Map Link: </span>
+                                <a target="_blank" href="{{ station.map_link }}">
+                                    <i class="fas fa-map-marker-alt color-secondary ml-8 font-size-20"></i>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

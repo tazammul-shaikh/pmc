@@ -1,0 +1,40 @@
+{% extends "portal/base.html" %}
+{% load static %}
+{% block title %}{{ recharge.get_display_text }}{% endblock %}
+{% block body %}
+    <div class=" text-center">
+            <br>
+            <div class="tz-accountli-heading"><h3>{{ offer_pack.get_display_text }}</h3></div>
+            <hr>
+            <div class="tz-accountli-price"><i class="fas fa-rupee-sign tz-accountli-priceicn"></i>{{ offer_pack.get_price }}
+            </div>
+            <div class="text-black-50" ><h4>{{ offer_pack.headline }}</h4></div>
+            <div>You Save : <span class="tz-account-fontweight">{{ offer_pack.get_extra_balance }}</span></div>
+            <div>Total Balance : <span class="tz-account-fontweight">{{ offer_pack.get_balance }}</span></div>
+            <br>
+            <form action="{{ offer_pack.get_make_recharge_url }}" method="post">
+                {% csrf_token %}
+                <h5 class="text-black-50">Select Payment Gateway</h5>
+                <div class="col-md text-center">
+                         <div class=" custom-control-inline">
+                            <input value="PAYU" name="gateway"  id="payu" type="radio" class="custom-control-input"  required>
+                            <label class="tz-paymentlabel" id="payu-label" for="payu" onclick="paymentMethodChange(this.id)">
+                                <img style="width: 80px;" src="{% static "images/payu.svg" %}">
+                            </label>
+                        </div>
+                        <div class=" custom-control-inline">
+                            <input value="PAYTM" name="gateway" id="paytm" type="radio" class="custom-control-input"  >
+                            <label class="tz-paymentlabel" id="paytm-label" for="paytm" onclick="paymentMethodChange(this.id)">
+                                <img style="width: 80px;height: 50px;" src="{% static "images/paytm.svg" %}">
+                            </label>
+                        </div>
+                </div>
+                <div style="margin-top:32px">
+                    <button class="btn tz-getotpbtn">Recharge Now</button>
+                </div>
+            </form>
+            <br>
+            <p>by clicking Recharge button you will be redirected to other website.</p>
+    </div>
+{% endblock %}
+

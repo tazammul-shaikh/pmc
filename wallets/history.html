@@ -1,0 +1,94 @@
+{% extends "portal/base.html" %}
+{% block title %}Wallet History{% endblock %}
+{% block content %}
+    <div class="tz-container">
+        <h5 class="font-bold color-secondary">
+            <span class="border-bottom-2 font-size-2rem">Wallet History</span>
+        </h5>
+        {% if recharges or transactions or refunds or wallet_bonuses %}
+            <table id="wallet-history" class="tz-simple-table striped">
+            <tr>
+                <th>Date Time</th>
+                <th>Detail</th>
+                <th>Amount</th>
+            </tr>
+            {% for referral in referrals %}
+                <tr>
+                   <td class="datetime">{{ referral.created_on|date:"d/m/Y H:i:s" }}</td>
+                    <td>
+                        <div>Referral</div>
+                        <div>{{ referral.customer.get_hidden_text }}</div>
+                    </td>
+                    <td>
+                        <span class="tz-wallet-badge green-text">+ {{ referral.referral_bonus }} ({{ referral.get_bonus_type_display }})</span>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% for transaction in transactions %}
+                <tr>
+                   <td class="datetime">{{ transaction.created_on|date:"d/m/Y H:i:s" }}</td>
+                    <td>
+                        <div>Print</div>
+                        <div>{{ transaction.get_print_codes }}</div>
+                    </td>
+                    <td>
+                        <span class="tz-wallet-badge red-text">- {{ transaction.amount }}  {% if transaction.payment_mode == "FR" %}(FB){% endif %}</span>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% for lazy_print in lazy_prints %}
+                <tr>
+                    <td class="datetime">{{ lazy_print.created_on|date:"d/m/Y H:i:s" }}</td>
+                    <td>
+                        <div>Print</div>
+                        <div>{{ lazy_print.transaction.get_print_codes }}</div>
+                    </td>
+                    <td>
+                        <span class="tz-wallet-badge red-text">- {{ lazy_print.amount }}  {% if lazy_print.payment_mode == "FR" %}(FB){% endif %}</span>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% for recharge in recharges %}
+                <tr>
+                    <td class="datetime">{{ recharge.created_on|date:"d/m/Y H:i:s" }}</td>
+                    <td>
+                        <div>Recharge</div>
+                        <div>{{ recharge.pack_name }}</div>
+                    </td>
+                    <td><span class="tz-wallet-badge green-text">+ {{ recharge.credited_balance }}</span></td>
+                </tr>
+            {% endfor %}
+            {% for refund in refunds %}
+                <tr>
+                    <td class="datetime">{{ refund.created_on|date:"d/m/Y H:i:s" }}</td>
+                    <td>
+                        <div>Remark</div>
+                        <div>{{ refund.remark }}</div>
+                    </td>
+                    <td><span class="tz-wallet-badge green-text">+ {{ refund.amount }} {% if refund.balance_type == "FB" %}(FB){% endif %}</span></td>
+                </tr>
+            {% endfor %}
+            {% for wallet_bonus in wallet_bonuses %}
+                <tr>
+                    <td class="datetime">{{ wallet_bonus.created_on|date:"d/m/Y H:i:s" }}</td>
+                    <td>
+                        <div>Remark</div>
+                        <div>{{ wallet_bonus.remark }}</div>
+                    </td>
+                    <td><span class="tz-wallet-badge green-text">+ {{ wallet_bonus.amount }} {% if wallet_bonus.balance_type == "FB" %}(FB){% endif %}</span></td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            <br><br>
+            <h5 class="text-center">Nothing to show yet!</h5>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block custom_script_below %}
+<script>
+    sortByDate();
+</script>
+{% endblock %}
+

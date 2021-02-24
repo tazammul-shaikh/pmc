@@ -1,0 +1,55 @@
+{% extends 'accounts/account_template.html' %}
+{% load widget_tweaks %}
+{% block title %}Login{% endblock %}
+
+{% block area %}
+    <h5 class="color-secondary font-bold mt-24">
+        <span class="border-bottom-2 font-size-2rem">Login</span>
+    </h5>
+    <form method="POST" action="{% url "accounts:login" %}" id="sign-in-form" onsubmit="return validateSignIn()"  errortext="{{ form.non_field_errors.0 }}" class="tz-account-form form-error">
+        {% csrf_token %}
+        <input id="next_url" type="hidden" name="next_url" value="">
+        <div class ="tz-form-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+        <div id="mobile-number-block" class="tz-form-group">
+            <label for="mobile-number" class="tz-form-label" id="mobile-number-label">Mobile Number</label>
+            <div  class="tz-relative">
+                <span class="tz-default-num">+91</span>
+                <input type="number" name="phone" id="mobile-number" errortext="{{ form.username.errors.0 }}" data-mask="0000000000" required class="browser-default tz-account-input tz-remaining-num tz-rmvbtn-num-input"/>
+            </div>
+            <div class = "tz-input-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+        </div>
+        <div id="password-block" class="tz-form-group" >
+            <label for="sign-in-password" class="tz-form-label" id="password-label">Password</label>
+            <div  class="tz-relative">
+                <input type="password" name="password" id="sign-in-password" errortext="{{ form.password.errors.0 }}" required class="browser-default tz-account-input tz-password-input {% if form.errors %}error_class{% endif %}"/>
+                <span class="tz-psswdicon-pos showPassword"><i class="fas fa-eye-slash font-size-20"></i></span>
+            </div>
+            <div class = "tz-input-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+            <div class="tz-forgotlink-div">
+                <a href="{% url "accounts:forgot_password" %}" class="link">Forgot your password ?</a>
+            </div>
+        </div>
+        <div class="tz-account-btn-sec"><button class="btn waves-effect tz-account-btn"> Login</button></div>
+    </form>
+    <div class="tz-bottom-link-section">
+        <span>Dont't have an account ? </span><a href="{% url "accounts:register" %}" id="signup_url" class="link ">Register Now</a>
+    </div>
+    <hr style="max-width: 100px">
+    <div class="tz-bottom-link-section">
+        <br>
+        <a href="{% url "accounts:pmc_for_teachers" %}" id="signin_url" class="link"><i class="fa fa-chalkboard-teacher"></i> PrintMyCopy for Teachers</a>
+    </div>
+{% endblock %}
+{% block custom_script_below %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $(function () {
+            let url = new URL(window.location.href);
+            let next_url = url.searchParams.get('next');
+            if (next_url !== null){
+                $("#next_url").val(next_url);
+                $("#signup_url").attr("href", $("#signup_url").attr("href") + "?next=" + next_url);
+            }
+        })
+    </script>
+{% endblock %}

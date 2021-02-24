@@ -1,0 +1,95 @@
+{% extends 'accounts/account_template.html' %}
+{% load widget_tweaks %}
+{% block title %}Registration{% endblock %}
+{% block custom_head_above %}
+    <style>
+        .referralContainerHide{
+            display: none !important;
+        }
+        .referralContainerShow{
+            display: block !important;
+        }
+    </style>
+{% endblock %}
+{% block area %}
+    <h5 class="color-secondary font-bold mt-24">
+        <span class="border-bottom-2 font-size-2rem">Registration</span>
+    </h5>
+    <form method="POST" id="sign-up-form" class="tz-account-form form-error" errortext="{{ form.non_field_errors.0 }}" onsubmit="return validateSignUp()" action="{% url "accounts:register" %}">
+        <div class ="tz-form-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+        <input id="next_url" type="hidden" name="next_url" value="">
+        {% csrf_token %}
+        <div id="mobile-number-block" class="tz-form-group">
+            <label class="tz-form-label" id="mobile-number-label">Mobile Number</label>
+            <div  class="tz-relative">
+                <span class="tz-default-num">+91</span>
+                <input type="number" name="phone" id="mobile-number" data-mask="0000000000" errortext="{{ form.phone.errors.0 }}" class="browser-default tz-account-input tz-remaining-num tz-rmvbtn-num-input"  required/>
+            </div>
+            <div class= "tz-input-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+        </div>
+        <div id="password-block" class="tz-form-group" >
+            <label class="tz-form-label" id="password-label">Password</label>
+            <div  class="tz-relative">
+                <input  type="password" name="password1" id="sign-up-password1" errortext="{{ form.password1.errors.0 }}"  class="browser-default tz-account-input tz-password-input" required/>
+                <span class="tz-psswdicon-pos showPassword"><i class="fas fa-eye font-size-20"></i></span>
+            </div>
+            <div class = "tz-input-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+        </div>
+        <div id="password-block" class="tz-form-group confirm_password_section" style="display: none">
+            <label class="tz-form-label" id="password-label">Confirm Password</label>
+            <div  class="tz-relative">
+                <input  type="password" name="password2" id="sign-up-password2" errortext="{{ form.password2.errors.0 }}"  class="browser-default tz-account-input tz-password-input" required/>
+                <span class="tz-psswdicon-pos showPassword"><i class="fas fa-eye-slash font-size-20"></i></span>
+            </div>
+            <div class = "tz-input-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+        </div>
+        <div class="tz-form-group" id="referralContainer">
+            <label class="tz-form-label">Referral Code <span class="right" style="font-size: 13px;color: #808080;">(Optional)</span></label>
+            <div  class="tz-relative">
+                <input  type="number" name="referred_by" id="referalCode" data-mask="0000000000" errortext="{{ form.referred_by.errors.0 }}"  class="browser-default tz-account-input tz-rmvbtn-num-input"/>
+            </div>
+            <div  class = "tz-input-error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+        </div>
+        <div class="tz-form-group" >
+            <p>
+                <label for="agree-conditions">
+                <input type="checkbox" required id="agree-conditions"/>
+                <span class="color-black" id="i-agree-text"> I have read and agree to the <a href="{% url "accounts:terms_and_conditions" %}" target="_blank" class="link">Terms and Conditions</a></span>
+                </label>
+            </p>
+        </div>
+        <div class="tz-account-btn-sec"><button class="btn waves-effect tz-account-btn">Register</button></div>
+    </form>
+    <div class="tz-bottom-link-section">
+        <span>Already have an account ? </span><a href="{% url "accounts:login" %}" id="signin_url" class="link">Login</a>
+    </div>
+    <hr style="max-width: 100px">
+    <div class="tz-bottom-link-section">
+        <br>
+        <a href="{% url "accounts:pmc_for_teachers" %}" id="signin_url" class="link"><i class="fa fa-chalkboard-teacher"></i> PrintMyCopy for Teachers</a>
+    </div>
+{% endblock %}
+{% block custom_script_below %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $(function () {
+            $("#sign-up-password1").on("keyup", function (){
+                $("#sign-up-password2").val($(this).val());
+            })
+
+            let url = new URL(window.location.href);
+            let referred_by = url.searchParams.get('rfr');
+            if (referred_by !== null){
+                $("#referalCode").val(referred_by);
+                $('#referalCode').prop('readOnly', true);
+            }
+
+            let next_url = url.searchParams.get('next');
+            if (next_url !== null){
+                $("#next_url").val(next_url);
+                $("#signin_url").attr("href", $("#signin_url").attr("href") + "?next=" + next_url);
+            }
+
+        });
+    </script>
+{% endblock %}

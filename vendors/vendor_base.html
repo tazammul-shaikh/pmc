@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block full_title %}{% block title %}Dashboard{% endblock %} - Vendor Printmycopy{% endblock %}</title>
+    <link rel="shortcut icon" href="{% static "images/pmc_icon.png" %}">
+    {% block custom_head_above %}
+    {% endblock %}
+    <link rel="stylesheet" href="{% static "vendors_static/vendors/mdi/css/materialdesignicons.min.css" %}">
+    <link rel="stylesheet" href="{% static "vendors_static/vendors/css/vendor.bundle.base.css" %}">
+    <link rel="stylesheet" href="{% static "vendors_static/vendors/flag-icon-css/css/flag-icon.min.css" %}">
+    <link rel="stylesheet" href="{% static "vendors_static/vendors/jvectormap/jquery-jvectormap.css" %}">
+    <link rel="stylesheet" href="{% static "vendors_static/css/demo/style.css" %}">
+    {% block custom_head_below %}
+    {% endblock %}
+</head>
+<body>
+<script src="{% static "vendors_static/js/preloader.js" %}"></script>
+    <div class="body-wrapper">
+        {% if request.user.is_authenticated %}
+            {% include "vendors/sidebar.html" %}
+        {% endif %}
+        <div class="main-wrapper mdc-drawer-app-content">
+        {% if request.user.is_authenticated %}
+            {% include "vendors/header.html" %}
+        {% endif %}
+
+            <div class="page-wrapper mdc-toolbar-fixed-adjust">
+                <main class="content-wrapper">
+                    {% block content %}
+                    {% endblock %}
+                </main>
+                {% if request.user.is_authenticated %}
+                    {% include "vendors/footer.html" %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+  <script src="{% static "vendors_static/vendors/js/vendor.bundle.base.js" %}"></script>
+  <script src="{% static "vendors_static/vendors/chartjs/Chart.min.js" %}"></script>
+  <script src="{% static "vendors_static/vendors/jvectormap/jquery-jvectormap.min.js" %}"></script>
+  <script src="{% static "vendors_static/vendors/jvectormap/jquery-jvectormap-world-mill-en.js" %}"></script>
+  <script src="{% static "vendors_static/js/material.js" %}"></script>
+  <script src="{% static "vendors_static/js/misc.js" %}"></script>
+  <script src="{% static "vendors_static/js/dashboard.js" %}"></script>
+
+  <script>
+      $(function (){
+          let url = window.location.pathname;
+          $(".mdc-drawer-link").each(function (){
+              if ($(this).attr("href") === url) {
+                  $(this).addClass("active");
+              }
+          })
+
+      })
+  </script>
+
+    {% block custom_script_below %}
+    {% endblock %}
+
+</body>
+</html>

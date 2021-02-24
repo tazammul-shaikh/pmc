@@ -1,0 +1,216 @@
+{% load static %}
+<!-- <button class="btn modal-trigger" data-target="printModal" click="printNow()">Print</button> -->
+    <!-- Print File Model  --> 
+<div id="printModal" class="modal">
+    <div class="modal-content" style="padding: 0">
+        <div style="padding: 10px;background: aliceblue;">
+            <span class="modal-close" style="color: #0b355a;background: transparent;box-shadow: none;margin-bottom: 6px;font-size: 18px;"><i class="fas fa-long-arrow-alt-left" style="font-size: 24px;vertical-align: middle;"></i> Back</span>
+        </div>
+        <div id="print-code-error" class="base-alert text-center tz-alert alert-debug">
+            <i class="fas fa-exclamation-circle"></i>
+            <span class="message" id="printCodeError"></span>
+{#                <button type="button" class="alert-close">#}
+{#                    <i class="fas fa-times"></i>#}
+{#                </button>#}
+        </div>
+        <div class="divider mb-12"></div>
+        <div style="padding: 4px 20px">
+
+{#                <div  class="mt-4  red-text mb-8" style="display: nones; width: 100%; padding: 5px; ">#}
+{#                    <i class="fas fa-exclamation-circle font-size-20"></i>#}
+{##}
+{#                </div>#}
+            <form action="{% url "transactions:print_now" %}" method="post" id="print_now" style="display: none">
+                {% csrf_token %}
+                <div style="font-size: 18px; color: #555555; text-overflow: ellipsis; width: 100%; display: inline-block; overflow: hidden">
+                    <h4 style="display:inline-block;" class="primary-bold-text font-size-24">Print File :</h4>
+                    <a href="#preview-modal" id="print_file_name" data-url="" class="modal-trigger preview-model-event font-bold color-primary"><span></span><i class="fas fa-eye ml-4 font-size-16"></i></a>
+                </div>
+                <p>You have to be in front of our print-station to start print.</p>
+                <div id="station-pin-container">
+                    <p>Find our print-stations from <a href="{% url "stations:list" %}"><u><b>here</b></u></a></p><br>
+                    <div class="primary-bold-text mb-4">PIN ( Written on Station Screen ):</div>
+                    <input required type="number" name="scr_no" id="scr_no" class="browser-default tz-printoption-input tz-rmvbtn-num-input mb-4 tz-rmvbtn-num-input" data-mask="00000">
+                    <div id="pin-input-error" class="red-text lighten-1 mt-4" style="display: none;">
+                        <i class="fas fa-exclamation-circle font-size-18"></i>
+                        <span class="vertical-top font-size-13">Please enter a valid PIN .</span>
+                    </div>
+                    <!-- <div class="tz-printoption-small page-range-error" style="display: none">
+                        <span></span>
+                   </div> -->
+                    <div style="text-align: center">
+                        <button type="button" class="btn" id="station-pin-form" style="width: 75%;margin-top: 16px;">Done</button>
+                        <!-- {% if user.is_authenticated %}
+                            <button type="submit" class="btn"  style="width: 75%;margin-top: 16px;"><i class="fa fa-print"></i> Start Print</button>
+                        {% else %}
+                            <button id="guestPrintSubmit" class="btn"  style="width: 75%;margin-top: 16px;"><i class="fa fa-print"></i> Start Print</button>
+                        {% endif %} -->
+                        <br><br><br><br>
+                    </div>
+                </div>
+                <div id="payment-mode" style="margin-bottom: 8px;display: none;">
+                    <div id="high_rate_msg" class="tz-highlight-div" style="display: none;margin-bottom: 16px;">File consume more ink hence rate is quite high!</div>
+                    <div class="primary-bold-text mb-4">Color Mode</div>
+                    <div class="tz-radiogrp" style="margin-bottom: 16px;">
+                        <label id="label_black" class="tz-radio tz-radio-active tz-radiolm color-mode-radio" for="black">
+                            <input id="black" value="BW" class="with-gap" type="radio" name="share_color_mode" checked/>
+                            <span class="pl-24">Black</span>
+                            <!-- <span class="badge">
+                                <img src="{% static "images/black.png" %}">
+                            </span> -->
+                            <span class="badge tz-badge">
+                                <i class="fas fa-rupee-sign"></i>
+                                <span id="blackRate">2</span>
+                            </span>
+                        </label>
+                        <label id="label_color" class="tz-radio color-mode-radio tz-radio unlocked" for="color">
+                            <i class="fas fa-lock" style="display:none"></i>
+                            <input id="color" value="CL" class="with-gap" name="share_color_mode" type="radio"/>
+                            <span class="pl-24">Color</span>
+                            <!-- <span class="badge">
+                                <img src="{% static "images/color.png" %}">
+                            </span> -->
+                            <span class="badge tz-badge">
+                                <i class="fas fa-rupee-sign"></i>
+                                <span id="colorRate">3</span>
+                            </span>
+                        </label>
+                        <div class="lock-message">
+                            <span>Color feature is locked. To unlock it you must Login.</span>
+                       </div>
+                    </div>
+                    <!-- <div class="primary-bold-text mb-4">Quality Mode</div>
+                    <div class="tz-radiogrp" style="margin-bottom: 16px;">
+                        <label id="label_eco" class="tz-radio quality-radio tz-radio-active tz-radiolm" for="eco">
+                            <input id="eco" value="EC" class="with-gap" type="radio" name="share_quality"  checked />
+                            <span class="pl-24">Eco</span>
+                            <span class="badge tz-badge">
+                                <i class="fas fa-rupee-sign"></i>
+                                <span id="ecoRate">2</span>
+                            </span>
+                        </label>
+                        <label id="label_super" class="tz-radio quality-radio" for="super">
+                            <input id="super" value="SP" class="with-gap" name="share_quality" type="radio"/>
+                            <span class="pl-24">Super</span>
+                            <span class="badge tz-badge">
+                                <i class="fas fa-rupee-sign"></i>
+                                <span id="superRate">3</span>
+                            </span>
+                        </label>
+                        <div class="tz-upload-help-text">
+                            <i class="fas fa-info-circle mr-4"></i>
+                            <span id="qualityHelpText">For superior quality select Super</span>
+                        </div>
+                    </div> -->
+                    <div id="share_page_range_section">
+                        <div class="primary-bold-text mb-4">Pages to Print</div>
+                        <div class="tz-radiogrp" style="margin-bottom: 16px;">
+                            <label id="label_all_pages" class="tz-radio pages-to-print-radio tz-radio-active tz-radiolm" for="all_pages">
+                                <input id="all_pages" value="AP" class="with-gap" type="radio" name="share_page_range_type" checked>
+                                <span class="pl-24">All Pages</span>
+                            </label>
+                            <label id="label_custom_pages" class="tz-radio pages-to-print-radio" for="custom_pages">
+                                <input id="custom_pages" value="CP" class="with-gap" name="share_page_range_type" type="radio"/>
+                                <span class="pl-24">Custom Pages</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div id="share-custom-range-block" style="display: none;">
+                        <div class="primary-bold-text mb-4" id="custom-range-label">Custom Page Range</div>
+                        <div  class=" text-center" style="margin-bottom: 16px;">
+                            <div class="tz-custom-range-placment" id="custom-range-input-block">
+                                <input class="browser-default tz-printoption-input" type="text" name="page_range" id="share_custom_range"/>
+                                <div class="tz-printoption-small">For example: 1, 3-5, 12</div>
+                                <div id="custom-range-error" class="red-text lighten-1 mt-4">
+                                    <i class="fas fa-exclamation-circle font-size-18"></i>
+                                    <span class="vertical-top font-size-13" id="page-range-error-text">Please enter a valid page range.</span>
+                                </div>
+                                <div class="tz-printoption-small page-range-error" style="display: none">
+                                    <span>Your file contains <span id="sh_total_pages"></span> pages which is more than our page range (<span class="limited_copies_text"></span> pages). So you can only print <span class="limited_copies_text"></span> pages.</span>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="primary-bold-text mb-4">Copies</div>
+                    <div class="tz-copies-btn-grp" style="margin-bottom:16px">
+                        <div class="tz-copies-grp">
+                            <button id="sh_sub-btn" type="button" class="btn waves-effect tz-copies-btn tz-copies-left"><i class="fas fa-minus"></i></button>
+                            <input class="browser-default tz-copies-input tz-rmvbtn-num-input" type="number" name="copies" id="sh_copies" value='1'>
+                            <button id="sh_add-btn" type="button" class="btn waves-effect tz-copies-btn tz-copies-right"><i class="fas fa-plus"></i></button>
+                        </div>
+{#                        <div id="limitedCopiesError" class="red-text lighten-1 mt-4">#}
+{#                            <i class="fas fa-exclamation-circle font-size-18"></i>#}
+{#                             <span class="vertical-top font-size-13"><span>Your file contains <span id="total_pages2"></span> pages which is more than our page range (<span class="limited_copies_text"></span> pages). So you can only print <span class="limited_copies_text"></span> pages.</span></span>#}
+{#                        </div>#}
+                    </div>
+                    <div style="color: #0b355a;">
+                        <div style="font-size: 40px;text-align: center;font-weight: 600;">
+                            ₹  <span id="print-amount-txt">12</span>
+                        </div>
+                        <div style="font-size: 17px;font-weight: 700;text-align: center;margin-top: -8px;">Amount</div>
+                        <div style="font-weight: 700;color: #666;text-align: center;">
+                            Pages
+                            <span id="print-pages-txt">12</span>
+                        </div>
+                        <!-- <div class="show-on-guest text-center mt-8" style="display: none"><span style="background: #0f4c81;color: #fff;font-weight: bold;padding: 5px 10px;border-radius: 8px;">Your print is free</span></div> -->
+                    </div>
+                    <!-- <div class="primary-bold-text mb-4">Amount : <span class="ml-8" id="print-amount-txt" style="display: inline-block;border: 1px solid #ccc;padding: 2px 60px;border-radius: 4px;color: #333;font-size: 20px;"></span></div> -->
+                    <div class="hide-on-lock">
+                        <div class="primary-bold-text mb-4">Payment Mode:</div>
+                        <div class="tz-radiogrp">
+                            <label id="label_coin" class="tz-radio payment-mode-radio" for="coin" style="width: 165px;display: block;margin:auto;margin-bottom: 4px;">
+                                <input required id="coin" value="CO" class="with-gap shared-payment-mode" type="radio" name="shared-payment-mode" />
+                                <span class="pl-24">Cash</span>
+                                <span class="badge color-inherit ml-0">
+                                    <i class="fas fa-coins"></i>
+                                </span>
+                            </label>
+                            <label id="label_wallet" class="payment-mode-radio tz-radio unlocked" for="wallet" style="width: 165px;display: block;margin:auto;margin-bottom: 4px;">
+                                <i class="fas fa-lock" style="display: none;"></i>
+                                <input required id="wallet" value="AC" class="with-gap shared-payment-mode" type="radio" name="shared-payment-mode" />
+                                <span class="pl-24">Wallet</span>
+                                <span class="badge tz-badge hide-on-lock">
+                                    <i class="fas fa-rupee-sign"></i>
+                                    <span class="walletBalance"></span>
+                                </span>
+                            </label>
+                            <div class="lock-message">
+                                <span>Wallet feature is locked. To unlock it you must Login.</span>
+                        </div>
+                            <div class="tz-printoption-small tz-pay-recharge-info hide-on-lock" id="walletLessInfo">
+                                <span>Your wallet balance is less than amount please <a href="{% url "wallets:view" %}">Recharge it.</a></span>
+                        </div>
+                            <label id="label_free" class="payment-mode-radio tz-radio" for="free" style="width: 165px;display: block;margin:auto;margin-bottom: 4px;">
+                                <input required id="free" value="FR" class="with-gap shared-payment-mode" type="radio" name="shared-payment-mode" />
+                                <span class="pl-24">Free</span>
+                                <span class="badge tz-badge hide-on-lock">
+                                    <i class="fas fa-rupee-sign"></i>
+                                    <span class="freeBalance"></span>
+                                </span>
+                            </label>
+                            <div class="tz-printoption-small tz-pay-recharge-info" id="freeLessInfo">
+                                <span>Your free balance is less than amount, <a href="{% url "customers:referral_list" %}">Refer to your friend</a> to earn more free balance. </span>
+                        </div>
+{#                        <div class="tz-printoption-small tz-pay-recharge-info" id="superNotForFree">#}
+<!-- {#                                <span>Super quality is not allowed in Free.</span>#} -->
+{#                            </div>#}
+                            <div class="tz-upload-help-text" id="info-text-for-paymode" style="text-align: center;display: none;">
+                                <i class="fas fa-info-circle mr-4"></i>
+                                <span id="infoTextForPayModePopup" ></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: center">
+                        {% if user.is_authenticated %}
+                            <button type="submit" class="btn"  style="width: 75%;margin-top: 16px;"><i class="fa fa-print"></i> Start Print</button>
+                        {% else %}
+                            <button id="guestPrintSubmit" class="btn"  style="width: 75%;margin-top: 16px;"><i class="fa fa-print"></i> Start Print</button>
+                        {% endif %}
+                        <br><br><br><br>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

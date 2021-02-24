@@ -1,0 +1,55 @@
+{% extends "vendors/vendor_base.html" %}
+{% load hosts %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <div class="mdc-layout-grid">
+        <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+                <div class="mdc-card p-0">
+                  <h6 class="card-title card-padding pb-0">
+                      <i style="vertical-align: middle!important;" class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">help</i>
+                      <span style="vertical-align: middle!important;">Queries</span>
+                  </h6>
+                    <div style="margin-x: 20px">
+                        <a class="mdc-button mdc-button--unelevated mdc-ripple-upgraded" href="{% host_url "vendors:queries_create" host "vendors_host" %}" style="width:200px; float:right;--mdc-ripple-fg-size:51px; --mdc-ripple-fg-scale:2.0247; --mdc-ripple-fg-translate-start:24.7813px, -6.5px; --mdc-ripple-fg-translate-end:17.5156px, -7.5px;">
+                            <i class="material-icons mdc-button__icon">add</i>
+                            Raise Query
+                        </a>
+                    </div>
+                  <br>
+                  <div class="table-responsive">
+                    <table class="table table-hoverable">
+                      <thead>
+                        <tr>
+                          <th class="text-left">No.</th>
+                          <th>Subject</th>
+                          <th>Description</th>
+                          <th>Raised On</th>
+                          <th>Status</th>
+                          <th>Solved On</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for query in queries %}
+                            <tr>
+                              <td class="text-left">{{ forloop.counter }}</td>
+                              <td>{{ query.get_subject_display }}</td>
+                              <td>{{ query.description|default:"-" }}...</td>
+                              <td>{{ query.created_on|date:"d/m/Y" }}</td>
+                              <td>{{ query.get_status }}</td>
+                              <td>{{ query.solved_on|date:"d/m/Y"|default:"-" }}</td>
+                              <td>
+                                  <a href="{% host_url "vendors:queries_detail" id=query.id  host "vendors_host"%}" title="View">
+                                    <i style="vertical-align: middle!important;" class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">visibility</i>
+                                  </a>
+                              </td>
+                            </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+{% block title %}Free Paper Games{% endblock %}
+{% block custom_head_above %}
+    <style>
+        #games-list .card-action{
+            text-align: right;
+        }
+        #games-list .card-action a{
+            color: #0b355a;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="tz-container">
+        <h5 class="font-bold color-secondary">
+            <span class="border-bottom-2 font-size-2rem">Free Paper Games</span>
+        </h5>
+        <div class="row" id="games-list">
+        </div>
+    </div>
+{% endblock %}
+
+{% block custom_script_below %}
+
+    <script>
+        const api_url = "{% url 'games:list_rest' %}";
+        async function getapi(url) {
+            const response = await fetch(url);
+            var data = await response.json();
+            console.log(data);
+            if (response) {
+                addList(data);
+            }
+        }
+        getapi(api_url);
+        function addList(data){
+            for(let i=0 ; i< data.length; i++)
+            {
+                let card = $(ele).clone();
+                var ele = $('<div class="col s12 m4">'+
+                            '<a href="'+data[i].absolute_url+'" style="display:block">'+
+                                '<div class="card">'+
+                                    '<div class="card-image">'+
+                                        '<img src="'+data[i].game_image+'">'+
+                                    ' </div>'+
+                                    '<div class="card-action" style="text-align: right;">'+
+                                        '<a href="'+data[i].absolute_url+'" style="color: #0b355a;">'+data[i].name+'<i class="fas fa-long-arrow-alt-right" style="margin-left: 8px;font-size: 32px;line-height: 7px;vertical-align: middle;"></i></a>'+
+                                    '</div>'+
+                                '</a>'+
+                            '</div>'+
+                        '</div>');
+                $('#games-list').append(ele);
+            }
+        }
+    </script>
+
+{% endblock %}

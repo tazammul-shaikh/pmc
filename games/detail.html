@@ -1,0 +1,61 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+{% block title %}{{ game.name }} | Free Paper Games {% endblock %}
+{% block custom_head_above %}
+    <style>
+         @media screen and (max-width: 720px) {
+            .mt-s-28{
+                margin-top: 28px;
+            }
+         }
+        @media screen and (min-width: 721px) {
+            .flexReverse{
+                display: flex;
+                flex-direction: row-reverse;
+                margin-top: 32px;
+            }
+        }
+        
+    </style>
+{% endblock %}
+{% block content %}
+<div class="tz-container">
+    <div class="row flexReverse">
+        <div class="col m7 s12 mt-s-28">
+            <div style="display:flex" class="hide-on-med-and-up">
+                <a href="{% url "games:list" %}" style="margin: auto 0"><i class="fas fa-long-arrow-alt-left" style="font-size: 32px; font-weight: bolder; margin-right: 20px; margin-bottom: 5px; color: #0F4C81;"></i></a>
+                <h4 class="font-bold color-secondary" style="margin-top: 0">
+                    <span class="border-bottom-2">
+                        {{ game.name }}
+                    </span>
+                </h4>
+            </div>
+            <img src={{ game.game_preview.url }} style="width: 100%;">
+            <br><br>
+            <div style="text-align: right">
+                <button class="btn waves-effect hide-on-med-and-up print-now-trigger" data-print-codes="{{ game.print_code }}"><i class="fa fa-print"></i> Print This Game Now</button>
+            </div>
+            <br>
+            <div class="divider hide-on-med-and-up"></div>
+        </div>
+        <div class="col m5 s12">
+            <div style="display:flex" class="hide-on-small-and-down">
+                <a href="{% url "games:list" %}" style="margin: auto 0"><i class="fas fa-long-arrow-alt-left" style="font-size: 32px; font-weight: bolder; margin-right: 20px; margin-bottom: 5px; color: #0F4C81;"></i></a>
+                <h4 class="font-bold color-secondary" style="margin-top: 0;">
+                    <span class="border-bottom-2">{{ game.name }}</span>
+                </h4>
+            </div>    
+            <div class="font-bold" style="font-size: 18px;margin-top:16px">How to Play: </div>
+            <p style="text-align: justify;margin-top: 8px;">{{ game.how_to_play|linebreaks }}</p>
+            <button class="btn waves-effect hide-on-small-and-down print-now-trigger" data-print-codes="{{ game.print_code }}"><i class="fa fa-print"></i> Print This Game Now</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block custom_script_below %}
+
+{% endblock %}
+
+

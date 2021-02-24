@@ -1,0 +1,179 @@
+{% extends 'portal/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Print {% endblock %}
+{% block content %}
+    <div class="tz-alert alert-debug" style="display: none">
+        <span class="message"></span>
+        <button type="button" class="alert-close">
+                <i class="fas fa-times"></i>
+        </button>
+    </div>
+     <div class="tz-container">
+        <div id="printCodeContainer">
+            <div class="mt-32">
+                <i class="fas fa-check-circle font-size-56" style="color: #00B74A;"></i>
+                <div class="tz-printcode-header2"> Your File is ready to {% if transaction.is_public %}Share{% else %}Print{% endif %}</div>
+            </div>
+{#            <div class="mt-16">#}
+{#                {% include "portal/anonymous_user_msg.html" with msg="print_code" %}#}
+{#            </div>#}
+            <div style="border: 1px solid #eee;padding: 16px;position: relative;max-width: 282px;margin: auto;margin-top: 16px;">
+                {% if transaction.is_public %}
+                    <button class="modal-trigger" data-target="needHelpShareModal" style="position: absolute;top: 0;right: 0;border: none;background: #fff;">
+                        <i class="fas fa-info-circle" style="font-size: 20px;margin-top: 2px;color: #0b355a;"></i>
+                    </button>
+                    <div class="row">
+                        <button class="btn modal-trigger tz-station-link share-file-trigger" data-share-link="{{transaction.get_sharing_link}}"  data-target="shareFileModal" style="font-size: 16px;font-weight: 600;height: auto;padding: 4px 16px;width: auto;box-shadow: none;">
+                            <i class="fas fa-share-square mr-4" style="vertical-align:bottom"></i></i>Share
+                        </button>
+                        <div  class="tz-printcode-content" style="color: #999;margin-top: 4px;">Amount will be charged to a person who will be printing your file.</div>
+                    </div>
+                    <div>
+                        <hr style="width: 130px;">
+                        <div style="    font-size: 13px;font-weight: 600;margin-top: -18px;display: table;margin-left: calc(50% - 15px);background: #fff;padding: 0 6px;">OR</div>
+                    </div>
+                    <div style="margin-top:12px">
+                        <button class="btn print-now-trigger tz-station-link" data-transaction-id="{{ transaction.id }}" data-print-codes="{{ transaction.code_1 }}-{{ transaction.code_2 }}" style="font-size: 16px;font-weight: 600;height: auto;padding: 4px 16px;width: auto;box-shadow: none;border: 2px solid;background: transparent;color: #0b355a;">
+                                <i class="fa fa-print"></i>
+                                Print Now
+                        </button>
+                        <div  class="tz-printcode-content" style="color: #999;margin-top: 4px;">Print this file for yourself.</div>
+                    </div>
+                {% else %}
+                    <button class="modal-trigger" data-target="needHelpModal" style="position: absolute;top: 0;right: 0;border: none;background: #fff;">
+                        <i class="fas fa-info-circle" style="font-size: 20px;margin-top: 2px;color: #0b355a;"></i>
+                    </button>
+                    <div class="row">
+                        <button class="btn print-now-trigger tz-station-link" data-transaction-id="{{ transaction.id }}" data-print-codes="{{ transaction.code_1 }}-{{ transaction.code_2 }}" style="font-size: 16px;font-weight: 600;height: auto;padding: 4px 16px;width: auto;box-shadow: none;"><i class="fa fa-print"></i> Print Now </button>
+                        <div  class="tz-printcode-content" style="color: #999;margin-top: 4px;">If you are infront of our print station.</div>
+                    </div>
+                    <div>
+                        <hr style="width: 130px;">
+                        <div style="font-size: 13px;font-weight: 600;margin-top: -18px;display: table;margin-left: calc(50% - 15px);background: #fff;padding: 0 6px;">OR</div>
+                    </div>
+                    <div style="margin-top:12px">
+                        <div  class="tz-printcode-content" style="color: #999;margin-top: 4px;">
+                            Go to nearest PrintMyCopy Print Station.
+                            <a href="{% url "stations:list" %}" target="_blank"> Find nearby stations <i class="fas fa-external-link-alt"></i></a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div style="color: #444;font-size: 16px;margin: auto;margin-top: 24px;max-width: 282px;">
+                 If you don't want to print now then you can print this file later from <span style="font-weight: 600; color: #0F4C81"><i class="fa fa-history"></i> FILES tab</span>.
+            </div>
+        </div>
+     </div>
+
+     <!-- Need Help Model  -->
+     <div id="needHelpModal" class="modal needHelpModal">
+        <div class="modal-content">
+          <h4 class="primary-bold-text">How to take print?</h4>
+          <h6>Follow the instruction to take print</h6>
+          <ol>
+            <li>Find and go to nearby print station.</li>
+            <li>Click on "Print" on file which you want to print.</li>
+            <li>Enter SCR No (The numbers are on Screen of Print Station).</li>
+            <li>If your payment is with coin then insert the coin.</li>
+            <li>Printing will start automatically, and after that you can take your copy.</li>
+        </ol>
+        </div>
+        <div class="modal-footer">
+          <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+      </div>
+
+       <!-- Need Help for Sharing Model  -->
+     <div id="needHelpShareModal" class="modal needHelpModal">
+        <div class="modal-content">
+          <h4 class="primary-bold-text">How sharing works?</h4>
+          <ol>
+            <li>After uploading your file, it is saved at our web.</li>
+            <li>If you have choosen share option then you can share your file whenever you want.</li>
+            <li>You can share your file to anyone by sending file link to whatsapp and other social apps.</li>
+            <li>The reciever can click on that link to take printout of your shared file.</li>
+        </ol>
+        </div>
+        <div class="modal-footer">
+          <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+      </div>
+
+      <div id="shareFileModal" class="modal tz-share-modal">
+        <div class="modal-content">
+            <div class="mb-16 font-bold font-size-16">Share this Print</div>
+            <div class="tz-copy-text-container">
+                <input id="share_file_link"  type="text" readonly style="text-overflow: ellipsis;">
+                <button onclick="copyShareLink();" class="btn btn-secondary float-right" id="copy_link_btn">Copy Link</button>
+            </div>
+            <div>
+                <div class="mb-12">Share to</div>
+                <div class="tz-share-link-container row">
+                    <div class="col s12 m6">
+                        <!-- Whatsapp -->
+                        <a onclick="dontShowLoader()" style="background: #1BD741" id="whatsapp-share" data-action="share/whatsapp/share">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <!-- Facebook -->
+                        <a onclick="dontShowLoader()" style="background: #3A559F" id="facebook-share" target="_blank">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <!-- Twitter -->
+                        <a onclick="dontShowLoader()" style="background: #1CB7EB" id="twitter-share" target="_blank">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                    <div  class="col s12 m6">
+                        <!-- Telegram -->
+                        <a onclick="dontShowLoader()" style="background: #2BA3D7" id="telegram-share" target="_blank">
+                            <i class="fab fa-telegram-plane"></i>
+                        </a>
+                        <!-- LinkedIn -->
+                        <a onclick="dontShowLoader()" style="background: #0077B7" id="linkedin-share" target="_blank">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <!-- Email -->
+                        <a onclick="dontShowLoader()" style="background: #F4511E" id="email-share">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="modal-close tz-share-close"><i class="fas fa-times-circle small"></i></span>
+    </div>
+
+{% endblock %}
+
+
+{% block custom_script_below %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+
+        $(document).on("click", ".share-file-trigger", function () {
+            let shareLink = $(this).data('share-link'),
+                whatsappText = "whatsapp://send?text=I have uploaded File on Printmycopy, get Print by this link : " + shareLink,
+                facebookText = "http://www.facebook.com/sharer.php?u= " + shareLink,
+                twitterText ="https://twitter.com/share?url= " +shareLink+ " &amp;text=I%20have%20uploaded%20File%20on%20Printmycopy%20you%20can%20now%20take%20print&amp;hashtags=printmycopy",
+                telegramText ="https://telegram.me/share/url?url=" +shareLink+ "&amp;text=I%20have%20uploaded%20File%20on%20Printmycopy%20you%20can%20now%20take%20print&amp",
+                linkedinText ="http://www.linkedin.com/shareArticle?mini=true&amp;url= " +shareLink,
+                emailText = "mailto:?Subject=Visit Printmycopy &amp;Body=I%20have%20uploaded%20File%20on%20Printmycopy,%20get%20Print%20by%20this%20link%20:%20%20" +shareLink;
+
+            $('#whatsapp-share').attr('href', whatsappText);
+            $('#facebook-share').attr('href', facebookText);
+            $('#twitter-share').attr('href', twitterText);
+            $('#telegram-share').attr('href', telegramText);
+            $('#linkedin-share').attr('href', linkedinText);
+            $('#email-share').attr('href', emailText);
+            $("#share_file_link").val(shareLink);
+        });
+
+        function copyShareLink() {
+            let copyText = document.getElementById("share_file_link");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+            document.execCommand("copy");
+        }
+    </script>
+
+{% endblock %}

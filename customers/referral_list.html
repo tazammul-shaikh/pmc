@@ -1,0 +1,355 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+{% block title %}Referrals{% endblock %}
+{% block content %}
+    <style>
+        #qrcode img, #qrcode canvas{
+            width: 80%!important;
+            max-width: 500px!important;
+            align-items: center!important;
+            margin: auto;
+        }
+        .tz-refer-offers{
+            {#width: 500px;#}
+            {#margin: auto;#}
+            border: 1px solid #ccc;
+            {#padding: 16px 24px;#}
+        }
+        @media screen and (min-width: 524px) {
+            .tz-refer-offers{
+                width: 500px;
+                margin: auto;
+                border: 1px solid #ccc;
+                padding: 16px 24px;
+            }
+        }
+    </style>
+    <div class="tz-container">
+
+        {% if user.is_authenticated %}
+            {% if user.customer.is_vendor %}
+                <h5 class="font-bold color-secondary">
+                    <span class="border-bottom-2 font-size-2rem">Refer And Earn 10Rs Real Cash</span>
+                </h5>
+                <div class="tz-refer-offers" id="offer-container">
+                    <div>
+                        <div class="tz-referral-info" style="font-size: 16px">
+                            Refer Printmycopy to others and get 10 Rs real cash when they takes their first printout.
+                        </div>
+                        <h5 style="text-align: center">Your Refer Code : <span style="font-weight: bold">{{ user.customer.referral_number }}</span></h5>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:36px;">
+                    <div class="col s12 l6">
+                        <input style="position:absolute;margin: 0; padding: 0; height: 1px; width: 1px; font-size: 1px; border: transparent!important;" id="referral_link" value="{{ user.customer.get_referral_link }}" type="text" readonly>
+                        <div class="tz-share-link-container row">
+                            <div class="tz-referral-sharevia-text">Share via :</div>
+                            <div class="col s12 mt-32-l">
+                                <!-- Copy Link -->
+                                <a id="copy_link_btn" onclick="copyReferralLink()" style="background: #999999">
+                                    <i class="fa fa-copy"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Copy</div>
+                                </a>
+                                <!-- Whatsapp -->
+                                <a onclick="dontShowLoader()" style="background: #1BD741" href="whatsapp://send?text=Join Printmycopy and get reward : {{ user.customer.get_referral_link }}" data-action="share/whatsapp/share">
+                                    <i class="fab fa-whatsapp"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Whatsapp</div>
+                                </a>
+                                <!-- Facebook -->
+                                <a onclick="dontShowLoader()" style="background: #3A559F" href="http://www.facebook.com/sharer.php?u= {{ user.customer.get_referral_link }}" target="_blank">
+                                    <i class="fab fa-facebook-f"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Facebook</div>
+                                </a>
+                            </div>
+                            <div  class="col s12 mt-32-12">
+                                <!-- Telegram -->
+                                <a onclick="dontShowLoader()" style="background: #2BA3D7" href="https://telegram.me/share/url?url={{ user.customer.get_referral_link }}&amp;text=Join%20Printmycopy%20and%20get%20reward&amp" target="_blank">
+                                    <i class="fab fa-telegram-plane"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Telegram</div>
+                                </a>
+                                <!-- Twitter -->
+                                <a onclick="dontShowLoader()" style="background: #1CB7EB" href="https://twitter.com/share?url={{ user.customer.get_referral_link }}&amp;text=Join%20Printmycopy%20and%20get%20reward&amp;hashtags=printmycopy" target="_blank">
+                                    <i class="fab fa-twitter"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Twitter</div>
+                                </a>
+        {#                            <!-- LinkedIn -->#}
+        {#                            <a onclick="dontShowLoader()" style="background: #0077B7" href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{ user.customer.get_referral_link }}" target="_blank">#}
+        {#                                <i class="fab fa-linkedin-in"></i>#}
+        {#                            </a>#}
+                                <!-- Email -->
+                                <a onclick="dontShowLoader()" style="background: #F4511E" href="mailto:?Subject=Visit Printmycopy &amp;Body=I%20saw%20this%20and%20thought%20of%20you!%20Join%20Printmycopy%20and%20get%20reward%20:%20%20{{ user.customer.get_referral_link }}">
+                                    <i class="fas fa-envelope"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Email</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s12 l6 text-center">
+                        <div class="hide-on-large-only" style="width: 100%;text-align: center; border-bottom: 1px solid #000; line-height: 0.1em;margin:18px 0 26px">
+                            <span style="padding:0 10px; background:#fff">OR</span>
+                        </div>
+                        <div id="qrcode" style="max-width: 360px;margin: auto;"></div>
+                        <div style="font-size: 16px;color: #0b355a;margin-top:8px;font-weight: 700;">Scan this QR code on other person device.</div>
+        {#                <button class="btn">Download</button>#}
+                    </div>
+                </div>
+                <div class="grey-text text-darken-1" style="font-size: 16px;text-align: left;padding: 0;font-weight:bold;margin-top: 20px">
+                       Note:- After or before register with your refer code, user must take atleast 1 Printout.
+                </div>
+                {% if referrals %}
+                    <table id="vendor-referral-history" class="tz-simple-table striped grey-text text-darken-2" style="margin-top: 8px">
+                    <tr>
+                        <th>Date Time</th>
+                        <th>Customer</th>
+                        <th>Status</th>
+                    </tr>
+                    {% for referral in referrals %}
+                        <tr>
+                           <td class="datetime" style="font-size: 13px;vertical-align: top">{{ referral.get_created_on }}</td>
+                            <td style="vertical-align: top">
+                                {{ referral.customer.show_hidden_phone }}
+                            </td>
+                            <td>
+                                {% if referral.is_paid %}
+                                    <div class="green-text font-bold">Paid +{{ referral.referral_bonus }}</div>
+                                {% else %}
+                                    <div class="grey-text text-darken-1 font-bold ">
+                                        <div>Pending +{{ referral.referral_bonus }}</div>
+                                        <div style="font-weight: initial;">Prints {{ referral.get_print_status }}</div>
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {% endif %}
+            {% elif user.customer.is_teacher %}
+                <h5 class="font-bold color-secondary">
+                    <span class="border-bottom-2 font-size-2rem">Refer And Earn Free Print Worth 30Rs </span>
+                </h5>
+                <div class="tz-refer-offers" id="offer-container">
+                    <div>
+                        <div class="tz-referral-info" style="font-size: 16px">
+                            Refer Printmycopy to your students and get Free printouts of 30 Rupees on each registration, instantly when they take atleast 1 printout.
+                        </div>
+                        <h5 style="text-align: center">Your Refer Code : <span style="font-weight: bold">{{ user.customer.referral_number }}</span></h5>
+                    </div>
+                </div>
+{#                <div class="grey-text text-darken-1" style="font-size: 16px;text-align: left;padding: 0;font-weight:bold;margin-top: 20px">#}
+{#                       Note:- After or before register with your refer code, student must take atleast 1 Printout.#}
+{#                </div>#}
+                <div class="row" style="margin-top:36px;">
+                    <div class="col s12 l6">
+                        <input style="position:absolute;margin: 0; padding: 0; height: 1px; width: 1px; font-size: 1px; border: transparent!important;" id="referral_link" value="{{ user.customer.get_referral_link }}" type="text" readonly>
+                        <div class="tz-share-link-container row">
+                            <div class="tz-referral-sharevia-text">Share via :</div>
+                            <div class="col s12 mt-32-l">
+                                <!-- Copy Link -->
+                                <a id="copy_link_btn" onclick="copyReferralLink()" style="background: #999999">
+                                    <i class="fa fa-copy"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Copy</div>
+                                </a>
+                                <!-- Whatsapp -->
+                                <a onclick="dontShowLoader()" style="background: #1BD741" href="whatsapp://send?text=Join Printmycopy and get reward : {{ user.customer.get_referral_link }}" data-action="share/whatsapp/share">
+                                    <i class="fab fa-whatsapp"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Whatsapp</div>
+                                </a>
+                                <!-- Facebook -->
+                                <a onclick="dontShowLoader()" style="background: #3A559F" href="http://www.facebook.com/sharer.php?u= {{ user.customer.get_referral_link }}" target="_blank">
+                                    <i class="fab fa-facebook-f"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Facebook</div>
+                                </a>
+                            </div>
+                            <div  class="col s12 mt-32-12">
+                                <!-- Telegram -->
+                                <a onclick="dontShowLoader()" style="background: #2BA3D7" href="https://telegram.me/share/url?url={{ user.customer.get_referral_link }}&amp;text=Join%20Printmycopy%20and%20get%20reward&amp" target="_blank">
+                                    <i class="fab fa-telegram-plane"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Telegram</div>
+                                </a>
+                                <!-- Twitter -->
+                                <a onclick="dontShowLoader()" style="background: #1CB7EB" href="https://twitter.com/share?url={{ user.customer.get_referral_link }}&amp;text=Join%20Printmycopy%20and%20get%20reward&amp;hashtags=printmycopy" target="_blank">
+                                    <i class="fab fa-twitter"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Twitter</div>
+                                </a>
+        {#                            <!-- LinkedIn -->#}
+        {#                            <a onclick="dontShowLoader()" style="background: #0077B7" href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{ user.customer.get_referral_link }}" target="_blank">#}
+        {#                                <i class="fab fa-linkedin-in"></i>#}
+        {#                            </a>#}
+                                <!-- Email -->
+                                <a onclick="dontShowLoader()" style="background: #F4511E" href="mailto:?Subject=Visit Printmycopy &amp;Body=I%20saw%20this%20and%20thought%20of%20you!%20Join%20Printmycopy%20and%20get%20reward%20:%20%20{{ user.customer.get_referral_link }}">
+                                    <i class="fas fa-envelope"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Email</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s12 l6 text-center">
+                        <div class="hide-on-large-only" style="width: 100%;text-align: center; border-bottom: 1px solid #000; line-height: 0.1em;margin:18px 0 26px">
+                            <span style="padding:0 10px; background:#fff">OR</span>
+                        </div>
+                        <div id="qrcode" style="max-width: 360px;margin: auto;"></div>
+                        <div style="font-size: 16px;color: #0b355a;margin-top:8px;font-weight: 700;">Scan this QR code on other person device.</div>
+        {#                <button class="btn">Download</button>#}
+                    </div>
+                </div>
+
+                {% if referrals %}
+                    <table id="vendor-referral-history" class="tz-simple-table striped grey-text text-darken-2" style="margin-top: 8px">
+                    <tr>
+                        <th>Date Time</th>
+                        <th>Student</th>
+                        <th>Status</th>
+                    </tr>
+                    {% for referral in referrals %}
+                        <tr>
+                           <td class="datetime" style="font-size: 13px;vertical-align: top">{{ referral.get_created_on }}</td>
+                            <td style="vertical-align: top">
+                                {{ referral.customer.show_hidden_phone }}
+                            </td>
+                            <td>
+                                {% if referral.is_paid %}
+                                    <div class="green-text font-bold">Paid +{{ referral.referral_bonus }}</div>
+                                {% else %}
+                                    <div class="grey-text text-darken-1 font-bold ">
+                                        <div>Pending +{{ referral.referral_bonus }}</div>
+                                        <div style="font-weight: initial;">Prints {{ referral.get_print_status }}</div>
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {% endif %}
+            {% else %}
+                <h5 class="font-bold color-secondary">
+                    <span class="border-bottom-2 font-size-2rem">Refer And Earn 10Rs</span>
+                </h5>
+                <div class="tz-refer-offers" id="offer-container">
+                    <div>
+        {#                <img src="{% static "images/refer.svg" %}" style="width: 100%; max-width: 500px; align-items: center" class="refer-image">#}
+                        <div class="tz-referral-info" style="font-size: 16px">
+                            Refer Printmycopy to your friends or relatives and get Free printouts of 10 Rupees instantly on their registration.
+                        </div>
+                        <h5 style="text-align: center">Your Refer Code : <span style="font-weight: bold">{{ user.customer.referral_number }}</span></h5>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:36px;">
+                    <div class="col s12 l6">
+                        <input style="position:absolute;margin: 0; padding: 0; height: 1px; width: 1px; font-size: 1px; border: transparent!important;" id="referral_link" value="{{ user.customer.get_referral_link }}" type="text" readonly>
+                        <div class="tz-share-link-container row">
+                            <div class="tz-referral-sharevia-text">Share via :</div>
+                            <div class="col s12 mt-32-l">
+                                <!-- Copy Link -->
+                                <a id="copy_link_btn" onclick="copyReferralLink()" style="background: #999999">
+                                    <i class="fa fa-copy"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Copy</div>
+                                </a>
+                                <!-- Whatsapp -->
+                                <a onclick="dontShowLoader()" style="background: #1BD741" href="whatsapp://send?text=Join Printmycopy and get reward : {{ user.customer.get_referral_link }}" data-action="share/whatsapp/share">
+                                    <i class="fab fa-whatsapp"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Whatsapp</div>
+                                </a>
+                                <!-- Facebook -->
+                                <a onclick="dontShowLoader()" style="background: #3A559F" href="http://www.facebook.com/sharer.php?u= {{ user.customer.get_referral_link }}" target="_blank">
+                                    <i class="fab fa-facebook-f"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Facebook</div>
+                                </a>
+                            </div>
+                            <div  class="col s12 mt-32-12">
+                                <!-- Telegram -->
+                                <a onclick="dontShowLoader()" style="background: #2BA3D7" href="https://telegram.me/share/url?url={{ user.customer.get_referral_link }}&amp;text=Join%20Printmycopy%20and%20get%20reward&amp" target="_blank">
+                                    <i class="fab fa-telegram-plane"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Telegram</div>
+                                </a>
+                                <!-- Twitter -->
+                                <a onclick="dontShowLoader()" style="background: #1CB7EB" href="https://twitter.com/share?url={{ user.customer.get_referral_link }}&amp;text=Join%20Printmycopy%20and%20get%20reward&amp;hashtags=printmycopy" target="_blank">
+                                    <i class="fab fa-twitter"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Twitter</div>
+                                </a>
+        {#                            <!-- LinkedIn -->#}
+        {#                            <a onclick="dontShowLoader()" style="background: #0077B7" href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{ user.customer.get_referral_link }}" target="_blank">#}
+        {#                                <i class="fab fa-linkedin-in"></i>#}
+        {#                            </a>#}
+                                <!-- Email -->
+                                <a onclick="dontShowLoader()" style="background: #F4511E" href="mailto:?Subject=Visit Printmycopy &amp;Body=I%20saw%20this%20and%20thought%20of%20you!%20Join%20Printmycopy%20and%20get%20reward%20:%20%20{{ user.customer.get_referral_link }}">
+                                    <i class="fas fa-envelope"></i>
+                                    <div style="font-size: 10px; margin-top: 0; padding-top: 0; font-weight: bold">Email</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s12 l6 text-center">
+                        <div class="hide-on-large-only" style="width: 100%;text-align: center; border-bottom: 1px solid #000; line-height: 0.1em;margin:18px 0 26px">
+                            <span style="padding:0 10px; background:#fff">OR</span>
+                        </div>
+                        <div id="qrcode" style="max-width: 360px;margin: auto;"></div>
+                        <div style="font-size: 16px;color: #0b355a;margin-top:8px;font-weight: 700;">Scan this QR code on other person device.</div>
+        {#                <button class="btn">Download</button>#}
+                    </div>
+                </div>
+
+                <hr>
+                {% if referrals %}
+                    <br>
+                    <h5>Your referral earnings</h5>
+                    <table class="table">
+                    <thead>
+                        <th>No.</th>
+                        <th>Referred To</th>
+                        <th>Bonus</th>
+                        <th>Date</th>
+                    </thead>
+                    <tbody>
+                        {% for referral in referrals %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ referral.customer.show_hidden_phone }}</td>
+                                <td>{{ referral.referral_bonus }}</td>
+                                <td>{{ referral.get_created_on }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <p class="text-warning">You have not referred anyone yet!</p>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            <br><br>
+            <div class="text-center" style="max-width: 320px;margin: auto;">
+                <i class="fas fa-user-lock large color-primary" style="font-size: 8rem;"></i>
+                <h5 style="margin-top: 28px;" class="color-grey">You are not logged in! Please login or register for FREE to start referring and earning!</h5>
+                <div style="margin-top: 28px;">
+                    <a class="btn" href="{% url "accounts:login" %}" style="color: #0b355a;background: transparent;border: 1px solid;box-shadow: none;margin-right: 16px;">Login</a>
+                    <a class="btn" href="{% url "accounts:register" %}">Register</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block custom_script_below %}
+    <script>
+        function copyReferralLink() {
+            let copyText = document.getElementById("referral_link");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+            alert("Your referral link has been copied to clipboard! You can paste it anywhere.")
+            document.execCommand("copy");
+        }
+    </script>
+    <script type="text/javascript" src="{% static "qr/qrcode.js" %}"></script>
+    <script type="text/javascript">
+        var qrcode = new QRCode(document.getElementById("qrcode"), {
+            width : 500,
+            height : 500
+        });
+        function makeCode () {
+            var refer_link = "{{ user.customer.get_referral_link }}";
+            qrcode.makeCode(refer_link);
+        }
+
+        makeCode();
+    </script>
+{% endblock %}
